@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #0a0a0f;
+  color: #e8e8f0;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #111118; }
+::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a4a; }
+
+/* Prose styles for notes */
+.notes-content h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #e8e8f0;
+  margin: 2rem 0 0.75rem;
+  line-height: 1.2;
+}
+.notes-content h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #9d96ff;
+  margin: 1.75rem 0 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #1e1e2e;
+}
+.notes-content h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #e8e8f0;
+  margin: 1.25rem 0 0.4rem;
+}
+.notes-content p {
+  line-height: 1.75;
+  color: #c0c0d8;
+  margin-bottom: 0.9rem;
+}
+.notes-content ul, .notes-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.notes-content li {
+  color: #c0c0d8;
+  line-height: 1.7;
+  margin-bottom: 0.3rem;
+}
+.notes-content strong { color: #e8e8f0; font-weight: 600; }
+.notes-content em { color: #9d96ff; font-style: italic; }
+.notes-content code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  background: #1e1e2e;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  color: #9d96ff;
+}
+
+/* Noise texture overlay */
+.noise::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.3;
+}
+
+@layer utilities {
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+  .opacity-0-init { opacity: 0; }
+}
