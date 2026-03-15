@@ -3,11 +3,12 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import FlashcardDeck from "@/components/FlashcardDeck";
 
-export default async function FlashcardsPage({
-  params,
-}: {
-  params: { courseId: string; unitId: string };
-}) {
+export default async function FlashcardsPage(
+  props: {
+    params: Promise<{ courseId: string; unitId: string }>;
+  }
+) {
+  const params = await props.params;
   const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");

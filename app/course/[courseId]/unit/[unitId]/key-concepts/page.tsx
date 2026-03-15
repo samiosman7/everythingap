@@ -8,11 +8,12 @@ const CATEGORY_COLORS: Record<string, string> = {
   event: "#dc2626", process: "#16a34a", theory: "#b45309", law: "#7c3aed",
 };
 
-export default async function KeyConceptsPage({
-  params,
-}: {
-  params: { courseId: string; unitId: string };
-}) {
+export default async function KeyConceptsPage(
+  props: {
+    params: Promise<{ courseId: string; unitId: string }>;
+  }
+) {
+  const params = await props.params;
   const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
