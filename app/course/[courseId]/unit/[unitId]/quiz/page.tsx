@@ -4,13 +4,12 @@ import Link from "next/link";
 import QuizPlayer from "@/components/QuizPlayer";
 import FRQViewer from "@/components/FRQViewer";
 
-export default async function UnitQuizPage(
-  props: {
-    params: Promise<{ courseId: string; unitId: string }>;
-  }
-) {
-  const params = await props.params;
-  const supabase = createServerSupabaseClient();
+export default async function UnitQuizPage({
+  params,
+}: {
+  params: { courseId: string; unitId: string };
+}) {
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 

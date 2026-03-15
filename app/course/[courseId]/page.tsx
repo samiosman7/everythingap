@@ -3,9 +3,8 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Course, Unit } from "@/types";
 
-export default async function CoursePage(props: { params: Promise<{ courseId: string }> }) {
-  const params = await props.params;
-  const supabase = createServerSupabaseClient();
+export default async function CoursePage({ params }: { params: { courseId: string } }) {
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
@@ -73,7 +72,7 @@ export default async function CoursePage(props: { params: Promise<{ courseId: st
 
         {/* Units */}
         <div className="space-y-3">
-          {units?.map((unit: Unit) => (
+          {units?.map(unit => (
             <div
               key={unit.id}
               className="rounded-2xl bg-[#111118] border border-[#1e1e2e] overflow-hidden"

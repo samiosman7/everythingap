@@ -5,7 +5,7 @@ import { Course } from "@/types";
 import LogoutButton from "@/components/LogoutButton";
 
 export default async function DashboardPage() {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 

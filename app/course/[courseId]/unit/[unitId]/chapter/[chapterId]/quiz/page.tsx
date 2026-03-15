@@ -3,13 +3,12 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import QuizPlayer from "@/components/QuizPlayer";
 
-export default async function ChapterQuizPage(
-  props: {
-    params: Promise<{ courseId: string; unitId: string; chapterId: string }>;
-  }
-) {
-  const params = await props.params;
-  const supabase = createServerSupabaseClient();
+export default async function ChapterQuizPage({
+  params,
+}: {
+  params: { courseId: string; unitId: string; chapterId: string };
+}) {
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 

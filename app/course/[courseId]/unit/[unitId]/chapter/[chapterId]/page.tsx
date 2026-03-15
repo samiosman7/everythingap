@@ -3,13 +3,12 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import NotesRenderer from "@/components/NotesRenderer";
 
-export default async function ChapterPage(
-  props: {
-    params: Promise<{ courseId: string; unitId: string; chapterId: string }>;
-  }
-) {
-  const params = await props.params;
-  const supabase = createServerSupabaseClient();
+export default async function ChapterPage({
+  params,
+}: {
+  params: { courseId: string; unitId: string; chapterId: string };
+}) {
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 

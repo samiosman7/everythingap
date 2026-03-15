@@ -3,9 +3,8 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Chapter } from "@/types";
 
-export default async function UnitPage(props: { params: Promise<{ courseId: string; unitId: string }> }) {
-  const params = await props.params;
-  const supabase = createServerSupabaseClient();
+export default async function UnitPage({ params }: { params: { courseId: string; unitId: string } }) {
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 

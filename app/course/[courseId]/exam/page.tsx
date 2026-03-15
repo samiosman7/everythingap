@@ -4,9 +4,8 @@ import Link from "next/link";
 import QuizPlayer from "@/components/QuizPlayer";
 import FRQViewer from "@/components/FRQViewer";
 
-export default async function FullExamPage(props: { params: Promise<{ courseId: string }> }) {
-  const params = await props.params;
-  const supabase = createServerSupabaseClient();
+export default async function FullExamPage({ params }: { params: { courseId: string } }) {
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
