@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Course } from "@/types";
 import LogoutButton from "@/components/LogoutButton";
 import { getViewerContext } from "@/lib/viewer";
+import { getCourseHref } from "@/lib/course";
 
 export default async function DashboardPage() {
   const { supabase, user, isGuest } = await getViewerContext();
@@ -10,7 +11,7 @@ export default async function DashboardPage() {
 
   const { data: courses } = await supabase
     .from("courses")
-    .select("id, name, emoji, color, accent")
+    .select("id, slug, name, emoji, color, accent")
     .order("name");
 
   return (
@@ -49,7 +50,7 @@ export default async function DashboardPage() {
           {courses?.map((course: Course) => (
             <Link
               key={course.id}
-              href={`/course/${course.id}`}
+              href={getCourseHref(course)}
               className="group relative p-5 rounded-2xl bg-[#111118] border border-[#1e1e2e] hover:border-[#2a2a3a] transition-all hover:-translate-y-0.5 hover:shadow-lg overflow-hidden"
             >
               {/* Color accent bar */}

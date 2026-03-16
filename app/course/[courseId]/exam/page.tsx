@@ -3,16 +3,17 @@ import Link from "next/link";
 import QuizPlayer from "@/components/QuizPlayer";
 import FRQViewer from "@/components/FRQViewer";
 import { getViewerContext } from "@/lib/viewer";
+import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
 export default async function FullExamPage({ params }: { params: { courseId: string } }) {
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
-  const { data: course } = await supabase
-    .from("courses")
-    .select("id, name, emoji, color, full_exam")
-    .eq("id", params.courseId)
-    .single();
+  const { data: course } = await getCourseByIdentifier(
+    supabase,
+    params.courseId,
+    "id, slug, name, emoji, color, full_exam"
+  );
 
   if (!course) notFound();
   const exam = course.full_exam;
@@ -20,9 +21,8 @@ export default async function FullExamPage({ params }: { params: { courseId: str
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
       <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`/course/${params.courseId}`}
-          className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
-          ← {course.name}
+        <Link href={getCourseHref(course)} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
+          Back to {course.name}
         </Link>
       </nav>
       <main className="max-w-3xl mx-auto px-6 py-10">
@@ -50,7 +50,7 @@ export default async function FullExamPage({ params }: { params: { courseId: str
             {exam.multiple_choice?.length > 0 && (
               <section>
                 <h2 className="font-display font-bold text-lg mb-6 pb-3 border-b border-[#1e1e2e]">
-                  Section I — Multiple Choice
+                  Section I - Multiple Choice
                 </h2>
                 <QuizPlayer questions={exam.multiple_choice} color={course.color ?? "#6c63ff"} />
               </section>
@@ -58,7 +58,7 @@ export default async function FullExamPage({ params }: { params: { courseId: str
             {exam.free_response?.length > 0 && (
               <section>
                 <h2 className="font-display font-bold text-lg mb-6 pb-3 border-b border-[#1e1e2e]">
-                  Section II — Free Response
+                  Section II - Free Response
                 </h2>
                 <FRQViewer questions={exam.free_response} />
               </section>
@@ -66,7 +66,7 @@ export default async function FullExamPage({ params }: { params: { courseId: str
           </div>
         ) : (
           <div className="text-center py-16 text-[#8888aa] font-body">
-            <div className="text-3xl mb-3">⏳</div>
+            <div className="text-3xl mb-3">Soon</div>
             <p>Full exam is being generated. Check back soon.</p>
           </div>
         )}

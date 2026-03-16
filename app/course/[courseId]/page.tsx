@@ -2,31 +2,27 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Course, Unit } from "@/types";
 import { getViewerContext } from "@/lib/viewer";
+import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
 export default async function CoursePage({ params }: { params: { courseId: string } }) {
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
-  const { data: course } = await supabase
-    .from("courses")
-    .select("id, name, emoji, color, accent")
-    .eq("id", params.courseId)
-    .single();
+  const { data: course } = await getCourseByIdentifier(
+    supabase,
+    params.courseId,
+    "id, slug, name, emoji, color, accent, full_exam"
+  );
 
   if (!course) notFound();
 
   const { data: units } = await supabase
     .from("units")
     .select("id, unit_number, name")
-    .eq("course_id", params.courseId)
+    .eq("course_id", course.id)
     .order("unit_number");
 
-  const hasFullExam = !!(await supabase
-    .from("courses")
-    .select("full_exam")
-    .eq("id", params.courseId)
-    .single()
-  ).data?.full_exam;
+  const hasFullExam = !!course.full_exam;
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
@@ -57,7 +53,7 @@ export default async function CoursePage({ params }: { params: { courseId: strin
         {/* Full Exam CTA */}
         {hasFullExam && (
           <Link
-            href={`/course/${course.id}/exam`}
+            href={`${getCourseHref(course)}/exam`}
             className="flex items-center justify-between p-5 rounded-2xl border mb-8 group transition-all hover:-translate-y-0.5"
             style={{ background: `${course.color}10`, borderColor: `${course.color}30` }}
           >
@@ -90,25 +86,25 @@ export default async function CoursePage({ params }: { params: { courseId: strin
               {/* Study tool buttons */}
               <div className="px-6 py-4 flex flex-wrap gap-2">
                 <Link
-                  href={`/course/${course.id}/unit/${unit.id}`}
+                  href={`${getCourseHref(course)}/unit/${unit.id}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-[#e8e8f0] text-xs font-body font-medium transition-colors"
                 >
                   📝 Notes
                 </Link>
                 <Link
-                  href={`/course/${course.id}/unit/${unit.id}/flashcards`}
+                  href={`${getCourseHref(course)}/unit/${unit.id}/flashcards`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-[#e8e8f0] text-xs font-body font-medium transition-colors"
                 >
                   🃏 Flashcards
                 </Link>
                 <Link
-                  href={`/course/${course.id}/unit/${unit.id}/key-concepts`}
+                  href={`${getCourseHref(course)}/unit/${unit.id}/key-concepts`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-[#e8e8f0] text-xs font-body font-medium transition-colors"
                 >
                   🔑 Key Concepts
                 </Link>
                 <Link
-                  href={`/course/${course.id}/unit/${unit.id}/quiz`}
+                  href={`${getCourseHref(course)}/unit/${unit.id}/quiz`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-[#e8e8f0] text-xs font-body font-medium transition-colors"
                 >
                   📋 Unit Exam

@@ -1,5 +1,6 @@
 export interface Course {
   id: string;
+  slug?: string | null;
   name: string;
   emoji: string;
   color: string;
