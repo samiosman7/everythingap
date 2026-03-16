@@ -22,7 +22,7 @@ export default async function FlashcardsPage({
 
   const { data: flashcards } = await supabase
     .from("flashcards")
-    .select("id, question, answer")
+    .select("id, unit_id, question, answer")
     .eq("unit_id", params.unitId);
 
   const { data: course } = await supabase
