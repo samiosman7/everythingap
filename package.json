@@ -14,7 +14,10 @@
     "@supabase/supabase-js": "^2.43.0",
     "@supabase/ssr": "^0.3.0",
     "react-markdown": "^9.0.1",
+    "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "katex": "^0.16.11",
     "lucide-react": "^0.542.0",
     "clsx": "^2.1.1"
   },
