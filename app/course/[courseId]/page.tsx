@@ -1,12 +1,11 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Course, Unit } from "@/types";
+import { getViewerContext } from "@/lib/viewer";
 
 export default async function CoursePage({ params }: { params: { courseId: string } }) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+  const { supabase, user, isGuest } = await getViewerContext();
+  if (!user && !isGuest) redirect("/auth/login");
 
   const { data: course } = await supabase
     .from("courses")

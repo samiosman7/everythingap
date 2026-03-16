@@ -1,13 +1,12 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Course } from "@/types";
 import LogoutButton from "@/components/LogoutButton";
+import { getViewerContext } from "@/lib/viewer";
 
 export default async function DashboardPage() {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+  const { supabase, user, isGuest } = await getViewerContext();
+  if (!user && !isGuest) redirect("/auth/login");
 
   const { data: courses } = await supabase
     .from("courses")
@@ -22,12 +21,21 @@ export default async function DashboardPage() {
           Everything<span className="text-[#6c63ff]">AP</span>
         </Link>
         <div className="flex items-center gap-4">
-          <span className="text-[#8888aa] text-sm font-body hidden sm:block">{user.email}</span>
-          <LogoutButton />
+          <span className="text-[#8888aa] text-sm font-body hidden sm:block">
+            {isGuest ? "Guest mode" : user?.email}
+          </span>
+          <LogoutButton isGuest={isGuest} />
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 py-10">
+        {isGuest && (
+          <div className="mb-8 rounded-2xl border border-[#6c63ff]/20 bg-[#6c63ff]/8 p-4">
+            <p className="font-body text-sm text-[#d9d7ff]">
+              You&apos;re browsing in guest mode. Course content loads from Supabase, but progress is not saved.
+            </p>
+          </div>
+        )}
         {/* Header */}
         <div className="mb-10">
           <h1 className="font-display text-3xl md:text-4xl font-bold mb-2">All AP Courses</h1>

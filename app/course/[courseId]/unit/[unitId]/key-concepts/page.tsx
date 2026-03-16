@@ -1,7 +1,7 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { KeyConcept } from "@/types";
+import { getViewerContext } from "@/lib/viewer";
 
 const CATEGORY_COLORS: Record<string, string> = {
   vocabulary: "#6c63ff", formula: "#0891b2", person: "#be185d",
@@ -13,9 +13,8 @@ export default async function KeyConceptsPage({
 }: {
   params: { courseId: string; unitId: string };
 }) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+  const { supabase, user, isGuest } = await getViewerContext();
+  if (!user && !isGuest) redirect("/auth/login");
 
   const { data: unit } = await supabase
     .from("units")

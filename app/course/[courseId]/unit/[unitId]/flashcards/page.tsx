@@ -1,16 +1,15 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import FlashcardDeck from "@/components/FlashcardDeck";
+import { getViewerContext } from "@/lib/viewer";
 
 export default async function FlashcardsPage({
   params,
 }: {
   params: { courseId: string; unitId: string };
 }) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+  const { supabase, user, isGuest } = await getViewerContext();
+  if (!user && !isGuest) redirect("/auth/login");
 
   const { data: unit } = await supabase
     .from("units")
