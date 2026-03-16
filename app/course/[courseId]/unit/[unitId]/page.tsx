@@ -24,7 +24,7 @@ export default async function UnitPage({ params }: { params: { courseId: string;
 
   const { data: chapters } = await supabase
     .from("chapters")
-    .select("id, chapter_number, name, quiz")
+    .select("id, unit_id, chapter_number, name, quiz")
     .eq("unit_id", params.unitId)
     .order("chapter_number");
 
