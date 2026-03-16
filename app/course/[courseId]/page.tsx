@@ -4,13 +4,14 @@ import { Course, Unit } from "@/types";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
-export default async function CoursePage({ params }: { params: { courseId: string } }) {
+export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
+  const { courseId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
-    params.courseId,
+    courseId,
     "id, slug, name, emoji, color, accent, full_exam"
   );
 

@@ -12,14 +12,15 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default async function KeyConceptsPage({
   params,
 }: {
-  params: { courseId: string; unitId: string };
+  params: Promise<{ courseId: string; unitId: string }>;
 }) {
+  const { courseId, unitId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
-    params.courseId,
+    courseId,
     "id, slug, name"
   );
   if (!course) notFound();
@@ -27,7 +28,7 @@ export default async function KeyConceptsPage({
   const { data: unit } = await supabase
     .from("units")
     .select("id, name, unit_number, course_id, key_concepts")
-    .eq("id", params.unitId)
+    .eq("id", unitId)
     .single();
 
   if (!unit || unit.course_id !== course.id) notFound();
@@ -37,7 +38,7 @@ export default async function KeyConceptsPage({
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
       <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${params.unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
+        <Link href={`${getCourseHref(course)}/unit/${unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
           Back to {unit.name}
         </Link>
       </nav>

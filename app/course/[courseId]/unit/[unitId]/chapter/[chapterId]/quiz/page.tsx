@@ -7,14 +7,15 @@ import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 export default async function ChapterQuizPage({
   params,
 }: {
-  params: { courseId: string; unitId: string; chapterId: string };
+  params: Promise<{ courseId: string; unitId: string; chapterId: string }>;
 }) {
+  const { courseId, unitId, chapterId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
-    params.courseId,
+    courseId,
     "id, slug, name, color"
   );
   if (!course) notFound();
@@ -22,15 +23,15 @@ export default async function ChapterQuizPage({
   const { data: chapter } = await supabase
     .from("chapters")
     .select("id, name, quiz, unit_id")
-    .eq("id", params.chapterId)
+    .eq("id", chapterId)
     .single();
 
-  if (!chapter || chapter.unit_id !== parseInt(params.unitId, 10) || !chapter.quiz) notFound();
+  if (!chapter || chapter.unit_id !== parseInt(unitId, 10) || !chapter.quiz) notFound();
 
   const { data: unit } = await supabase
     .from("units")
     .select("id, name, unit_number, course_id")
-    .eq("id", params.unitId)
+    .eq("id", unitId)
     .single();
 
   if (!unit || unit.course_id !== course.id) notFound();
@@ -38,7 +39,7 @@ export default async function ChapterQuizPage({
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
       <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${params.unitId}/chapter/${params.chapterId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
+        <Link href={`${getCourseHref(course)}/unit/${unitId}/chapter/${chapterId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
           Back to Notes
         </Link>
       </nav>

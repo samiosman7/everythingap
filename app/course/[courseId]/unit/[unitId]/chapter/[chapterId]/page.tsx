@@ -7,14 +7,15 @@ import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 export default async function ChapterPage({
   params,
 }: {
-  params: { courseId: string; unitId: string; chapterId: string };
+  params: Promise<{ courseId: string; unitId: string; chapterId: string }>;
 }) {
+  const { courseId, unitId, chapterId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
-    params.courseId,
+    courseId,
     "id, slug, name, color"
   );
   if (!course) notFound();
@@ -22,15 +23,15 @@ export default async function ChapterPage({
   const { data: chapter } = await supabase
     .from("chapters")
     .select("id, chapter_number, name, notes, quiz, unit_id")
-    .eq("id", params.chapterId)
+    .eq("id", chapterId)
     .single();
 
-  if (!chapter || chapter.unit_id !== parseInt(params.unitId, 10)) notFound();
+  if (!chapter || chapter.unit_id !== parseInt(unitId, 10)) notFound();
 
   const { data: unit } = await supabase
     .from("units")
     .select("id, unit_number, name, course_id")
-    .eq("id", params.unitId)
+    .eq("id", unitId)
     .single();
 
   if (!unit || unit.course_id !== course.id) notFound();
@@ -38,7 +39,7 @@ export default async function ChapterPage({
   const { data: siblings } = await supabase
     .from("chapters")
     .select("id, chapter_number, name")
-    .eq("unit_id", params.unitId)
+    .eq("unit_id", unitId)
     .order("chapter_number");
 
   const currentIdx = siblings?.findIndex(c => c.id === chapter.id) ?? -1;
@@ -51,7 +52,7 @@ export default async function ChapterPage({
       <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md flex-wrap">
         <Link href={courseHref} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">{course.name}</Link>
         <span className="text-[#2a2a3a]">/</span>
-        <Link href={`${courseHref}/unit/${params.unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">{unit.name}</Link>
+        <Link href={`${courseHref}/unit/${unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">{unit.name}</Link>
         <span className="text-[#2a2a3a]">/</span>
         <span className="text-[#e8e8f0] text-sm font-body font-medium truncate max-w-[200px]">{chapter.name}</span>
       </nav>
@@ -66,7 +67,7 @@ export default async function ChapterPage({
           </div>
           {chapter.quiz && (
             <Link
-              href={`${courseHref}/unit/${params.unitId}/chapter/${chapter.id}/quiz`}
+              href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}/quiz`}
               className="flex-shrink-0 px-4 py-2 rounded-xl bg-[#6c63ff]/10 border border-[#6c63ff]/30 hover:bg-[#6c63ff]/20 text-[#9d96ff] text-sm font-body font-medium transition-all"
             >
               Take Quiz
@@ -85,13 +86,13 @@ export default async function ChapterPage({
 
         <div className="flex items-center justify-between mt-12 pt-8 border-t border-[#1e1e2e] gap-4">
           {prev ? (
-            <Link href={`${courseHref}/unit/${params.unitId}/chapter/${prev.id}`} className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#2a2a3a] text-sm font-body transition-all group max-w-[45%]">
+            <Link href={`${courseHref}/unit/${unitId}/chapter/${prev.id}`} className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#2a2a3a] text-sm font-body transition-all group max-w-[45%]">
               <span className="text-[#8888aa] group-hover:text-[#e8e8f0] transition-colors">Prev</span>
               <span className="text-[#8888aa] group-hover:text-[#e8e8f0] transition-colors truncate">{prev.name}</span>
             </Link>
           ) : <div />}
           {next ? (
-            <Link href={`${courseHref}/unit/${params.unitId}/chapter/${next.id}`} className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#2a2a3a] text-sm font-body transition-all group max-w-[45%] ml-auto">
+            <Link href={`${courseHref}/unit/${unitId}/chapter/${next.id}`} className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#2a2a3a] text-sm font-body transition-all group max-w-[45%] ml-auto">
               <span className="text-[#8888aa] group-hover:text-[#e8e8f0] transition-colors truncate">{next.name}</span>
               <span className="text-[#8888aa] group-hover:text-[#e8e8f0] transition-colors">Next</span>
             </Link>

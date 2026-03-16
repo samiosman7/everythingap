@@ -7,14 +7,15 @@ import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 export default async function FlashcardsPage({
   params,
 }: {
-  params: { courseId: string; unitId: string };
+  params: Promise<{ courseId: string; unitId: string }>;
 }) {
+  const { courseId, unitId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
-    params.courseId,
+    courseId,
     "id, slug, name, color"
   );
   if (!course) notFound();
@@ -22,7 +23,7 @@ export default async function FlashcardsPage({
   const { data: unit } = await supabase
     .from("units")
     .select("id, name, unit_number, course_id")
-    .eq("id", params.unitId)
+    .eq("id", unitId)
     .single();
 
   if (!unit || unit.course_id !== course.id) notFound();
@@ -30,12 +31,12 @@ export default async function FlashcardsPage({
   const { data: flashcards } = await supabase
     .from("flashcards")
     .select("id, unit_id, question, answer")
-    .eq("unit_id", params.unitId);
+    .eq("unit_id", unitId);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
       <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${params.unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
+        <Link href={`${getCourseHref(course)}/unit/${unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
           Back to {unit.name}
         </Link>
       </nav>

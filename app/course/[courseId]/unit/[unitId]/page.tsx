@@ -4,13 +4,14 @@ import { Chapter } from "@/types";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
-export default async function UnitPage({ params }: { params: { courseId: string; unitId: string } }) {
+export default async function UnitPage({ params }: { params: Promise<{ courseId: string; unitId: string }> }) {
+  const { courseId, unitId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/auth/login");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
-    params.courseId,
+    courseId,
     "id, slug, name, emoji, color"
   );
   if (!course) notFound();
@@ -18,7 +19,7 @@ export default async function UnitPage({ params }: { params: { courseId: string;
   const { data: unit } = await supabase
     .from("units")
     .select("id, unit_number, name, course_id")
-    .eq("id", params.unitId)
+    .eq("id", unitId)
     .single();
 
   if (!unit || unit.course_id !== course.id) notFound();
@@ -26,7 +27,7 @@ export default async function UnitPage({ params }: { params: { courseId: string;
   const { data: chapters } = await supabase
     .from("chapters")
     .select("id, unit_id, chapter_number, name, quiz")
-    .eq("unit_id", params.unitId)
+    .eq("unit_id", unitId)
     .order("chapter_number");
 
   const courseHref = getCourseHref(course);
@@ -47,13 +48,13 @@ export default async function UnitPage({ params }: { params: { courseId: string;
           <h1 className="font-display text-3xl font-bold mb-4">{unit.name}</h1>
 
           <div className="flex flex-wrap gap-2">
-            <Link href={`${courseHref}/unit/${params.unitId}/flashcards`} className="px-4 py-2 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#6c63ff]/40 text-sm font-body text-[#e8e8f0] transition-all flex items-center gap-2">
+            <Link href={`${courseHref}/unit/${unitId}/flashcards`} className="px-4 py-2 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#6c63ff]/40 text-sm font-body text-[#e8e8f0] transition-all flex items-center gap-2">
               Flashcards
             </Link>
-            <Link href={`${courseHref}/unit/${params.unitId}/key-concepts`} className="px-4 py-2 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#6c63ff]/40 text-sm font-body text-[#e8e8f0] transition-all flex items-center gap-2">
+            <Link href={`${courseHref}/unit/${unitId}/key-concepts`} className="px-4 py-2 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#6c63ff]/40 text-sm font-body text-[#e8e8f0] transition-all flex items-center gap-2">
               Key Concepts
             </Link>
-            <Link href={`${courseHref}/unit/${params.unitId}/quiz`} className="px-4 py-2 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#6c63ff]/40 text-sm font-body text-[#e8e8f0] transition-all flex items-center gap-2">
+            <Link href={`${courseHref}/unit/${unitId}/quiz`} className="px-4 py-2 rounded-xl bg-[#111118] border border-[#1e1e2e] hover:border-[#6c63ff]/40 text-sm font-body text-[#e8e8f0] transition-all flex items-center gap-2">
               Unit Exam
             </Link>
           </div>
@@ -68,16 +69,16 @@ export default async function UnitPage({ params }: { params: { courseId: string;
               </span>
               <span className="flex-1 font-body text-sm text-[#e8e8f0] font-medium">{chapter.name}</span>
               <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Link href={`${courseHref}/unit/${params.unitId}/chapter/${chapter.id}`} className="px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-xs font-body text-[#e8e8f0] transition-colors">
+                <Link href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}`} className="px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-xs font-body text-[#e8e8f0] transition-colors">
                   Notes
                 </Link>
                 {chapter.quiz && (
-                  <Link href={`${courseHref}/unit/${params.unitId}/chapter/${chapter.id}/quiz`} className="px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-xs font-body text-[#e8e8f0] transition-colors">
+                  <Link href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}/quiz`} className="px-3 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2a2a3a] text-xs font-body text-[#e8e8f0] transition-colors">
                     Quiz
                   </Link>
                 )}
               </div>
-              <Link href={`${courseHref}/unit/${params.unitId}/chapter/${chapter.id}`} className="text-[#2a2a3a] group-hover:text-[#8888aa] transition-colors">
+              <Link href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}`} className="text-[#2a2a3a] group-hover:text-[#8888aa] transition-colors">
                 Go
               </Link>
             </div>
