@@ -30,13 +30,14 @@ export default function SignupPage() {
     setLoading(true);
     setError("");
     document.cookie = `${GUEST_COOKIE_NAME}=; path=/; max-age=0; samesite=lax`;
+    const redirectBase = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
 
     const supabase = createClient();
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        emailRedirectTo: `${redirectBase}/auth/callback?next=/dashboard`,
       },
     });
 
@@ -46,7 +47,19 @@ export default function SignupPage() {
       return;
     }
 
-    router.push(`/auth/confirm?email=${encodeURIComponent(email)}`);
+    if (data.session) {
+      router.replace("/dashboard");
+      router.refresh();
+      return;
+    }
+
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      setError("That email is already registered. Try signing in instead.");
+      setLoading(false);
+      return;
+    }
+
+    router.push(`/auth/confirm?email=${encodeURIComponent(email)}&status=sent`);
     router.refresh();
   }
 

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BookOpenText, Brain, FileSpreadsheet, GraduationCap, Search } from "lucide-react";
 import { Course } from "@/types";
 import { getCourseHref } from "@/lib/course";
-import { getCourseBadge, groupCoursesByCategory } from "@/lib/course-display";
+import { groupCoursesByCategory } from "@/lib/course-display";
 import { readSelectedCourseIds } from "@/lib/course-preferences";
 
 type DashboardClientProps = {
@@ -94,6 +94,7 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
                 href={getCourseHref(course)}
                 className="rounded-full border border-[#2f2f46] bg-[#171723] px-3 py-2 text-sm font-body text-[#f0f0ff] transition-colors hover:border-[#6c63ff]/40"
               >
+                <span aria-hidden="true" className="mr-2">{course.emoji}</span>
                 {course.name}
               </Link>
             )) : (
@@ -121,10 +122,10 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
                 <div className="absolute inset-x-0 top-0 h-1 opacity-80" style={{ background: course.color }} />
                 <div className="flex items-start justify-between gap-3">
                   <div
-                    className="flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-mono font-bold"
-                    style={{ background: `${course.color}22`, color: course.color }}
+                    className="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
+                    style={{ background: `${course.color}22` }}
                   >
-                    {getCourseBadge(course.name)}
+                    <span aria-hidden="true">{course.emoji}</span>
                   </div>
                   <span className="rounded-full border border-[#26263a] px-2.5 py-1 text-[11px] font-body uppercase tracking-[0.18em] text-[#7f7f9f]">
                     Selected
@@ -156,10 +157,10 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
                 >
                   <div className="absolute inset-x-0 top-0 h-1 opacity-70" style={{ background: course.color }} />
                   <div
-                    className="flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-mono font-bold"
-                    style={{ background: `${course.color}22`, color: course.color }}
+                    className="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
+                    style={{ background: `${course.color}22` }}
                   >
-                    {getCourseBadge(course.name)}
+                    <span aria-hidden="true">{course.emoji}</span>
                   </div>
                   <h3 className="mt-5 font-display text-xl font-semibold text-[#f5f5ff]">{course.name}</h3>
                   <p className="mt-2 text-sm font-body leading-6 text-[#8888aa]">

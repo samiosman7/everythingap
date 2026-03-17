@@ -17,12 +17,13 @@ export default function ConfirmEmailClient({ email }: { email?: string }) {
 
     setLoading(true);
     setMessage("");
+    const redirectBase = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
     const supabase = createClient();
     const { error } = await supabase.auth.resend({
       type: "signup",
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        emailRedirectTo: `${redirectBase}/auth/callback?next=/dashboard`,
       },
     });
 
@@ -70,6 +71,12 @@ export default function ConfirmEmailClient({ email }: { email?: string }) {
           <div className="rounded-2xl border border-[#1e1e2e] bg-[#0a0a0f] p-4">
             <p className="font-body font-medium text-sm text-[#e8e8f0] mb-1">3. Need another email?</p>
             <p className="font-body text-sm text-[#8888aa]">Use resend below. If nothing arrives, your Supabase email provider probably still needs setup.</p>
+          </div>
+          <div className="rounded-2xl border border-[#2b243f] bg-[#120f1a] p-4">
+            <p className="font-body font-medium text-sm text-[#f0ebff] mb-1">Still nothing showing up?</p>
+            <p className="font-body text-sm leading-6 text-[#b0a8c9]">
+              Check Supabase Authentication &gt; Email and make sure email confirmations are enabled and an SMTP sender is configured.
+            </p>
           </div>
         </div>
 

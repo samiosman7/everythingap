@@ -18,12 +18,13 @@ export default function GoogleSignInButton({
   async function handleGoogleSignIn() {
     setLoading(true);
     document.cookie = `${GUEST_COOKIE_NAME}=; path=/; max-age=0; samesite=lax`;
+    const redirectBase = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        redirectTo: `${redirectBase}/auth/callback?next=/dashboard`,
       },
     });
 
