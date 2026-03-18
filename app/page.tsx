@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, BookOpenText, BrainCircuit, FileChartColumnIncreasing, GraduationCap, Users2 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import GuestModeButton from "@/components/GuestModeButton";
+import { HeroScrollDemo } from "@/components/ui/hero-scroll-demo";
 import { GUEST_COOKIE_NAME } from "@/lib/auth-constants";
 
 const FEATURE_PILLARS = [
@@ -161,6 +162,19 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="relative border-y border-[#1a1a28] bg-[linear-gradient(180deg,#0b0b11_0%,#10101a_100%)] px-6">
+          <div className="mx-auto max-w-7xl pt-12">
+            <div className="max-w-3xl">
+              <p className="text-xs font-body uppercase tracking-[0.22em] text-[#9d96ff]">Live Preview</p>
+              <h2 className="mt-2 font-display text-4xl font-bold">Get a feel for the product before you jump in.</h2>
+              <p className="mt-4 text-base font-body leading-8 text-[#8f8fac]">
+                This scroll section gives the landing page a stronger product moment and makes the dashboard experience feel more real.
+              </p>
+            </div>
+          </div>
+          <HeroScrollDemo />
         </section>
 
         <section className="mx-auto max-w-7xl px-6 py-12">
