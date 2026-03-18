@@ -2,6 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import QuizPlayer from "@/components/QuizPlayer";
 import FRQViewer from "@/components/FRQViewer";
+import StudySessionTracker from "@/components/StudySessionTracker";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -12,7 +13,7 @@ export default async function UnitQuizPage({
 }) {
   const { courseId, unitId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
-  if (!user && !isGuest) redirect("/auth/login");
+  if (!user && !isGuest) redirect("/sign-in");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
@@ -30,47 +31,58 @@ export default async function UnitQuizPage({
   if (!unit || unit.course_id !== course.id) notFound();
 
   const exam = unit.unit_exam;
+  const multipleChoice = Array.isArray(exam?.multiple_choice) ? exam.multiple_choice : [];
+  const freeResponse = Array.isArray(exam?.free_response) ? exam.free_response : [];
+  const hasExamContent = multipleChoice.length > 0 || freeResponse.length > 0;
+  const courseHref = getCourseHref(course);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
+      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
+        <Link href={`${courseHref}/unit/${unitId}`} className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]">
           Back to {unit.name}
         </Link>
       </nav>
-      <main className="max-w-3xl mx-auto px-6 py-10">
+      <main className="mx-auto max-w-3xl px-6 py-10">
+        <StudySessionTracker
+          courseId={course.id}
+          unitId={String(unit.id)}
+          href={`${courseHref}/unit/${unitId}/quiz`}
+          label={`${course.name} · ${unit.name} unit exam`}
+          kind="unit-exam"
+        />
         <div className="mb-8">
-          <div className="text-[#8888aa] text-xs font-body font-medium uppercase tracking-widest mb-2">Unit Exam</div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold">{unit.name}</h1>
-          {exam && (
-            <p className="text-[#8888aa] font-body text-sm mt-1">
-              {exam.multiple_choice?.length ?? 0} MC · {exam.free_response?.length ?? 0} FRQ
+          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Unit Exam</div>
+          <h1 className="font-display text-2xl font-bold md:text-3xl">{unit.name}</h1>
+          {hasExamContent && (
+            <p className="mt-1 text-sm font-body text-[#8888aa]">
+              {multipleChoice.length} MC · {freeResponse.length} FRQ
             </p>
           )}
         </div>
 
-        {exam ? (
+        {hasExamContent ? (
           <div className="space-y-12">
-            {exam.multiple_choice?.length > 0 && (
+            {multipleChoice.length > 0 && (
               <section>
-                <h2 className="font-display font-bold text-lg mb-6 pb-3 border-b border-[#1e1e2e]">
+                <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
                   Multiple Choice
                 </h2>
-                <QuizPlayer questions={exam.multiple_choice} color={course.color ?? "#6c63ff"} />
+                <QuizPlayer questions={multipleChoice} color={course.color ?? "#6c63ff"} />
               </section>
             )}
-            {exam.free_response?.length > 0 && (
+            {freeResponse.length > 0 && (
               <section>
-                <h2 className="font-display font-bold text-lg mb-6 pb-3 border-b border-[#1e1e2e]">
+                <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
                   Free Response
                 </h2>
-                <FRQViewer questions={exam.free_response} />
+                <FRQViewer questions={freeResponse} />
               </section>
             )}
           </div>
         ) : (
-          <div className="text-center py-16 text-[#8888aa] font-body">
-            <div className="text-3xl mb-3">Soon</div>
+          <div className="py-16 text-center font-body text-[#8888aa]">
+            <div className="mb-3 text-3xl">Soon</div>
             <p>Unit exam is being generated. Check back soon.</p>
           </div>
         )}

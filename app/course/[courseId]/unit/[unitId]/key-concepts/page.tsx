@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { KeyConcept } from "@/types";
+import StudySessionTracker from "@/components/StudySessionTracker";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -16,7 +17,7 @@ export default async function KeyConceptsPage({
 }) {
   const { courseId, unitId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
-  if (!user && !isGuest) redirect("/auth/login");
+  if (!user && !isGuest) redirect("/sign-in");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
@@ -43,6 +44,13 @@ export default async function KeyConceptsPage({
         </Link>
       </nav>
       <main className="max-w-4xl mx-auto px-6 py-10">
+        <StudySessionTracker
+          courseId={course.id}
+          unitId={String(unit.id)}
+          href={`${getCourseHref(course)}/unit/${unitId}/key-concepts`}
+          label={`${course.name} · ${unit.name} key concepts`}
+          kind="key-concepts"
+        />
         <div className="mb-8">
           <div className="text-[#8888aa] text-xs font-body font-medium uppercase tracking-widest mb-2">Key Concepts</div>
           <h1 className="font-display text-2xl md:text-3xl font-bold">{unit.name}</h1>

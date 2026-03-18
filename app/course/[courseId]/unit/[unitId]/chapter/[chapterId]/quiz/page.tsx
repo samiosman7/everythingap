@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import QuizPlayer from "@/components/QuizPlayer";
+import StudySessionTracker from "@/components/StudySessionTracker";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -11,7 +12,7 @@ export default async function ChapterQuizPage({
 }) {
   const { courseId, unitId, chapterId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
-  if (!user && !isGuest) redirect("/auth/login");
+  if (!user && !isGuest) redirect("/sign-in");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
@@ -26,7 +27,9 @@ export default async function ChapterQuizPage({
     .eq("id", chapterId)
     .single();
 
-  if (!chapter || chapter.unit_id !== parseInt(unitId, 10) || !chapter.quiz) notFound();
+  const quizQuestions = Array.isArray(chapter?.quiz) ? chapter.quiz : [];
+
+  if (!chapter || chapter.unit_id !== parseInt(unitId, 10)) notFound();
 
   const { data: unit } = await supabase
     .from("units")
@@ -38,20 +41,26 @@ export default async function ChapterQuizPage({
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${unitId}/chapter/${chapterId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
-          Back to Notes
+      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
+        <Link href={`${getCourseHref(course)}/unit/${unitId}/chapter/${chapterId}`} className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]">
+          Back to notes
         </Link>
       </nav>
-      <main className="max-w-3xl mx-auto px-6 py-10">
+      <main className="mx-auto max-w-3xl px-6 py-10">
+        <StudySessionTracker
+          courseId={course.id}
+          unitId={String(unit.id)}
+          chapterId={String(chapter.id)}
+          href={`${getCourseHref(course)}/unit/${unitId}/chapter/${chapter.id}/quiz`}
+          label={`${course.name} · ${chapter.name} quiz`}
+          kind="chapter-quiz"
+        />
         <div className="mb-8">
-          <div className="text-[#8888aa] text-xs font-body font-medium uppercase tracking-widest mb-2">
-            Chapter Quiz
-          </div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold">{chapter.name}</h1>
-          <p className="text-[#8888aa] font-body text-sm mt-1">{chapter.quiz.length} questions</p>
+          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Chapter Quiz</div>
+          <h1 className="font-display text-2xl font-bold md:text-3xl">{chapter.name}</h1>
+          <p className="mt-1 text-sm font-body text-[#8888aa]">{quizQuestions.length} questions</p>
         </div>
-        <QuizPlayer questions={chapter.quiz} color={course.color ?? "#6c63ff"} />
+        <QuizPlayer questions={quizQuestions} color={course.color ?? "#6c63ff"} />
       </main>
     </div>
   );

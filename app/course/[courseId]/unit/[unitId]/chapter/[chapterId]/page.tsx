@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import NotesRenderer from "@/components/NotesRenderer";
+import StudySessionTracker from "@/components/StudySessionTracker";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -11,7 +12,7 @@ export default async function ChapterPage({
 }) {
   const { courseId, unitId, chapterId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
-  if (!user && !isGuest) redirect("/auth/login");
+  if (!user && !isGuest) redirect("/sign-in");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
@@ -58,6 +59,14 @@ export default async function ChapterPage({
       </nav>
 
       <main className="max-w-3xl mx-auto px-6 py-10">
+        <StudySessionTracker
+          courseId={course.id}
+          unitId={String(unit.id)}
+          chapterId={String(chapter.id)}
+          href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}`}
+          label={`${course.name} · Unit ${unit.unit_number} · Chapter ${chapter.chapter_number}`}
+          kind="chapter"
+        />
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
             <div className="text-[#8888aa] text-xs font-body font-medium uppercase tracking-widest mb-2">

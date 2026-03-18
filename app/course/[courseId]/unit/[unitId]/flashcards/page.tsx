@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import FlashcardDeck from "@/components/FlashcardDeck";
+import StudySessionTracker from "@/components/StudySessionTracker";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -11,7 +12,7 @@ export default async function FlashcardsPage({
 }) {
   const { courseId, unitId } = await params;
   const { supabase, user, isGuest } = await getViewerContext();
-  if (!user && !isGuest) redirect("/auth/login");
+  if (!user && !isGuest) redirect("/sign-in");
 
   const { data: course } = await getCourseByIdentifier(
     supabase,
@@ -41,6 +42,13 @@ export default async function FlashcardsPage({
         </Link>
       </nav>
       <main className="max-w-2xl mx-auto px-6 py-10">
+        <StudySessionTracker
+          courseId={course.id}
+          unitId={String(unit.id)}
+          href={`${getCourseHref(course)}/unit/${unitId}/flashcards`}
+          label={`${course.name} · ${unit.name} flashcards`}
+          kind="flashcards"
+        />
         <div className="mb-8 text-center">
           <div className="text-[#8888aa] text-xs font-body font-medium uppercase tracking-widest mb-2">Flashcards</div>
           <h1 className="font-display text-2xl md:text-3xl font-bold">{unit.name}</h1>
