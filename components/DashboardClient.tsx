@@ -38,17 +38,17 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
   const groupedCourses = groupCoursesByCategory(remainingCourses);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 sm:space-y-10">
       <section className="grid gap-4 lg:grid-cols-[1.6fr,1fr]">
-        <div className="rounded-[28px] border border-[#1e1e2e] bg-[radial-gradient(circle_at_top_left,_rgba(108,99,255,0.22),_transparent_45%),linear-gradient(180deg,#111118_0%,#0e0e15_100%)] p-7">
-          <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">Study HQ</p>
-          <h2 className="mt-3 font-display text-3xl font-bold">Everything you need for every AP class is here.</h2>
+        <div className="rounded-[24px] border border-[#1e1e2e] bg-[radial-gradient(circle_at_top_left,_rgba(108,99,255,0.22),_transparent_45%),linear-gradient(180deg,#111118_0%,#0e0e15_100%)] p-5 sm:rounded-[28px] sm:p-7">
+          <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-[#9d96ff] sm:tracking-[0.24em]">Study HQ</p>
+          <h2 className="mt-3 font-display text-2xl font-bold sm:text-3xl">Everything you need for every AP class is here.</h2>
           <p className="mt-3 max-w-2xl text-sm font-body leading-7 text-[#a9a9c7]">
             Start with the classes you&apos;re actually taking, then jump into notes, flashcards, key concepts,
             chapter quizzes, unit exams, and full mock exams without hunting through the app.
           </p>
 
-          <div className="mt-6 grid gap-3 md:grid-cols-3">
+          <div className="mt-5 grid gap-3 sm:mt-6 md:grid-cols-3">
             {TOOL_CARDS.map(card => {
               const Icon = card.icon;
               return (
@@ -62,29 +62,29 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-7">
+        <div className="rounded-[24px] border border-[#1e1e2e] bg-[#111118] p-5 sm:rounded-[28px] sm:p-7">
           <div className="flex items-center gap-3 text-[#9d96ff]">
             <GraduationCap className="h-5 w-5" />
-            <p className="text-xs font-body font-medium uppercase tracking-[0.24em]">My Plan</p>
+            <p className="text-xs font-body font-medium uppercase tracking-[0.2em] sm:tracking-[0.24em]">My Plan</p>
           </div>
-          <h3 className="mt-3 font-display text-2xl font-bold">Recommended first stop</h3>
+          <h3 className="mt-3 font-display text-xl font-bold sm:text-2xl">Recommended first stop</h3>
           <p className="mt-3 text-sm font-body leading-7 text-[#8d8da8]">
             Pick a course below and you&apos;ll see its notes, flashcards, quizzes, key concepts, and exams in one place.
           </p>
 
-          <div className="mt-6 rounded-2xl border border-dashed border-[#2a2a3a] bg-[#0a0a0f] p-4">
+          <div className="mt-5 rounded-2xl border border-dashed border-[#2a2a3a] bg-[#0a0a0f] p-4 sm:mt-6">
             <div className="flex items-center gap-2 text-[#8888aa]">
-              <Search className="h-4 w-4" />
+              <Search className="h-4 w-4 shrink-0" />
               <input
                 value={query}
                 onChange={event => setQuery(event.target.value)}
                 placeholder="Search AP Biology, AP Calculus..."
-                className="w-full bg-transparent text-sm font-body text-[#e8e8f0] outline-none placeholder:text-[#494965]"
+                className="w-full min-w-0 bg-transparent text-sm font-body text-[#e8e8f0] outline-none placeholder:text-[#494965]"
               />
             </div>
           </div>
 
-          <p className="mt-4 text-xs font-body uppercase tracking-[0.22em] text-[#4f4f68]">
+          <p className="mt-4 text-xs font-body uppercase tracking-[0.2em] text-[#4f4f68] sm:tracking-[0.22em]">
             {selectedCourses.length ? "Your selected AP classes" : "No selected classes yet"}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -108,8 +108,8 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
         <section>
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">Selected Courses</p>
-              <h2 className="mt-2 font-display text-2xl font-bold">Start with your AP schedule</h2>
+              <p className="text-xs font-body font-medium uppercase tracking-[0.2em] text-[#9d96ff] sm:tracking-[0.24em]">Selected Courses</p>
+              <h2 className="mt-2 font-display text-xl font-bold sm:text-2xl">Start with your AP schedule</h2>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -117,7 +117,7 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
               <Link
                 key={course.id}
                 href={getCourseHref(course)}
-                className="group relative overflow-hidden rounded-[24px] border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:-translate-y-1 hover:border-[#6c63ff]/35"
+                className="group relative overflow-hidden rounded-[22px] border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:-translate-y-1 hover:border-[#6c63ff]/35 sm:rounded-[24px]"
               >
                 <div className="absolute inset-x-0 top-0 h-1 opacity-80" style={{ background: course.color }} />
                 <div className="flex items-start justify-between gap-3">
@@ -131,7 +131,7 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
                     Selected
                   </span>
                 </div>
-                <h3 className="mt-5 font-display text-xl font-semibold text-[#f5f5ff]">{course.name}</h3>
+                <h3 className="mt-5 font-display text-lg font-semibold text-[#f5f5ff] sm:text-xl">{course.name}</h3>
                 <p className="mt-2 text-sm font-body leading-6 text-[#8888aa]">
                   Open the course hub for notes, flashcards, key concepts, quizzes, and full AP exam prep.
                 </p>
@@ -145,15 +145,15 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
         {Object.entries(groupedCourses).map(([category, items]) => (
           <div key={category}>
             <div className="mb-4">
-              <p className="text-xs font-body uppercase tracking-[0.24em] text-[#4f4f68]">{category}</p>
-              <h2 className="mt-1 font-display text-2xl font-bold">{category}</h2>
+              <p className="text-xs font-body uppercase tracking-[0.2em] text-[#4f4f68] sm:tracking-[0.24em]">{category}</p>
+              <h2 className="mt-1 font-display text-xl font-bold sm:text-2xl">{category}</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {items.map(course => (
                 <Link
                   key={course.id}
                   href={getCourseHref(course)}
-                  className="group relative overflow-hidden rounded-[24px] border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:-translate-y-1 hover:border-[#6c63ff]/25"
+                  className="group relative overflow-hidden rounded-[22px] border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:-translate-y-1 hover:border-[#6c63ff]/25 sm:rounded-[24px]"
                 >
                   <div className="absolute inset-x-0 top-0 h-1 opacity-70" style={{ background: course.color }} />
                   <div
@@ -162,7 +162,7 @@ export default function DashboardClient({ courses }: DashboardClientProps) {
                   >
                     <span aria-hidden="true">{course.emoji}</span>
                   </div>
-                  <h3 className="mt-5 font-display text-xl font-semibold text-[#f5f5ff]">{course.name}</h3>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-[#f5f5ff] sm:text-xl">{course.name}</h3>
                   <p className="mt-2 text-sm font-body leading-6 text-[#8888aa]">
                     Course hub with notes, flashcards, key concepts, quizzes, and AP-style exams.
                   </p>
