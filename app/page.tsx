@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import {
   ArrowRight,
   BookOpenText,
@@ -11,7 +12,6 @@ import {
   Sparkles,
   Target,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase";
 import GuestModeButton from "@/components/GuestModeButton";
 import { HeroScrollDemo } from "@/components/ui/hero-scroll-demo";
 import { GUEST_COOKIE_NAME } from "@/lib/auth-constants";
@@ -47,12 +47,10 @@ const MATH_PREVIEW = `- $\\lim_{x \\to 3} \\frac{x^2 - 9}{x - 3} = 6$
 - $P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}$`;
 
 export default function HomePage() {
-  const [user, setUser] = useState<any>(null);
+  const { isSignedIn } = useUser();
   const [isGuest, setIsGuest] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
     setIsGuest(document.cookie.includes(`${GUEST_COOKIE_NAME}=1`));
   }, []);
 
@@ -67,7 +65,7 @@ export default function HomePage() {
           </span>
 
           <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end sm:gap-3">
-            {user || isGuest ? (
+            {isSignedIn || isGuest ? (
               <Link
                 href="/dashboard"
                 className="flex-1 rounded-2xl bg-[#8b80ff] px-4 py-2.5 text-center text-sm font-semibold text-white transition-all hover:bg-[#9a90ff] sm:flex-none"
@@ -77,7 +75,7 @@ export default function HomePage() {
             ) : (
               <>
                 <Link
-                  href="/auth/login"
+                  href="/sign-in"
                   className="rounded-2xl px-3 py-2 text-sm font-medium text-[#bcb7d9] transition-colors hover:text-white sm:px-4"
                 >
                   Sign in

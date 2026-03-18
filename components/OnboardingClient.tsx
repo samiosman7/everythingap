@@ -16,7 +16,7 @@ type OnboardingClientProps = {
 };
 
 export default function OnboardingClient({
-  continueHref = "/auth/signup",
+  continueHref = "/sign-up",
   allowGuest = true,
 }: OnboardingClientProps) {
   const router = useRouter();

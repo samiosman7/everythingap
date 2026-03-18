@@ -18,21 +18,31 @@ export default function ConfirmEmailClient({ email }: { email?: string }) {
     setLoading(true);
     setMessage("");
     const redirectBase = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
-    const supabase = createClient();
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: {
-        emailRedirectTo: `${redirectBase}/auth/callback?next=/dashboard`,
-      },
-    });
 
-    setLoading(false);
-    setMessage(
-      error
-        ? `We couldn't resend it yet: ${error.message}`
-        : "Fresh confirmation link sent. Check inbox and spam."
-    );
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+        options: {
+          emailRedirectTo: `${redirectBase}/auth/callback?next=/dashboard`,
+        },
+      });
+
+      setLoading(false);
+      setMessage(
+        error
+          ? `We couldn't resend it yet: ${error.message}`
+          : "Fresh confirmation link sent. Check inbox and spam."
+      );
+    } catch (caughtError) {
+      setLoading(false);
+      setMessage(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "We couldn't resend the confirmation email right now."
+      );
+    }
   }
 
   return (

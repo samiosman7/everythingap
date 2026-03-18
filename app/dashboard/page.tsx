@@ -1,18 +1,19 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { currentUser } from "@clerk/nextjs/server";
 import { Course } from "@/types";
 import LogoutButton from "@/components/LogoutButton";
 import { getViewerContext } from "@/lib/viewer";
 import DashboardClient from "@/components/DashboardClient";
 
 export default async function DashboardPage() {
-  const { supabase, user, isGuest } = await getViewerContext();
-  if (!user && !isGuest) redirect("/auth/login");
+  const { supabase, userId, isGuest } = await getViewerContext();
+  if (!userId && !isGuest) redirect("/sign-in");
 
-  const { data: courses } = await supabase
-    .from("courses")
-    .select("id, slug, name, emoji, color, accent")
-    .order("name");
+  const [clerkUser, { data: courses }] = await Promise.all([
+    isGuest ? Promise.resolve(null) : currentUser(),
+    supabase.from("courses").select("id, slug, name, emoji, color, accent").order("name"),
+  ]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
@@ -22,7 +23,7 @@ export default async function DashboardPage() {
         </Link>
         <div className="flex items-center gap-4">
           <span className="text-[#8888aa] text-sm font-body hidden sm:block">
-            {isGuest ? "Guest mode" : user?.email}
+            {isGuest ? "Guest mode" : clerkUser?.primaryEmailAddress?.emailAddress ?? "Signed in"}
           </span>
           <LogoutButton isGuest={isGuest} />
         </div>

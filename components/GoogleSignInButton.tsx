@@ -20,17 +20,24 @@ export default function GoogleSignInButton({
     document.cookie = `${GUEST_COOKIE_NAME}=; path=/; max-age=0; samesite=lax`;
     const redirectBase = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${redirectBase}/auth/callback?next=/dashboard`,
-      },
-    });
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${redirectBase}/auth/callback?next=/dashboard`,
+        },
+      });
 
-    if (error) {
+      if (error) {
+        setLoading(false);
+        window.location.href = `/auth/login?error=${encodeURIComponent(error.message)}`;
+      }
+    } catch (caughtError) {
+      const message =
+        caughtError instanceof Error ? caughtError.message : "We couldn't start Google sign-in right now.";
       setLoading(false);
-      window.location.href = `/auth/login?error=${encodeURIComponent(error.message)}`;
+      window.location.href = `/auth/login?error=${encodeURIComponent(message)}`;
     }
   }
 

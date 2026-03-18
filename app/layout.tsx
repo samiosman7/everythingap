@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Everything AP — The Complete AP Study Platform",
+  title: "Everything AP - The Complete AP Study Platform",
   description: "Notes, flashcards, practice questions, and mock exams for every AP class.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="noise">{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className="noise">{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }
