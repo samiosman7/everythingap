@@ -22,62 +22,110 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: #3a3a4a; }
 
 /* Prose styles for notes */
+.notes-content {
+  font-size: 1rem;
+}
 .notes-content h1 {
   font-family: 'Syne', sans-serif;
-  font-size: 1.75rem;
+  font-size: 1.9rem;
   font-weight: 700;
   color: #e8e8f0;
   margin: 2rem 0 0.75rem;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 .notes-content h2 {
   font-family: 'Syne', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #9d96ff;
-  margin: 1.75rem 0 0.5rem;
-  padding-bottom: 0.4rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #b9b2ff;
+  margin: 1.9rem 0 0.7rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid #1e1e2e;
 }
 .notes-content h3 {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.05rem;
-  font-weight: 600;
-  color: #e8e8f0;
-  margin: 1.25rem 0 0.4rem;
+  font-weight: 700;
+  color: #f4f4fb;
+  margin: 1.3rem 0 0.45rem;
 }
 .notes-content p {
-  line-height: 1.75;
-  color: #c0c0d8;
-  margin-bottom: 0.9rem;
+  line-height: 1.8;
+  color: #c9c9de;
+  margin-bottom: 0.95rem;
 }
 .notes-content ul, .notes-content ol {
   padding-left: 1.5rem;
   margin-bottom: 1rem;
 }
 .notes-content li {
-  color: #c0c0d8;
-  line-height: 1.7;
-  margin-bottom: 0.3rem;
+  color: #c9c9de;
+  line-height: 1.75;
+  margin-bottom: 0.35rem;
 }
-.notes-content strong { color: #e8e8f0; font-weight: 600; }
-.notes-content em { color: #9d96ff; font-style: italic; }
+.notes-content strong { color: #f7f7ff; font-weight: 700; }
+.notes-content em { color: #c1bbff; font-style: italic; }
 .notes-content code {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.85em;
   background: #1e1e2e;
   padding: 0.15em 0.4em;
   border-radius: 4px;
-  color: #9d96ff;
+  color: #bdb8ff;
+}
+.notes-content pre {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid #1e1e2e;
+  background: #111118;
+  padding: 1rem;
+  margin: 1rem 0 1.25rem;
+}
+.notes-content pre code {
+  background: transparent;
+  padding: 0;
+  color: #dedbff;
+}
+.notes-content blockquote {
+  margin: 1.25rem 0;
+  border-left: 3px solid #8b80ff;
+  padding-left: 1rem;
+  color: #d4d1eb;
+}
+.notes-content hr {
+  border: 0;
+  border-top: 1px solid #1e1e2e;
+  margin: 1.5rem 0;
+}
+.notes-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.4rem;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid #1e1e2e;
+}
+.notes-content th,
+.notes-content td {
+  border: 1px solid #1e1e2e;
+  padding: 0.75rem;
+  text-align: left;
+}
+.notes-content th {
+  background: #111118;
+  color: #f4f3ff;
+}
+.notes-content td {
+  color: #cbc8de;
 }
 .notes-content .katex {
-  font-size: 1.05em;
-  color: #f3f3fb;
+  font-size: 1.08em;
+  color: #f7f3ff;
 }
 .notes-content .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 0.75rem 0;
+  padding: 0.85rem 0;
   margin: 1rem 0;
 }
 .notes-content .katex-display::-webkit-scrollbar {
