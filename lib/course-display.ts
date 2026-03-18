@@ -1,11 +1,11 @@
 import { Course } from "@/types";
 
 const CATEGORY_RULES = [
-  { label: "Math & Computing", matches: ["Calculus", "Statistics", "Computer Science"] },
+  { label: "Math & Computing", matches: ["Calculus", "Precalculus", "Statistics", "Computer Science"] },
   { label: "Sciences", matches: ["Biology", "Chemistry", "Physics", "Environmental"] },
   { label: "History & Social Science", matches: ["History", "Government", "Politics", "Psychology", "Economics", "Human Geography", "African American Studies"] },
-  { label: "English & Languages", matches: ["English", "Spanish", "French", "Latin"] },
-  { label: "Arts & Music", matches: ["Art", "Drawing", "Music"] },
+  { label: "English & Languages", matches: ["English", "Spanish", "French", "Latin", "Chinese", "German", "Italian", "Japanese"] },
+  { label: "Arts & Music", matches: ["Art", "Drawing", "Music", "3-D"] },
   { label: "Research & Seminar", matches: ["Seminar", "Research"] },
 ];
 

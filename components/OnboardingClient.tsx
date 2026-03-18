@@ -7,7 +7,7 @@ import { ArrowRight, Check, Sparkles, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { Course } from "@/types";
 import GuestModeButton from "@/components/GuestModeButton";
-import { getCourseBadge, groupCoursesByCategory } from "@/lib/course-display";
+import { groupCoursesByCategory } from "@/lib/course-display";
 import { saveSelectedCourseIds } from "@/lib/course-preferences";
 
 type OnboardingClientProps = {
@@ -140,10 +140,10 @@ export default function OnboardingClient({
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div
-                              className="flex h-11 w-11 items-center justify-center rounded-2xl text-sm font-mono font-bold"
-                              style={{ background: `${course.color}22`, color: course.color }}
+                              className="flex h-11 w-11 items-center justify-center rounded-2xl text-2xl"
+                              style={{ background: `${course.color}22` }}
                             >
-                              {getCourseBadge(course.name)}
+                              <span aria-hidden="true">{course.emoji}</span>
                             </div>
                             {active && (
                               <span className="rounded-full border border-[#6c63ff]/30 bg-[#6c63ff]/12 px-2 py-1 text-[11px] font-body uppercase tracking-[0.18em] text-[#c9c6ff]">
