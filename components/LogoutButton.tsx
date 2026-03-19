@@ -2,8 +2,9 @@
 import { useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { GUEST_COOKIE_NAME } from "@/lib/auth-constants";
+import { cn } from "@/lib/utils";
 
-export default function LogoutButton({ isGuest = false }: { isGuest?: boolean }) {
+export default function LogoutButton({ isGuest = false, className }: { isGuest?: boolean; className?: string }) {
   const router = useRouter();
   const { signOut } = useClerk();
 
@@ -20,7 +21,10 @@ export default function LogoutButton({ isGuest = false }: { isGuest?: boolean })
   return (
     <button
       onClick={handleLogout}
-      className="px-3 py-1.5 text-sm font-body text-[#8888aa] hover:text-[#e8e8f0] border border-[#1e1e2e] hover:border-[#2a2a3a] rounded-lg transition-colors"
+      className={cn(
+        "rounded-lg border border-[#1e1e2e] px-3 py-1.5 text-sm font-body text-[#8888aa] transition-colors hover:border-[#2a2a3a] hover:text-[#e8e8f0]",
+        className
+      )}
     >
       {isGuest ? "Exit guest mode" : "Sign out"}
     </button>
