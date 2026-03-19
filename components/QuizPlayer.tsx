@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import { QuizQuestion } from "@/types";
 
@@ -9,27 +9,74 @@ interface Props {
   color?: string;
 }
 
+type SafeQuestion = {
+  question: string;
+  choices: string[];
+  answerIndex: number;
+  explanation: string;
+};
+
+function normalizeQuestions(questions: QuizQuestion[] | unknown): SafeQuestion[] {
+  if (!Array.isArray(questions)) return [];
+
+  return questions
+    .map((item): SafeQuestion | null => {
+      if (!item || typeof item !== "object") return null;
+
+      const rawQuestion = "question" in item ? item.question : "";
+      const rawChoices = "choices" in item ? item.choices : [];
+      const rawAnswerIndex = "answer_index" in item ? item.answer_index : -1;
+      const rawExplanation = "explanation" in item ? item.explanation : "";
+
+      if (typeof rawQuestion !== "string" || !Array.isArray(rawChoices)) return null;
+
+      const choices = rawChoices.filter((choice): choice is string => typeof choice === "string");
+      if (choices.length < 2) return null;
+
+      const answerIndex =
+        typeof rawAnswerIndex === "number" && rawAnswerIndex >= 0 && rawAnswerIndex < choices.length
+          ? rawAnswerIndex
+          : 0;
+
+      return {
+        question: rawQuestion,
+        choices,
+        answerIndex,
+        explanation: typeof rawExplanation === "string" ? rawExplanation : "",
+      };
+    })
+    .filter((item): item is SafeQuestion => item !== null);
+}
+
 export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
-  const safeQuestions = Array.isArray(questions) ? questions : [];
+  const safeQuestions = useMemo(() => normalizeQuestions(questions), [questions]);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(safeQuestions.length).fill(null));
   const [finished, setFinished] = useState(false);
 
+  useEffect(() => {
+    setAnswers(Array(safeQuestions.length).fill(null));
+    setCurrent(0);
+    setSelected(null);
+    setRevealed(false);
+    setFinished(false);
+  }, [safeQuestions.length]);
+
   if (safeQuestions.length === 0) {
     return (
       <div className="rounded-2xl border border-[#1e1e2e] bg-[#111118] px-6 py-10 text-center">
         <div className="mb-3 text-3xl">Soon</div>
         <p className="text-sm font-body text-[#8888aa]">
-          This quiz does not have questions yet. Check back after the content finishes generating.
+          This quiz does not have valid question data yet. Check back after the content finishes generating.
         </p>
       </div>
     );
   }
 
-  const q = safeQuestions[current];
-  const score = answers.filter((answer, index) => answer === safeQuestions[index].answer_index).length;
+  const q = safeQuestions[Math.min(current, safeQuestions.length - 1)];
+  const score = answers.filter((answer, index) => answer === safeQuestions[index]?.answerIndex).length;
 
   function handleSelect(index: number) {
     if (revealed) return;
@@ -64,11 +111,11 @@ export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
 
   if (finished) {
     const pct = Math.round((score / safeQuestions.length) * 100);
-    const summaryEmoji = pct >= 80 ? "A+" : pct >= 60 ? "Keep going" : "Review";
+    const summaryLabel = pct >= 80 ? "A+" : pct >= 60 ? "Keep going" : "Review";
 
     return (
       <div className="animate-fade-up py-10 text-center">
-        <div className="mb-4 text-3xl font-display font-bold">{summaryEmoji}</div>
+        <div className="mb-4 text-3xl font-display font-bold">{summaryLabel}</div>
         <h2 className="mb-2 font-display text-3xl font-bold">
           {score}/{safeQuestions.length}
         </h2>
@@ -83,7 +130,7 @@ export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
 
         <div className="mx-auto mb-8 max-w-lg space-y-2 text-left">
           {safeQuestions.map((question, index) => {
-            const correct = answers[index] === question.answer_index;
+            const correct = answers[index] === question.answerIndex;
             return (
               <div
                 key={index}
@@ -96,7 +143,7 @@ export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
                 <div>
                   <p className="mb-1 text-[#e8e8f0]">{question.question}</p>
                   {!correct && (
-                    <p className="text-[#8888aa]">Correct: {question.choices[question.answer_index]}</p>
+                    <p className="text-[#8888aa]">Correct: {question.choices[question.answerIndex]}</p>
                   )}
                 </div>
               </div>
@@ -135,7 +182,7 @@ export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
 
       <div className="mb-6 space-y-2">
         {q.choices.map((choice, index) => {
-          const isCorrect = index === q.answer_index;
+          const isCorrect = index === q.answerIndex;
           const isSelected = index === selected;
 
           return (
@@ -151,14 +198,14 @@ export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
                 revealed && !isCorrect && !isSelected && "border-[#1e1e2e] bg-[#111118] text-[#8888aa]"
               )}
             >
-              <span className="mr-3 font-mono text-xs opacity-60">{["A", "B", "C", "D"][index]}.</span>
+              <span className="mr-3 font-mono text-xs opacity-60">{["A", "B", "C", "D"][index] ?? "?"}.</span>
               {choice.replace(/^[A-D]\)\s*/, "")}
             </button>
           );
         })}
       </div>
 
-      {revealed && (
+      {revealed && q.explanation && (
         <div className="mb-6 rounded-xl border border-[#1e1e2e] bg-[#111118] p-4 animate-fade-in">
           <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[#8888aa]">Explanation</p>
           <p className="text-sm leading-relaxed text-[#c0c0d8]">{q.explanation}</p>
