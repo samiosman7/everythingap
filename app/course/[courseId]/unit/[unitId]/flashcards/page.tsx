@@ -34,31 +34,40 @@ export default async function FlashcardsPage({
     .select("id, unit_id, question, answer")
     .eq("unit_id", unitId);
 
+  const courseHref = getCourseHref(course);
+
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
+      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
+        <Link
+          href={`${courseHref}/unit/${unitId}`}
+          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
+        >
           Back to {unit.name}
         </Link>
       </nav>
-      <main className="max-w-2xl mx-auto px-6 py-10">
+      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
-          href={`${getCourseHref(course)}/unit/${unitId}/flashcards`}
+          href={`${courseHref}/unit/${unitId}/flashcards`}
           label={`${course.name} · ${unit.name} flashcards`}
           kind="flashcards"
         />
-        <div className="mb-8 text-center">
-          <div className="text-[#8888aa] text-xs font-body font-medium uppercase tracking-widest mb-2">Flashcards</div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold">{unit.name}</h1>
-          <p className="text-[#8888aa] font-body text-sm mt-1">{flashcards?.length ?? 0} cards</p>
+
+        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 text-center md:p-8">
+          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Flashcards</div>
+          <h1 className="font-display text-2xl font-bold md:text-4xl">{unit.name}</h1>
+          <p className="mt-2 text-sm font-body text-[#8888aa]">{flashcards?.length ?? 0} cards</p>
         </div>
+
         {flashcards?.length ? (
-          <FlashcardDeck cards={flashcards} color={course.color ?? "#6c63ff"} />
+          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+            <FlashcardDeck cards={flashcards} color={course.color ?? "#6c63ff"} />
+          </div>
         ) : (
-          <div className="text-center py-16 text-[#8888aa] font-body">
-            <div className="text-3xl mb-3">Soon</div>
+          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
+            <div className="mb-3 text-3xl">Soon</div>
             <p>Flashcards are being generated. Check back soon.</p>
           </div>
         )}

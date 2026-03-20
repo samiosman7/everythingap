@@ -39,28 +39,37 @@ export default async function ChapterQuizPage({
 
   if (!unit || unit.course_id !== course.id) notFound();
 
+  const courseHref = getCourseHref(course);
+
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
       <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${unitId}/chapter/${chapterId}`} className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]">
+        <Link
+          href={`${courseHref}/unit/${unitId}/chapter/${chapterId}`}
+          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
+        >
           Back to notes
         </Link>
       </nav>
-      <main className="mx-auto max-w-3xl px-6 py-10">
+      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
           chapterId={String(chapter.id)}
-          href={`${getCourseHref(course)}/unit/${unitId}/chapter/${chapter.id}/quiz`}
+          href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}/quiz`}
           label={`${course.name} · ${chapter.name} quiz`}
           kind="chapter-quiz"
         />
-        <div className="mb-8">
+
+        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
           <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Chapter Quiz</div>
-          <h1 className="font-display text-2xl font-bold md:text-3xl">{chapter.name}</h1>
-          <p className="mt-1 text-sm font-body text-[#8888aa]">{quizQuestions.length} questions</p>
+          <h1 className="font-display text-2xl font-bold md:text-4xl">{chapter.name}</h1>
+          <p className="mt-2 text-sm font-body text-[#8888aa]">{quizQuestions.length} questions</p>
         </div>
-        <QuizPlayer questions={quizQuestions} color={course.color ?? "#6c63ff"} />
+
+        <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+          <QuizPlayer questions={quizQuestions} color={course.color ?? "#6c63ff"} />
+        </div>
       </main>
     </div>
   );

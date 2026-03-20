@@ -6,8 +6,13 @@ import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  vocabulary: "#6c63ff", formula: "#0891b2", person: "#be185d",
-  event: "#dc2626", process: "#16a34a", theory: "#b45309", law: "#7c3aed",
+  vocabulary: "#6c63ff",
+  formula: "#0891b2",
+  person: "#be185d",
+  event: "#dc2626",
+  process: "#16a34a",
+  theory: "#b45309",
+  law: "#7c3aed",
 };
 
 export default async function KeyConceptsPage({
@@ -35,47 +40,52 @@ export default async function KeyConceptsPage({
   if (!unit || unit.course_id !== course.id) notFound();
 
   const concepts: KeyConcept[] = unit.key_concepts ?? [];
+  const courseHref = getCourseHref(course);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 px-6 py-4 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 backdrop-blur-md">
-        <Link href={`${getCourseHref(course)}/unit/${unitId}`} className="text-[#8888aa] hover:text-[#e8e8f0] text-sm font-body transition-colors">
+      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
+        <Link
+          href={`${courseHref}/unit/${unitId}`}
+          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
+        >
           Back to {unit.name}
         </Link>
       </nav>
-      <main className="max-w-4xl mx-auto px-6 py-10">
+      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
-          href={`${getCourseHref(course)}/unit/${unitId}/key-concepts`}
+          href={`${courseHref}/unit/${unitId}/key-concepts`}
           label={`${course.name} · ${unit.name} key concepts`}
           kind="key-concepts"
         />
-        <div className="mb-8">
-          <div className="text-[#8888aa] text-xs font-body font-medium uppercase tracking-widest mb-2">Key Concepts</div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold">{unit.name}</h1>
-          <p className="text-[#8888aa] font-body text-sm mt-1">{concepts.length} terms</p>
+
+        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Key Concepts</div>
+          <h1 className="font-display text-2xl font-bold md:text-4xl">{unit.name}</h1>
+          <p className="mt-2 text-sm font-body text-[#8888aa]">{concepts.length} terms</p>
         </div>
 
         {concepts.length ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
             {concepts.map((c, i) => (
-              <div key={i} className="p-5 rounded-2xl bg-[#111118] border border-[#1e1e2e] hover:border-[#2a2a3a] transition-all">
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="font-display font-semibold text-sm text-[#e8e8f0]">{c.term}</h3>
+              <div key={i} className="rounded-2xl border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:border-[#2a2a3a]">
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <h3 className="font-display text-sm font-semibold text-[#e8e8f0]">{c.term}</h3>
                   <span
-                    className="flex-shrink-0 text-xs font-body font-medium px-2 py-0.5 rounded-full"
+                    className="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-body font-medium"
                     style={{
                       background: `${CATEGORY_COLORS[c.category] ?? "#6c63ff"}20`,
-                      color: CATEGORY_COLORS[c.category] ?? "#6c63ff"
+                      color: CATEGORY_COLORS[c.category] ?? "#6c63ff",
                     }}
                   >
                     {c.category}
                   </span>
                 </div>
-                <p className="text-[#8888aa] text-xs font-body leading-relaxed mb-2">{c.definition}</p>
+                <p className="mb-2 text-xs font-body leading-relaxed text-[#8888aa]">{c.definition}</p>
                 {c.example && (
-                  <p className="text-xs font-body text-[#6c6c8a] italic border-t border-[#1e1e2e] pt-2 mt-2">
+                  <p className="mt-2 border-t border-[#1e1e2e] pt-2 text-xs font-body italic text-[#6c6c8a]">
                     Example: {c.example}
                   </p>
                 )}
@@ -83,8 +93,8 @@ export default async function KeyConceptsPage({
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 text-[#8888aa] font-body">
-            <div className="text-3xl mb-3">Soon</div>
+          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
+            <div className="mb-3 text-3xl">Soon</div>
             <p>Key concepts are being generated. Check back soon.</p>
           </div>
         )}

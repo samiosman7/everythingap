@@ -32,24 +32,27 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
           Back to {course.name}
         </Link>
       </nav>
-      <main className="mx-auto max-w-3xl px-6 py-10">
+      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
         <StudySessionTracker
           courseId={course.id}
           href={`${courseHref}/exam`}
           label={`${course.name} · full AP mock exam`}
           kind="full-exam"
         />
-        <div className="mb-8">
-          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Full AP Mock Exam</div>
-          <h1 className="font-display text-2xl font-bold md:text-3xl">{course.name}</h1>
+
+        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">
+            Full AP Mock Exam
+          </div>
+          <h1 className="font-display text-2xl font-bold md:text-4xl">{course.name}</h1>
           {exam?.exam_info && hasExamContent && (
-            <div className="mt-3 flex flex-wrap gap-3">
+            <div className="mt-4 flex flex-wrap gap-3">
               {[
                 { label: "Total Time", val: `${exam.exam_info.total_time_minutes} min` },
                 { label: "MC Questions", val: multipleChoice.length },
                 { label: "FRQs", val: freeResponse.length },
               ].map(item => (
-                <div key={item.label} className="rounded-lg border border-[#1e1e2e] bg-[#111118] px-3 py-1.5 text-xs font-body">
+                <div key={item.label} className="rounded-lg border border-[#1e1e2e] bg-[#0c0c12] px-3 py-1.5 text-xs font-body">
                   <span className="text-[#8888aa]">{item.label}: </span>
                   <span className="font-medium text-[#e8e8f0]">{item.val}</span>
                 </div>
@@ -59,9 +62,9 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
         </div>
 
         {hasExamContent ? (
-          <div className="space-y-12">
+          <div className="space-y-10">
             {multipleChoice.length > 0 && (
-              <section>
+              <section className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
                 <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
                   Section I - Multiple Choice
                 </h2>
@@ -69,7 +72,7 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
               </section>
             )}
             {freeResponse.length > 0 && (
-              <section>
+              <section className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
                 <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
                   Section II - Free Response
                 </h2>
@@ -78,7 +81,7 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
             )}
           </div>
         ) : (
-          <div className="py-16 text-center font-body text-[#8888aa]">
+          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
             <div className="mb-3 text-3xl">Soon</div>
             <p>Full exam is being generated. Check back soon.</p>
           </div>
