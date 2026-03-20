@@ -58,6 +58,22 @@ export interface FRQ {
   sample_response: string;
 }
 
+export interface FRQRubricBreakdownItem {
+  criterion: string;
+  earned: boolean;
+  reason: string;
+}
+
+export interface FRQGradeResult {
+  score: number;
+  max_score: number;
+  verdict: string;
+  strengths: string[];
+  misses: string[];
+  rubric_breakdown: FRQRubricBreakdownItem[];
+  revision_advice: string;
+}
+
 export interface FullExam {
   exam_info: {
     total_time_minutes: number;

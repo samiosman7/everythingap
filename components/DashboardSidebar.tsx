@@ -30,18 +30,11 @@ type DashboardSidebarProps = {
 
 function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link
-      href="/dashboard"
-      className="relative z-20 flex items-center gap-3 py-1 text-sm text-white"
-    >
+    <Link href="/dashboard" className="relative z-20 flex items-center gap-3 py-1 text-sm text-white">
       <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-2xl bg-[#8b80ff] font-display text-sm font-bold text-white">
         AP
       </div>
-      {!compact && (
-        <span className="font-display text-base font-semibold whitespace-pre">
-          EverythingAP
-        </span>
-      )}
+      {!compact && <span className="whitespace-pre font-display text-base font-semibold">EverythingAP</span>}
     </Link>
   );
 }
@@ -91,7 +84,7 @@ export default function DashboardSidebar({
 
   return (
     <Sidebar open={open} setOpen={setOpen}>
-      <SidebarBody className="justify-between gap-8">
+      <SidebarBody className="justify-between gap-8 border-r border-white/8 bg-[#0b0b12]">
         <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
           {open ? <Logo /> : <Logo compact />}
 
@@ -128,7 +121,7 @@ export default function DashboardSidebar({
               ))}
               {!selectedCourses.length && open && (
                 <div className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-xs leading-5 text-[#8985a2]">
-                  Choose your AP classes in onboarding and they’ll stay pinned here.
+                  Choose your AP classes in onboarding and they&apos;ll stay pinned here.
                 </div>
               )}
             </div>
@@ -147,7 +140,10 @@ export default function DashboardSidebar({
               </div>
             )}
           </div>
-          <LogoutButton isGuest={isGuest} className="w-full rounded-2xl border-white/10 bg-white/5 px-4 py-3 text-left text-[#d5d2e8] hover:bg-white/10" />
+          <LogoutButton
+            isGuest={isGuest}
+            className="w-full rounded-2xl border-white/10 bg-white/5 px-4 py-3 text-left text-[#d5d2e8] hover:bg-white/10"
+          />
         </div>
       </SidebarBody>
     </Sidebar>

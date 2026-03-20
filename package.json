@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.0.5",
+    "@google/generative-ai": "^0.24.1",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.0",
     "@vercel/analytics": "^2.0.1",
