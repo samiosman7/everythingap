@@ -60,7 +60,7 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
   const groupedCourses = groupCoursesByCategory(remainingCourses);
 
   return (
-    <div className="flex min-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-[32px] border border-[#1e1e2e] bg-[#0d0d14] shadow-[0_30px_120px_rgba(0,0,0,0.45)] md:flex-row">
+    <div className="flex min-h-screen flex-col overflow-hidden bg-[#0d0d14] md:flex-row">
       <DashboardSidebar
         emailLabel={emailLabel}
         isGuest={isGuest}

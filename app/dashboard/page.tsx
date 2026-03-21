@@ -30,29 +30,27 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] px-4 py-4 sm:px-6 sm:py-6">
+    <div className="min-h-screen bg-[#0a0a0f]">
       {isGuest && (
-        <div className="mx-auto mb-6 max-w-7xl rounded-2xl border border-[#6c63ff]/20 bg-[#6c63ff]/8 p-4">
+        <div className="border-b border-[#6c63ff]/18 bg-[#6c63ff]/10 px-4 py-3 sm:px-6">
           <p className="font-body text-sm text-[#d9d7ff]">
             You&apos;re browsing in guest mode. Content is fully available, but synced progress only saves when you use an account.
           </p>
         </div>
       )}
 
-      <div className="mx-auto max-w-7xl">
-        <DashboardClient
-          courses={courses}
-          emailLabel={isGuest ? "Guest mode" : clerkUser?.primaryEmailAddress?.emailAddress ?? "Signed in"}
-          isGuest={isGuest}
-        />
+      <DashboardClient
+        courses={courses}
+        emailLabel={isGuest ? "Guest mode" : clerkUser?.primaryEmailAddress?.emailAddress ?? "Signed in"}
+        isGuest={isGuest}
+      />
 
-        {!courses.length && (
-          <div className="py-20 text-center font-body text-[#8888aa]">
-            <div className="mb-4 text-4xl">AP</div>
-            <p>No courses found yet. Populate the database and they&apos;ll appear here.</p>
-          </div>
-        )}
-      </div>
+      {!courses.length && (
+        <div className="px-4 py-20 text-center font-body text-[#8888aa] sm:px-6">
+          <div className="mb-4 text-4xl">AP</div>
+          <p>No courses found yet. Populate the database and they&apos;ll appear here.</p>
+        </div>
+      )}
     </div>
   );
 }
