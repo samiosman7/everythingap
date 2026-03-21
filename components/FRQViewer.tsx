@@ -32,8 +32,10 @@ type GradeState = {
   confidenceAfter: number;
   loading: boolean;
   error: string | null;
+  notice: string | null;
   result: FRQGradeResult | null;
   history: FRQGradeResult[];
+  cooldownUntil: number;
 };
 
 type FrqToggleKey = "reviewLater" | "likelyOnTest" | "confused";
@@ -52,8 +54,10 @@ function emptyGradeState(): GradeState {
     confidenceAfter: 50,
     loading: false,
     error: null,
+    notice: null,
     result: null,
     history: [],
+    cooldownUntil: 0,
   };
 }
 
@@ -173,7 +177,7 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
       return;
     }
 
-    updateState(index, { loading: true, error: null });
+      updateState(index, { loading: true, error: null });
 
     try {
       const response = await fetch("/api/frq-grade", {
@@ -189,9 +193,22 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
         }),
       });
 
-      const payload = (await response.json()) as { result?: FRQGradeResult; error?: string };
+      const payload = (await response.json()) as {
+        result?: FRQGradeResult;
+        error?: string;
+        cached?: boolean;
+        retryAfterSeconds?: number;
+      };
 
       if (!response.ok || !payload.result) {
+        if (response.status === 429 && payload.retryAfterSeconds) {
+          updateState(index, {
+            loading: false,
+            error: `${payload.error ?? "Rate limit hit."} Try again in about ${Math.ceil(payload.retryAfterSeconds / 60)} minute(s).`,
+            cooldownUntil: Date.now() + payload.retryAfterSeconds * 1000,
+          });
+          return;
+        }
         throw new Error(payload.error ?? "The grader could not score this response.");
       }
 
@@ -201,7 +218,11 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
         loading: false,
         result,
         error: null,
+        notice: payload.cached
+          ? "Same answer detected, so this feedback came from your saved cache instead of using another AI call."
+          : "Fresh AI feedback generated. A short cooldown now helps protect your quota.",
         history: [result, ...current.history].slice(0, 8),
+        cooldownUntil: Date.now() + 10_000,
       });
 
       if (workspaceMeta) {
@@ -363,10 +384,14 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => gradeResponse(index, frq)}
-                  disabled={state.loading}
+                  disabled={state.loading || state.cooldownUntil > Date.now()}
                   className="rounded-2xl bg-[#8b80ff] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#9a90ff] disabled:cursor-not-allowed disabled:bg-[#5e57aa]"
                 >
-                  {state.loading ? "Grading..." : "Get AI feedback"}
+                  {state.loading
+                    ? "Grading..."
+                    : state.cooldownUntil > Date.now()
+                      ? `Wait ${Math.max(1, Math.ceil((state.cooldownUntil - Date.now()) / 1000))}s`
+                      : "Get AI feedback"}
                 </button>
                 <button
                   onClick={() =>
@@ -387,6 +412,7 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
               </div>
 
               {state.error && <p className="text-sm text-[#ff9d9d]">{state.error}</p>}
+              {state.notice && !state.error && <p className="text-sm text-[#9fd4ff]">{state.notice}</p>}
 
               {state.result && (
                 <div className="space-y-4 rounded-[24px] border border-[#2b2752] bg-[#100f1f] p-5">

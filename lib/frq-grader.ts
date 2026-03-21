@@ -47,6 +47,7 @@ export async function gradeFrqResponse(input: {
   rubric: string;
   sampleResponse: string;
   studentAnswer: string;
+  detailMode?: "standard" | "deep";
 }): Promise<FRQGradeResult> {
   const genAI = getGeminiClient();
   const model = genAI.getGenerativeModel({
@@ -57,6 +58,16 @@ export async function gradeFrqResponse(input: {
     },
   });
 
+  const trimmedSample =
+    input.sampleResponse.length > 1200
+      ? `${input.sampleResponse.slice(0, 1200)}\n\n[Sample truncated to save tokens.]`
+      : input.sampleResponse;
+
+  const detailInstruction =
+    input.detailMode === "deep"
+      ? "Give slightly more detailed rubric reasoning and more specific revision advice."
+      : "Keep the rubric reasoning concise and focused.";
+
   const prompt = `You are a strict AP free-response grader.
 
 Grade the student's response against the rubric only.
@@ -66,6 +77,7 @@ Rules:
 - Do not invent new criteria.
 - Be fair to valid answers that are worded differently from the sample response.
 - Use the sample response as a quality reference, not as the only acceptable answer.
+- ${detailInstruction}
 - Return JSON only.
 
 Return this exact JSON shape:
@@ -92,7 +104,7 @@ Rubric:
 ${input.rubric}
 
 Sample high-scoring response:
-${input.sampleResponse}
+${trimmedSample}
 
 Student response:
 ${input.studentAnswer}`;
