@@ -47,8 +47,8 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
         <span className="text-sm font-body font-medium text-[#e8e8f0]">{course.name}</span>
       </nav>
 
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <section className="grid gap-5 lg:grid-cols-[1.1fr,0.9fr]">
+      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+        <section className="grid gap-5 xl:grid-cols-[1.1fr,0.9fr]">
           <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-7">
             <div className="flex items-start gap-5">
               <div
@@ -61,8 +61,8 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                 <p className="text-xs font-body uppercase tracking-[0.22em] text-[#9d96ff]">Course hub</p>
                 <h1 className="mt-2 font-display text-3xl font-bold md:text-4xl">{course.name}</h1>
                 <p className="mt-3 max-w-2xl text-sm font-body leading-7 text-[#8f8fac]">
-                  This class now has one clean structure: course hub, then unit hub, then chapter notes and quizzes. Open
-                  the unit you need and you should always know what comes next.
+                  This class now has one clean structure: course hub, then unit hub, then chapter notes and quizzes.
+                  Open the unit you need and you should always know what comes next.
                 </p>
               </div>
             </div>
@@ -102,7 +102,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
           </div>
         </section>
 
-        <section className="mt-10">
+        <section className="mt-8">
           <CourseUnitOrganizer
             courseId={course.id}
             courseHref={courseHref}

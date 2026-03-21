@@ -46,7 +46,7 @@ export default async function UnitPage({ params }: { params: Promise<{ courseId:
         <span className="text-sm font-body font-medium text-[#e8e8f0]">{unit.name}</span>
       </nav>
 
-      <main className="mx-auto max-w-5xl px-6 py-10">
+      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
         <UnitOrganizerClient
           courseId={course.id}
           courseHref={courseHref}
