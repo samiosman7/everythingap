@@ -85,65 +85,67 @@ export default function DashboardSidebar({
   return (
     <Sidebar open={open} setOpen={setOpen}>
       <SidebarBody className="justify-between gap-8 border-r border-white/8 bg-[#0b0b12]">
-        <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-          {open ? <Logo /> : <Logo compact />}
+        <div className="flex h-full flex-1 flex-col justify-between px-4 py-4">
+          <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            {open ? <Logo /> : <Logo compact />}
 
-          <div className="mt-8 flex flex-col gap-2">
-            {primaryLinks.map(link => (
-              <SidebarLink key={link.label} link={link} />
-            ))}
+            <div className="mt-8 flex flex-col gap-2">
+              {primaryLinks.map(link => (
+                <SidebarLink key={link.label} link={link} />
+              ))}
+            </div>
+
+            <div className="mt-8 border-t border-white/10 pt-6">
+              <div
+                className={cn(
+                  "mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#77738b]",
+                  !open && "hidden"
+                )}
+              >
+                Selected classes
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {selectedCourses.slice(0, 5).map(course => (
+                  <SidebarLink
+                    key={course.id}
+                    link={{
+                      label: course.name,
+                      href: course.href,
+                      icon: (
+                        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center text-base">
+                          {course.emoji}
+                        </span>
+                      ),
+                    }}
+                    className="py-2"
+                  />
+                ))}
+                {!selectedCourses.length && open && (
+                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-xs leading-5 text-[#8985a2]">
+                    Choose your AP classes in onboarding and they&apos;ll stay pinned here.
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-6">
-            <div
-              className={cn(
-                "mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#77738b]",
-                !open && "hidden"
-              )}
-            >
-              Selected classes
-            </div>
-            <div className="flex flex-col gap-1.5">
-              {selectedCourses.slice(0, 5).map(course => (
-                <SidebarLink
-                  key={course.id}
-                  link={{
-                    label: course.name,
-                    href: course.href,
-                    icon: (
-                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center text-base">
-                        {course.emoji}
-                      </span>
-                    ),
-                  }}
-                  className="py-2"
-                />
-              ))}
-              {!selectedCourses.length && open && (
-                <div className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-xs leading-5 text-[#8985a2]">
-                  Choose your AP classes in onboarding and they&apos;ll stay pinned here.
+          <div className="space-y-3 border-t border-white/10 pt-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-white/[0.04] px-3 py-3">
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#8b80ff]/20 text-sm font-semibold text-white">
+                <BookOpenText className="h-4 w-4" />
+              </div>
+              {open && (
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-white">{emailLabel}</p>
+                  <p className="text-xs text-[#8b87a3]">{isGuest ? "Guest session" : "Signed in"}</p>
                 </div>
               )}
             </div>
+            <LogoutButton
+              isGuest={isGuest}
+              className="w-full rounded-2xl border-white/10 bg-white/5 px-4 py-3 text-left text-[#d5d2e8] hover:bg-white/10"
+            />
           </div>
-        </div>
-
-        <div className="space-y-3 border-t border-white/10 pt-4">
-          <div className="flex items-center gap-3 rounded-2xl bg-white/[0.04] px-3 py-3">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#8b80ff]/20 text-sm font-semibold text-white">
-              <BookOpenText className="h-4 w-4" />
-            </div>
-            {open && (
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-white">{emailLabel}</p>
-                <p className="text-xs text-[#8b87a3]">{isGuest ? "Guest session" : "Signed in"}</p>
-              </div>
-            )}
-          </div>
-          <LogoutButton
-            isGuest={isGuest}
-            className="w-full rounded-2xl border-white/10 bg-white/5 px-4 py-3 text-left text-[#d5d2e8] hover:bg-white/10"
-          />
         </div>
       </SidebarBody>
     </Sidebar>
