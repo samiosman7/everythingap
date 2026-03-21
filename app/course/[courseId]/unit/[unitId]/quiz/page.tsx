@@ -1,8 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import QuizPlayer from "@/components/QuizPlayer";
 import FRQViewer from "@/components/FRQViewer";
 import StudySessionTracker from "@/components/StudySessionTracker";
+import StudyQuizExperience from "@/components/student/StudyQuizExperience";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -72,7 +72,17 @@ export default async function UnitQuizPage({
                 <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
                   Multiple Choice
                 </h2>
-                <QuizPlayer questions={multipleChoice} color={course.color ?? "#6c63ff"} />
+                <StudyQuizExperience
+                  questions={multipleChoice}
+                  color={course.color ?? "#6c63ff"}
+                  courseId={course.id}
+                  unitId={String(unit.id)}
+                  href={`${courseHref}/unit/${unit.id}/quiz`}
+                  label={`${course.name} • ${unit.name} unit exam`}
+                  courseName={course.name}
+                  unitName={unit.name}
+                  kind="unit-exam"
+                />
               </section>
             )}
             {freeResponse.length > 0 && (
@@ -80,7 +90,15 @@ export default async function UnitQuizPage({
                 <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
                   Free Response
                 </h2>
-                <FRQViewer questions={freeResponse} />
+                <FRQViewer
+                  questions={freeResponse}
+                  workspaceMeta={{
+                    courseId: course.id,
+                    unitId: String(unit.id),
+                    href: `${courseHref}/unit/${unit.id}/quiz`,
+                    labelPrefix: `${course.name} • ${unit.name} unit exam`,
+                  }}
+                />
               </section>
             )}
           </div>

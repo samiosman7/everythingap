@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, BookOpen, FileSpreadsheet, Layers3 } from "lucide-react";
-import { getCourseProgress, getLastVisited, getUnitProgress, syncStudyProgressFromAccount } from "@/lib/study-progress";
+import {
+  getCourseProgress,
+  getLastVisited,
+  getUnitProgress,
+  getUnitWorkspace,
+  syncStudyProgressFromAccount,
+} from "@/lib/study-progress";
 
 type UnitItem = {
   id: string;
@@ -121,6 +127,7 @@ export default function CourseUnitOrganizer({
       <div className="space-y-4">
         {units.map(unit => {
           const summary = ready ? getUnitProgress(courseId, unit.id, unit.chapterCount) : { percent: 0, viewedCount: 0 };
+          const confidence = ready ? getUnitWorkspace(unit.id)?.confidence?.value ?? null : null;
 
           return (
             <div key={unit.id} className="rounded-[24px] border border-white/10 bg-[#111118] p-5">
@@ -143,6 +150,30 @@ export default function CourseUnitOrganizer({
 
                   <div className="mt-4 max-w-xl">
                     <ProgressBar percent={summary.percent} color={courseColor} />
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.16em] text-[#8e89a4]">
+                      Unit heatmap
+                    </span>
+                    <div className="flex h-2 w-28 overflow-hidden rounded-full bg-white/8">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${confidence ?? 0}%`,
+                          background:
+                            confidence === null
+                              ? "#2a2a3a"
+                              : confidence >= 75
+                                ? "#34d399"
+                                : confidence >= 40
+                                  ? "#fbbf24"
+                                  : "#fb7185",
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs text-[#9a96b1]">
+                      {confidence === null ? "No confidence rating yet" : `${confidence}% confidence`}
+                    </span>
                   </div>
                 </div>
 

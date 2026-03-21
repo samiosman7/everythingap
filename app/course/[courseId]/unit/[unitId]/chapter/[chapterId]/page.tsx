@@ -2,6 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import NotesRenderer from "@/components/NotesRenderer";
 import StudySessionTracker from "@/components/StudySessionTracker";
+import { ChapterWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -97,18 +98,33 @@ export default async function ChapterPage({
           </div>
         </div>
 
-        {chapter.notes ? (
-          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-            <div className="max-w-5xl">
-              <NotesRenderer notes={chapter.notes} />
+        <div className="grid gap-6 xl:grid-cols-[1.35fr,0.65fr]">
+          {chapter.notes ? (
+            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+              <div className="max-w-5xl">
+                <NotesRenderer notes={chapter.notes} />
+              </div>
             </div>
+          ) : (
+            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
+              <div className="mb-3 text-3xl">Soon</div>
+              <p>Notes are being generated. Check back soon.</p>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            <ChapterWorkspacePanel
+              chapterId={String(chapter.id)}
+              meta={{
+                courseId: course.id,
+                unitId: String(unit.id),
+                chapterId: String(chapter.id),
+                href: `${courseHref}/unit/${unitId}/chapter/${chapter.id}`,
+                label: `${course.name} • ${chapter.name}`,
+              }}
+            />
           </div>
-        ) : (
-          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-            <div className="mb-3 text-3xl">Soon</div>
-            <p>Notes are being generated. Check back soon.</p>
-          </div>
-        )}
+        </div>
 
         <div className="mt-10 flex items-center justify-between gap-4 border-t border-[#1e1e2e] pt-8">
           {prev ? (

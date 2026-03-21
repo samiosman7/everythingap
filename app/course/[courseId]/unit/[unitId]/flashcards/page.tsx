@@ -2,6 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import FlashcardDeck from "@/components/FlashcardDeck";
 import StudySessionTracker from "@/components/StudySessionTracker";
+import { FlashcardWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -61,16 +62,30 @@ export default async function FlashcardsPage({
           <p className="mt-2 text-sm font-body text-[#8888aa]">{flashcards?.length ?? 0} cards</p>
         </div>
 
-        {flashcards?.length ? (
-          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-            <FlashcardDeck cards={flashcards} color={course.color ?? "#6c63ff"} />
+        <div className="grid gap-6 xl:grid-cols-[1.2fr,0.8fr]">
+          {flashcards?.length ? (
+            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+              <FlashcardDeck cards={flashcards} color={course.color ?? "#6c63ff"} />
+            </div>
+          ) : (
+            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
+              <div className="mb-3 text-3xl">Soon</div>
+              <p>Flashcards are being generated. Check back soon.</p>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            <FlashcardWorkspacePanel
+              unitId={String(unit.id)}
+              meta={{
+                courseId: course.id,
+                unitId: String(unit.id),
+                href: `${courseHref}/unit/${unit.id}/flashcards`,
+                label: `${course.name} • ${unit.name} flashcards`,
+              }}
+            />
           </div>
-        ) : (
-          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-            <div className="mb-3 text-3xl">Soon</div>
-            <p>Flashcards are being generated. Check back soon.</p>
-          </div>
-        )}
+        </div>
       </main>
     </div>
   );

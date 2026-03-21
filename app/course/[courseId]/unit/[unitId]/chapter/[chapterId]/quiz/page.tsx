@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import QuizPlayer from "@/components/QuizPlayer";
 import StudySessionTracker from "@/components/StudySessionTracker";
+import StudyQuizExperience from "@/components/student/StudyQuizExperience";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -67,9 +67,19 @@ export default async function ChapterQuizPage({
           <p className="mt-2 text-sm font-body text-[#8888aa]">{quizQuestions.length} questions</p>
         </div>
 
-        <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-          <QuizPlayer questions={quizQuestions} color={course.color ?? "#6c63ff"} />
-        </div>
+        <StudyQuizExperience
+          questions={quizQuestions}
+          color={course.color ?? "#6c63ff"}
+          courseId={course.id}
+          unitId={String(unit.id)}
+          chapterId={String(chapter.id)}
+          href={`${courseHref}/unit/${unit.id}/chapter/${chapter.id}/quiz`}
+          label={`${course.name} • ${chapter.name} quiz`}
+          courseName={course.name}
+          unitName={unit.name}
+          chapterName={chapter.name}
+          kind="chapter-quiz"
+        />
       </main>
     </div>
   );

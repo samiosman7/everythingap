@@ -6,6 +6,12 @@ import type { StudyProgressState } from "@/lib/study-progress";
 const EMPTY_PROGRESS: StudyProgressState = {
   lastVisited: null,
   courses: {},
+  workspace: {
+    chapters: {},
+    units: {},
+    flashcards: {},
+    frqs: {},
+  },
 };
 
 export async function GET() {

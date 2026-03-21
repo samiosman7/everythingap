@@ -2,6 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { KeyConcept } from "@/types";
 import StudySessionTracker from "@/components/StudySessionTracker";
+import { UnitWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -67,37 +68,51 @@ export default async function KeyConceptsPage({
           <p className="mt-2 text-sm font-body text-[#8888aa]">{concepts.length} terms</p>
         </div>
 
-        {concepts.length ? (
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-            {concepts.map((c, i) => (
-              <div key={i} className="rounded-2xl border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:border-[#2a2a3a]">
-                <div className="mb-2 flex items-start justify-between gap-2">
-                  <h3 className="font-display text-sm font-semibold text-[#e8e8f0]">{c.term}</h3>
-                  <span
-                    className="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-body font-medium"
-                    style={{
-                      background: `${CATEGORY_COLORS[c.category] ?? "#6c63ff"}20`,
-                      color: CATEGORY_COLORS[c.category] ?? "#6c63ff",
-                    }}
-                  >
-                    {c.category}
-                  </span>
+        <div className="grid gap-6 xl:grid-cols-[1.25fr,0.75fr]">
+          {concepts.length ? (
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+              {concepts.map((c, i) => (
+                <div key={i} className="rounded-2xl border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:border-[#2a2a3a]">
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <h3 className="font-display text-sm font-semibold text-[#e8e8f0]">{c.term}</h3>
+                    <span
+                      className="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-body font-medium"
+                      style={{
+                        background: `${CATEGORY_COLORS[c.category] ?? "#6c63ff"}20`,
+                        color: CATEGORY_COLORS[c.category] ?? "#6c63ff",
+                      }}
+                    >
+                      {c.category}
+                    </span>
+                  </div>
+                  <p className="mb-2 text-xs font-body leading-relaxed text-[#8888aa]">{c.definition}</p>
+                  {c.example && (
+                    <p className="mt-2 border-t border-[#1e1e2e] pt-2 text-xs font-body italic text-[#6c6c8a]">
+                      Example: {c.example}
+                    </p>
+                  )}
                 </div>
-                <p className="mb-2 text-xs font-body leading-relaxed text-[#8888aa]">{c.definition}</p>
-                {c.example && (
-                  <p className="mt-2 border-t border-[#1e1e2e] pt-2 text-xs font-body italic text-[#6c6c8a]">
-                    Example: {c.example}
-                  </p>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
+              <div className="mb-3 text-3xl">Soon</div>
+              <p>Key concepts are being generated. Check back soon.</p>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            <UnitWorkspacePanel
+              unitId={String(unit.id)}
+              meta={{
+                courseId: course.id,
+                unitId: String(unit.id),
+                href: `${courseHref}/unit/${unit.id}/key-concepts`,
+                label: `${course.name} • ${unit.name} key concepts`,
+              }}
+            />
           </div>
-        ) : (
-          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-            <div className="mb-3 text-3xl">Soon</div>
-            <p>Key concepts are being generated. Check back soon.</p>
-          </div>
-        )}
+        </div>
       </main>
     </div>
   );

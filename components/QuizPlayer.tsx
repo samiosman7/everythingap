@@ -7,6 +7,7 @@ import { QuizQuestion } from "@/types";
 interface Props {
   questions: QuizQuestion[];
   color?: string;
+  onComplete?: (summary: { correct: number; total: number; incorrectQuestions: string[] }) => void;
 }
 
 type SafeQuestion = {
@@ -48,7 +49,7 @@ function normalizeQuestions(questions: QuizQuestion[] | unknown): SafeQuestion[]
     .filter((item): item is SafeQuestion => item !== null);
 }
 
-export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
+export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }: Props) {
   const safeQuestions = useMemo(() => normalizeQuestions(questions), [questions]);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -97,6 +98,13 @@ export default function QuizPlayer({ questions, color = "#6c63ff" }: Props) {
       setSelected(null);
       setRevealed(false);
     } else {
+      onComplete?.({
+        correct: score,
+        total: safeQuestions.length,
+        incorrectQuestions: safeQuestions
+          .filter((question, index) => answers[index] !== question.answerIndex)
+          .map(question => question.question),
+      });
       setFinished(true);
     }
   }

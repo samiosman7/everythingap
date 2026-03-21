@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 import UnitOrganizerClient from "@/components/UnitOrganizerClient";
+import { UnitWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 
 export default async function UnitPage({ params }: { params: Promise<{ courseId: string; unitId: string }> }) {
   const { courseId, unitId } = await params;
@@ -47,20 +48,34 @@ export default async function UnitPage({ params }: { params: Promise<{ courseId:
       </nav>
 
       <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
-        <UnitOrganizerClient
-          courseId={course.id}
-          courseHref={courseHref}
-          courseColor={course.color ?? "#6c63ff"}
-          unitId={String(unit.id)}
-          unitName={unit.name}
-          unitNumber={unit.unit_number}
-          chapters={(chapters ?? []).map(chapter => ({
-            id: String(chapter.id),
-            chapter_number: chapter.chapter_number,
-            name: chapter.name,
-            hasQuiz: Array.isArray(chapter.quiz) && chapter.quiz.length > 0,
-          }))}
-        />
+        <div className="grid gap-6 xl:grid-cols-[1.15fr,0.85fr]">
+          <UnitOrganizerClient
+            courseId={course.id}
+            courseHref={courseHref}
+            courseColor={course.color ?? "#6c63ff"}
+            unitId={String(unit.id)}
+            unitName={unit.name}
+            unitNumber={unit.unit_number}
+            chapters={(chapters ?? []).map(chapter => ({
+              id: String(chapter.id),
+              chapter_number: chapter.chapter_number,
+              name: chapter.name,
+              hasQuiz: Array.isArray(chapter.quiz) && chapter.quiz.length > 0,
+            }))}
+          />
+
+          <div className="space-y-6">
+            <UnitWorkspacePanel
+              unitId={String(unit.id)}
+              meta={{
+                courseId: course.id,
+                unitId: String(unit.id),
+                href: `${courseHref}/unit/${unit.id}`,
+                label: `${course.name} • ${unit.name}`,
+              }}
+            />
+          </div>
+        </div>
       </main>
     </div>
   );

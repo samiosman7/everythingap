@@ -10,6 +10,7 @@ import { readSelectedCourseIds } from "@/lib/course-preferences";
 import ResumeWhereLeftOff from "@/components/ResumeWhereLeftOff";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { getCourseProgress } from "@/lib/study-progress";
+import StudyDashboardWidgets from "@/components/student/StudyDashboardWidgets";
 
 type DashboardCourse = {
   id: string;
@@ -169,6 +170,28 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
                   and in the sidebar.
                 </p>
               </motion.div>
+            </section>
+
+            <section id="student-layer" className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.55, ease: "easeOut" }}
+              >
+                <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">
+                  Student-owned learning layer
+                </p>
+                <h2 className="mt-2 font-display text-2xl font-bold text-white">
+                  Your notes, confidence, reminders, and reflections now live inside the app too.
+                </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-[#9793ae]">
+                  Mark what feels strong, save what keeps slipping, compare confidence against quiz results, and leave
+                  your future self better review notes than a random pile of screenshots.
+                </p>
+              </motion.div>
+
+              <StudyDashboardWidgets />
             </section>
 
             {selectedCourses.length > 0 && (
