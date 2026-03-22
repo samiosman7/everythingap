@@ -8,7 +8,7 @@ export default function Page() {
           path="/sign-up"
           routing="path"
           signInUrl="/sign-in"
-          forceRedirectUrl="/dashboard"
+          forceRedirectUrl="/setup-guide"
           appearance={{
             elements: {
               card: "bg-[#111118] border border-[#1e1e2e] shadow-none rounded-3xl",

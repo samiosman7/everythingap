@@ -9,6 +9,7 @@ import {
   Home,
   Layers3,
   LayoutDashboard,
+  Sparkles,
   Search,
 } from "lucide-react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -72,6 +73,11 @@ export default function DashboardSidebar({
         label: "Pick Classes",
         href: "/onboarding",
         icon: <Search className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+      },
+      {
+        label: "Setup Guide",
+        href: "/setup-guide",
+        icon: <Sparkles className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
       },
       {
         label: "Home",
