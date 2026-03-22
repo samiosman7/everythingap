@@ -31,6 +31,12 @@ type DashboardClientProps = {
   isGuest: boolean;
 };
 
+const QUICKSTART_STEPS = [
+  "Pick the AP class that has your next deadline.",
+  "Open chapter notes first if you need to relearn the lesson fast.",
+  "Switch to flashcards or quizzes once the concepts start clicking.",
+];
+
 function ProgressBar({ percent, color }: { percent: number; color: string }) {
   return (
     <div className="h-2 overflow-hidden rounded-full bg-white/8">
@@ -152,8 +158,25 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
                 transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }}
                 className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-5 sm:p-7"
               >
-                <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">Find a class</p>
+                <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">Guided setup</p>
                 <h3 className="mt-3 font-display text-2xl font-bold text-white">Pick up exactly where you need to.</h3>
+                <p className="mt-3 text-sm font-body leading-7 text-[#8d8aa5]">
+                  {selectedCourses.length
+                    ? "Your setup is ready. Start with one of your selected courses, then move from notes into active practice."
+                    : "Choose your AP classes first so this dashboard can guide you toward the right notes, flashcards, quizzes, and exams."}
+                </p>
+
+                <div className="mt-5 space-y-3">
+                  {QUICKSTART_STEPS.map((step, index) => (
+                    <div key={step} className="flex items-start gap-3 rounded-2xl border border-[#202034] bg-[#0d0d14] p-4">
+                      <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#6c63ff]/12 text-xs font-semibold text-[#c8c4ff]">
+                        {index + 1}
+                      </div>
+                      <p className="text-sm font-body leading-6 text-[#c7c7dd]">{step}</p>
+                    </div>
+                  ))}
+                </div>
+
                 <div className="mt-5 rounded-2xl border border-dashed border-[#2a2a3a] bg-[#0a0a0f] p-4">
                   <div className="flex items-center gap-2 text-[#8888aa]">
                     <Search className="h-4 w-4 shrink-0" />
@@ -165,10 +188,15 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
                     />
                   </div>
                 </div>
-                <p className="mt-4 text-sm leading-7 text-[#8d8aa5]">
-                  Use onboarding to choose your current AP classes, then the dashboard keeps those courses at the top
-                  and in the sidebar.
-                </p>
+                {!selectedCourses.length && (
+                  <Link
+                    href="/onboarding"
+                    className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#6c63ff] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#7c73ff]"
+                  >
+                    Finish setup
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
               </motion.div>
             </section>
 

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpenText, Check, LayoutDashboard, Sparkles, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { Course } from "@/types";
 import GuestModeButton from "@/components/GuestModeButton";
@@ -14,6 +14,30 @@ type OnboardingClientProps = {
   continueHref?: string;
   allowGuest?: boolean;
 };
+
+const FIRST_SESSION_STEPS = [
+  {
+    title: "Choose your AP classes",
+    desc: "We use your selections to build a dashboard that feels personal instead of overwhelming.",
+    icon: Users,
+  },
+  {
+    title: "Save your setup",
+    desc: "Keep your class list, continue to sign up, or stay in guest mode if you just want to explore first.",
+    icon: Check,
+  },
+  {
+    title: "Open your study flow",
+    desc: "Jump into course hubs, chapter notes, flashcards, quizzes, and exam review without guessing where to start.",
+    icon: LayoutDashboard,
+  },
+];
+
+const GET_STARTED_TIPS = [
+  "Start with the class that has your next quiz or FRQ due.",
+  "Use chapter notes first when a lesson feels fuzzy, then switch to flashcards or quizzes.",
+  "Save at least one course before continuing so the dashboard has something useful waiting for you.",
+];
 
 export default function OnboardingClient({
   continueHref = "/sign-up",
@@ -37,6 +61,8 @@ export default function OnboardingClient({
   }, []);
 
   const groupedCourses = useMemo(() => groupCoursesByCategory(courses), [courses]);
+  const hasSelectedCourses = selectedIds.length > 0;
+  const completionPercent = hasSelectedCourses ? 66 : 33;
 
   function toggleCourse(courseId: string) {
     setSelectedIds(current =>
@@ -104,6 +130,80 @@ export default function OnboardingClient({
                   <p className="text-sm font-body leading-6 text-[#d9d9ec]">{item}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-[1.15fr,0.85fr]">
+          <div className="rounded-[32px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+            <div className="flex items-center gap-3 text-[#9d96ff]">
+              <BookOpenText className="h-5 w-5" />
+              <p className="text-xs font-body uppercase tracking-[0.22em]">Guided setup</p>
+            </div>
+            <h2 className="mt-3 font-display text-3xl font-bold">Here&apos;s exactly how to get started.</h2>
+            <p className="mt-4 max-w-2xl text-sm font-body leading-7 text-[#9f9fba]">
+              This page is your quick tutorial. Finish the three steps below and the site will feel much easier to use on
+              your first real study session.
+            </p>
+
+            <div className="mt-6 grid gap-3 md:grid-cols-3">
+              {FIRST_SESSION_STEPS.map((step, index) => {
+                const Icon = step.icon;
+                const isComplete = index === 0 ? hasSelectedCourses : false;
+                return (
+                  <div
+                    key={step.title}
+                    className={`rounded-[24px] border p-5 ${
+                      isComplete ? "border-[#6c63ff]/35 bg-[#161625]" : "border-[#212132] bg-[#0d0d14]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#6c63ff]/12 text-[#c9c6ff]">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="text-[11px] font-body uppercase tracking-[0.18em] text-[#7e7aa2]">
+                        Step {index + 1}
+                      </span>
+                    </div>
+                    <h3 className="mt-4 font-display text-xl font-semibold text-[#f4f3ff]">{step.title}</h3>
+                    <p className="mt-3 text-sm font-body leading-6 text-[#9292b0]">{step.desc}</p>
+                    <p className="mt-4 text-xs font-body uppercase tracking-[0.18em] text-[#bdb9ff]">
+                      {isComplete ? "Done" : "Up next"}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="rounded-[32px] border border-[#1e1e2e] bg-[linear-gradient(180deg,#131320_0%,#0d0d14_100%)] p-6 md:p-8">
+            <p className="text-xs font-body uppercase tracking-[0.22em] text-[#9d96ff]">Setup progress</p>
+            <h2 className="mt-3 font-display text-3xl font-bold">Your first-study checklist</h2>
+            <p className="mt-4 text-sm font-body leading-7 text-[#9f9fba]">
+              Pick at least one course now, then continue so your dashboard opens with the right material already ready.
+            </p>
+
+            <div className="mt-6 rounded-[24px] border border-[#242438] bg-[#0b0b12] p-5">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm font-body text-[#d9d9ec]">Setup completion</span>
+                <span className="text-sm font-body text-[#c7c4ff]">{completionPercent}%</span>
+              </div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#1a1a28]">
+                <div
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#6c63ff_0%,#9d96ff_100%)] transition-all"
+                  style={{ width: `${completionPercent}%` }}
+                />
+              </div>
+              <div className="mt-5 space-y-3">
+                {GET_STARTED_TIPS.map((tip, index) => (
+                  <div key={tip} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#6c63ff]/12 text-[11px] font-semibold text-[#c9c6ff]">
+                      {index + 1}
+                    </div>
+                    <p className="text-sm font-body leading-6 text-[#b8b8d2]">{tip}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
