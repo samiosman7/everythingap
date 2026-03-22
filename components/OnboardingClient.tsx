@@ -3,7 +3,18 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, BookOpenText, Check, LayoutDashboard, Sparkles, Users } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpenText,
+  Brain,
+  Check,
+  ClipboardCheck,
+  LayoutDashboard,
+  MessageSquareText,
+  Sparkles,
+  Target,
+  Users,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { Course } from "@/types";
 import GuestModeButton from "@/components/GuestModeButton";
@@ -37,6 +48,47 @@ const GET_STARTED_TIPS = [
   "Start with the class that has your next quiz or FRQ due.",
   "Use chapter notes first when a lesson feels fuzzy, then switch to flashcards or quizzes.",
   "Save at least one course before continuing so the dashboard has something useful waiting for you.",
+];
+
+const PLATFORM_TOUR = [
+  {
+    title: "Dashboard that remembers you",
+    desc: "Resume where you left off, see progress, and surface the classes and weak spots that matter next.",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Study tools in one flow",
+    desc: "Notes, flashcards, key concepts, chapter quizzes, unit exams, and full AP mocks are connected instead of scattered.",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "Student-owned learning layer",
+    desc: "Mark confidence, save private notes, track what confused you, and build your own review system inside the app.",
+    icon: Brain,
+  },
+  {
+    title: "AI FRQ feedback",
+    desc: "Draft responses, get rubric-based feedback, save revision notes, and compare how confident you felt to how you actually scored.",
+    icon: MessageSquareText,
+  },
+];
+
+const STUDY_FLOW = [
+  {
+    step: "01",
+    title: "Open your course hub",
+    desc: "Start in the class you actually need today. The dashboard pushes you there fast instead of making you hunt through everything.",
+  },
+  {
+    step: "02",
+    title: "Move through a unit in order",
+    desc: "Unit pages keep notes, flashcards, key concepts, chapter quizzes, and exams in one clear lane so the next step feels obvious.",
+  },
+  {
+    step: "03",
+    title: "Make the app more personal over time",
+    desc: "Confidence checks, sticky notes, mistake patterns, and reflections turn the app into your study system instead of just a content library.",
+  },
 ];
 
 export default function OnboardingClient({
@@ -134,6 +186,52 @@ export default function OnboardingClient({
           </div>
         </section>
 
+        <section className="grid gap-4 lg:grid-cols-[1.05fr,0.95fr]">
+          <div className="rounded-[32px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+            <div className="flex items-center gap-3 text-[#9d96ff]">
+              <Sparkles className="h-5 w-5" />
+              <p className="text-xs font-body uppercase tracking-[0.22em]">Guided tour</p>
+            </div>
+            <h2 className="mt-3 font-display text-3xl font-bold">What this app actually gives you</h2>
+            <p className="mt-4 max-w-2xl text-sm font-body leading-7 text-[#9f9fba]">
+              Before you pick classes, here is the quick version of what you are setting up: a calmer AP workflow,
+              stronger review tools, and a place to track your own understanding instead of just reading static content.
+            </p>
+
+            <div className="mt-6 grid gap-3 md:grid-cols-2">
+              {PLATFORM_TOUR.map(item => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.title} className="rounded-[24px] border border-[#212132] bg-[#0d0d14] p-5">
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#6c63ff]/12 text-[#c9c6ff]">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="mt-4 font-display text-xl font-semibold text-[#f4f3ff]">{item.title}</h3>
+                    <p className="mt-3 text-sm font-body leading-6 text-[#9292b0]">{item.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="rounded-[32px] border border-[#1e1e2e] bg-[linear-gradient(180deg,#131320_0%,#0d0d14_100%)] p-6 md:p-8">
+            <div className="flex items-center gap-3 text-[#9d96ff]">
+              <Target className="h-5 w-5" />
+              <p className="text-xs font-body uppercase tracking-[0.22em]">How students use it</p>
+            </div>
+            <h2 className="mt-3 font-display text-3xl font-bold">The intended study path</h2>
+            <div className="mt-6 space-y-4">
+              {STUDY_FLOW.map(item => (
+                <div key={item.step} className="rounded-[24px] border border-[#222233] bg-[#0b0b12] p-5">
+                  <div className="text-[11px] font-body uppercase tracking-[0.22em] text-[#bdb9ff]">Step {item.step}</div>
+                  <h3 className="mt-2 font-display text-xl font-semibold text-white">{item.title}</h3>
+                  <p className="mt-3 text-sm font-body leading-7 text-[#a6a6c0]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="grid gap-4 lg:grid-cols-[1.15fr,0.85fr]">
           <div className="rounded-[32px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
             <div className="flex items-center gap-3 text-[#9d96ff]">
@@ -205,6 +303,35 @@ export default function OnboardingClient({
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="rounded-[32px] border border-[#1e1e2e] bg-[linear-gradient(180deg,#12121d_0%,#0d0d14_100%)] p-6 md:p-8">
+          <div className="flex items-center gap-3 text-[#9d96ff]">
+            <BookOpenText className="h-5 w-5" />
+            <p className="text-xs font-body uppercase tracking-[0.22em]">What opens after setup</p>
+          </div>
+          <h2 className="mt-3 font-display text-3xl font-bold">Once you choose classes, here is what starts working for you</h2>
+          <div className="mt-6 grid gap-4 xl:grid-cols-3">
+            {[
+              {
+                title: "Course and unit hubs",
+                desc: "A cleaner course -> unit -> chapter structure, with progress bars, resume buttons, and less dead-end clicking.",
+              },
+              {
+                title: "Study support that adapts",
+                desc: "Your notes, confidence marks, review-later flags, flashcard reminders, and reflections all sync back to your account.",
+              },
+              {
+                title: "Practice with feedback",
+                desc: "Chapter quizzes, unit exams, full AP mocks, and rubric-based FRQ grading all feed into the same study loop.",
+              },
+            ].map(item => (
+              <div key={item.title} className="rounded-[24px] border border-[#222233] bg-[#0b0b12] p-5">
+                <h3 className="font-display text-xl font-semibold text-white">{item.title}</h3>
+                <p className="mt-3 text-sm font-body leading-7 text-[#a6a6c0]">{item.desc}</p>
+              </div>
+            ))}
           </div>
         </section>
 
