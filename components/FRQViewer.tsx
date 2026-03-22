@@ -62,7 +62,24 @@ function emptyGradeState(): GradeState {
 }
 
 export default function FRQViewer({ questions, workspaceMeta }: Props) {
-  const safeQuestions = Array.isArray(questions) ? questions : [];
+  const safeQuestions = Array.isArray(questions)
+    ? questions
+        .map(item => {
+          if (!item || typeof item !== "object") return null;
+          const raw = item as unknown as Record<string, unknown>;
+
+          const prompt = typeof raw.question === "string" ? raw.question : typeof raw.prompt === "string" ? raw.prompt : "";
+
+          if (!prompt) return null;
+
+          return {
+            question: prompt,
+            rubric: typeof raw.rubric === "string" ? raw.rubric : "",
+            sample_response: typeof raw.sample_response === "string" ? raw.sample_response : "",
+          } satisfies FRQ;
+        })
+        .filter((item): item is FRQ => item !== null)
+    : [];
   const [open, setOpen] = useState<number | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [gradeStates, setGradeStates] = useState<Record<number, GradeState>>({});
@@ -384,11 +401,18 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => gradeResponse(index, frq)}
-                  disabled={state.loading || state.cooldownUntil > Date.now()}
+                  disabled={
+                    state.loading ||
+                    state.cooldownUntil > Date.now() ||
+                    !frq.rubric.trim() ||
+                    !frq.sample_response.trim()
+                  }
                   className="rounded-2xl bg-[#8b80ff] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#9a90ff] disabled:cursor-not-allowed disabled:bg-[#5e57aa]"
                 >
                   {state.loading
                     ? "Grading..."
+                    : !frq.rubric.trim() || !frq.sample_response.trim()
+                      ? "Rubric not ready yet"
                     : state.cooldownUntil > Date.now()
                       ? `Wait ${Math.max(1, Math.ceil((state.cooldownUntil - Date.now()) / 1000))}s`
                       : "Get AI feedback"}
@@ -413,6 +437,11 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
 
               {state.error && <p className="text-sm text-[#ff9d9d]">{state.error}</p>}
               {state.notice && !state.error && <p className="text-sm text-[#9fd4ff]">{state.notice}</p>}
+              {(!frq.rubric.trim() || !frq.sample_response.trim()) && (
+                <p className="text-sm text-[#8f8cab]">
+                  This FRQ can still be written, but AI rubric grading is disabled until rubric and sample-response data are available.
+                </p>
+              )}
 
               {state.result && (
                 <div className="space-y-4 rounded-[24px] border border-[#2b2752] bg-[#100f1f] p-5">

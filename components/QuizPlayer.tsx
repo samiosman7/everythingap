@@ -17,7 +17,7 @@ type SafeQuestion = {
   explanation: string;
 };
 
-function normalizeQuestions(questions: QuizQuestion[] | unknown): SafeQuestion[] {
+export function normalizeQuizQuestions(questions: QuizQuestion[] | unknown): SafeQuestion[] {
   if (!Array.isArray(questions)) return [];
 
   return questions
@@ -25,18 +25,36 @@ function normalizeQuestions(questions: QuizQuestion[] | unknown): SafeQuestion[]
       if (!item || typeof item !== "object") return null;
 
       const rawQuestion = "question" in item ? item.question : "";
-      const rawChoices = "choices" in item ? item.choices : [];
-      const rawAnswerIndex = "answer_index" in item ? item.answer_index : -1;
+      const rawChoices =
+        "choices" in item
+          ? item.choices
+          : "options" in item
+            ? item.options
+            : [];
+      const rawAnswerIndex =
+        "answer_index" in item
+          ? item.answer_index
+          : "answer" in item
+            ? item.answer
+            : -1;
       const rawExplanation = "explanation" in item ? item.explanation : "";
 
-      if (typeof rawQuestion !== "string" || !Array.isArray(rawChoices)) return null;
+      if (typeof rawQuestion !== "string") return null;
 
-      const choices = rawChoices.filter((choice): choice is string => typeof choice === "string");
+      const choices = Array.isArray(rawChoices)
+        ? rawChoices.filter((choice): choice is string => typeof choice === "string")
+        : rawChoices && typeof rawChoices === "object"
+          ? ["A", "B", "C", "D", "E"]
+              .map(key => rawChoices[key as keyof typeof rawChoices])
+              .filter((choice): choice is string => typeof choice === "string")
+          : [];
       if (choices.length < 2) return null;
 
       const answerIndex =
         typeof rawAnswerIndex === "number" && rawAnswerIndex >= 0 && rawAnswerIndex < choices.length
           ? rawAnswerIndex
+          : typeof rawAnswerIndex === "string" && /^[A-E]$/i.test(rawAnswerIndex)
+            ? Math.max(0, "ABCDE".indexOf(rawAnswerIndex.toUpperCase()))
           : 0;
 
       return {
@@ -50,7 +68,7 @@ function normalizeQuestions(questions: QuizQuestion[] | unknown): SafeQuestion[]
 }
 
 export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }: Props) {
-  const safeQuestions = useMemo(() => normalizeQuestions(questions), [questions]);
+  const safeQuestions = useMemo(() => normalizeQuizQuestions(questions), [questions]);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);

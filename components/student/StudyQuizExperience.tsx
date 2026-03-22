@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QuizPlayer from "@/components/QuizPlayer";
+import { normalizeQuizQuestions } from "@/components/QuizPlayer";
 import {
   getChapterWorkspace,
   getUnitWorkspace,
@@ -38,6 +39,7 @@ const mistakeOptions: Array<{ id: MistakeCategory; label: string }> = [
 ];
 
 export default function StudyQuizExperience(props: BaseProps) {
+  const safeQuestions = normalizeQuizQuestions(props.questions);
   const [ready, setReady] = useState(false);
   const [confidenceBefore, setConfidenceBefore] = useState(50);
   const [confidenceAfter, setConfidenceAfter] = useState(50);
@@ -151,6 +153,17 @@ export default function StudyQuizExperience(props: BaseProps) {
   ]);
 
   const heading = props.kind === "chapter-quiz" ? "Pre-quiz check-in" : props.kind === "unit-exam" ? "Pre-exam check-in" : "Mock-exam check-in";
+
+  if (safeQuestions.length === 0) {
+    return (
+      <div className="rounded-[24px] border border-white/10 bg-[#111118] p-6 text-center">
+        <div className="mb-3 text-3xl font-display font-bold text-white">Soon</div>
+        <p className="mx-auto max-w-2xl text-sm leading-7 text-[#9793ae]">
+          This quiz does not have valid question data yet. Check back after the content finishes generating.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
