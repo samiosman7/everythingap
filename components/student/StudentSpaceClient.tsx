@@ -216,13 +216,16 @@ export default function StudentSpaceClient({ courses, emailLabel, isGuest, focus
             <section className="space-y-4">
               <div>
                 <p className="app-kicker">Your signals</p>
-                <h2 className="app-section-title mt-2">Everything you marked, saved, flagged, or reflected on.</h2>
+                <h2 className="app-section-title mt-2">Your notes and reflections, organized by class.</h2>
                 <p className="app-copy mt-3 max-w-3xl">
-                  This page acts like a clean control panel for your learning signals, not another noisy dashboard.
+                  Each class now gets its own student space section, so AP Gov does not get mixed into AP Bio and the whole page feels more like organized study folders.
                 </p>
               </div>
 
-              <StudyDashboardWidgets />
+              <StudyDashboardWidgets
+                courses={selectedCourses.length ? selectedCourses : courses}
+                selectedCourseIds={selectedIds}
+              />
             </section>
           </div>
         </main>

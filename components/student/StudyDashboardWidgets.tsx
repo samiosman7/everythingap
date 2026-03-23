@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   getConfidenceGapItems,
   getConfusedItems,
@@ -14,43 +14,48 @@ import {
   type LearningDashboardItem,
 } from "@/lib/study-progress";
 
-function InsightList({
+type StudentSpaceCourse = {
+  id: string;
+  name: string;
+  emoji: string;
+  color: string;
+};
+
+function ItemList({
   title,
-  subtitle,
+  emptyLabel,
   items,
 }: {
   title: string;
-  subtitle: string;
+  emptyLabel: string;
   items: LearningDashboardItem[];
 }) {
   return (
-    <section className="app-panel p-5">
-      <p className="app-kicker">{title}</p>
-      <p className="mt-2 text-sm leading-7 app-copy">{subtitle}</p>
-
+    <section className="app-card p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] app-muted">{title}</p>
       {items.length > 0 ? (
-        <div className="mt-4 space-y-3">
+        <div className="mt-3 space-y-3">
           {items.map(item => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className="app-card block px-4 py-3 transition-transform hover:-translate-y-0.5"
-            >
+            <Link key={item.id} href={item.href} className="block rounded-2xl border px-4 py-3 transition-transform hover:-translate-y-0.5" style={{ borderColor: "var(--line)" }}>
               <p className="text-sm font-semibold">{item.label}</p>
               <p className="mt-1 text-sm leading-6 app-copy">{item.detail}</p>
             </Link>
           ))}
         </div>
       ) : (
-        <div className="mt-4 rounded-2xl border border-dashed px-4 py-5 text-sm leading-6 app-muted" style={{ borderColor: "var(--line)" }}>
-          Nothing here yet. Once students start leaving notes, confidence marks, and reflections, this section fills itself in.
-        </div>
+        <p className="mt-3 text-sm leading-6 app-copy">{emptyLabel}</p>
       )}
     </section>
   );
 }
 
-export default function StudyDashboardWidgets() {
+export default function StudyDashboardWidgets({
+  courses,
+  selectedCourseIds,
+}: {
+  courses: StudentSpaceCourse[];
+  selectedCourseIds: string[];
+}) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -68,51 +73,92 @@ export default function StudyDashboardWidgets() {
     };
   }, []);
 
-  const leastConfident = ready ? getLeastConfidentItems(4) : [];
-  const confused = ready ? getConfusedItems(4) : [];
-  const reminders = ready ? getReminderItems(4) : [];
-  const notes = ready ? getRecentNotes(4) : [];
-  const reflections = ready ? getReflectionItems(4) : [];
-  const gaps = ready ? getConfidenceGapItems(4) : [];
-  const mastered = ready ? getMasteredItems(4) : [];
+  const grouped = useMemo(() => {
+    const notes = ready ? getRecentNotes(100) : [];
+    const reflections = ready ? getReflectionItems(100) : [];
+    const weakAreas = ready ? [...getLeastConfidentItems(100), ...getConfusedItems(100), ...getConfidenceGapItems(100)] : [];
+    const reminders = ready ? getReminderItems(100) : [];
+    const mastered = ready ? getMasteredItems(100) : [];
+
+    const preferredCourses = courses.filter(course => selectedCourseIds.includes(course.id));
+    const remainingCourses = courses.filter(course => !selectedCourseIds.includes(course.id));
+    const orderedCourses = [...preferredCourses, ...remainingCourses];
+
+    return orderedCourses
+      .map(course => ({
+        course,
+        notes: notes.filter(item => item.courseId === course.id).slice(0, 4),
+        reflections: reflections.filter(item => item.courseId === course.id).slice(0, 4),
+        weakAreas: weakAreas.filter(item => item.courseId === course.id).slice(0, 4),
+        reminders: reminders.filter(item => item.courseId === course.id).slice(0, 4),
+        mastered: mastered.filter(item => item.courseId === course.id).slice(0, 4),
+      }))
+      .filter(group => group.notes.length || group.reflections.length || group.weakAreas.length || group.reminders.length || group.mastered.length);
+  }, [courses, ready, selectedCourseIds]);
+
+  if (!ready) {
+    return <div className="app-panel p-6 text-sm app-copy">Loading your student space...</div>;
+  }
+
+  if (grouped.length === 0) {
+    return (
+      <div className="app-panel p-6">
+        <p className="app-kicker">Student space</p>
+        <h3 className="app-section-title mt-2">Nothing saved yet.</h3>
+        <p className="app-copy mt-3 max-w-2xl">
+          Once you leave notes, reflections, reminders, or confidence marks in your courses, this page will split them out by class so it feels more like separate AP folders instead of one giant mixed list.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-      <InsightList
-        title="Least confident"
-        subtitle="The places you marked as weak so the dashboard can steer you back there first."
-        items={leastConfident}
-      />
-      <InsightList
-        title="Marked confusing"
-        subtitle="Topics and units you explicitly flagged as messy, unclear, or needing help."
-        items={confused}
-      />
-      <InsightList
-        title="Saved reminders"
-        subtitle="Everything you tagged for later review, likely-on-the-test moments, and memorize-this reminders."
-        items={reminders}
-      />
-      <InsightList
-        title="Recent notes"
-        subtitle="Your most recent private notes, summaries, sticky notes, and flashcard reminders."
-        items={notes}
-      />
-      <InsightList
-        title="Reflections"
-        subtitle="What felt shaky, what you want to review tomorrow, and the advice you left your future self."
-        items={reflections}
-      />
-      <InsightList
-        title="Confidence vs scores"
-        subtitle="Places where how you felt and how you scored do not match yet."
-        items={gaps}
-      />
-      <InsightList
-        title="Marked mastered"
-        subtitle="Chapters you marked as understood or felt highly confident about."
-        items={mastered}
-      />
+    <div className="space-y-5">
+      {grouped.map(({ course, notes, reflections, weakAreas, reminders, mastered }) => (
+        <section key={course.id} className="app-panel p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl text-2xl" style={{ background: `${course.color}22` }}>
+                <span aria-hidden="true">{course.emoji}</span>
+              </div>
+              <div>
+                <p className="app-kicker">Student space by class</p>
+                <h3 className="font-display text-2xl font-semibold">{course.name} student space</h3>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 xl:grid-cols-2">
+            <ItemList
+              title={`${course.name} student notes`}
+              emptyLabel="No private notes saved for this class yet."
+              items={notes}
+            />
+            <ItemList
+              title={`${course.name} reflections`}
+              emptyLabel="No chapter, unit, or FRQ reflections saved for this class yet."
+              items={reflections}
+            />
+            <ItemList
+              title={`${course.name} weak areas`}
+              emptyLabel="No weak areas marked for this class yet."
+              items={weakAreas}
+            />
+            <ItemList
+              title={`${course.name} reminders`}
+              emptyLabel="No review-later or likely-on-the-test reminders saved for this class yet."
+              items={reminders}
+            />
+            <div className="xl:col-span-2">
+              <ItemList
+                title={`${course.name} mastered`}
+                emptyLabel="Nothing in this class has been marked as mastered yet."
+                items={mastered}
+              />
+            </div>
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
