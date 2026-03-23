@@ -48,15 +48,34 @@ export default function HomePage() {
           </span>
 
           <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end sm:gap-3">
-            {isSignedIn || isGuest ? (
+            <Link href="/sign-in" className="px-3 py-2 text-sm font-medium" style={{ color: "var(--text-soft)" }}>
+              Sign in
+            </Link>
+            <Link href="/sign-up" className="px-3 py-2 text-sm font-medium" style={{ color: "var(--text-soft)" }}>
+              Sign up
+            </Link>
+            {isSignedIn ? (
               <Link href="/dashboard" className="app-primary-button flex-1 px-4 py-2.5 text-center text-sm sm:flex-none">
                 Open dashboard
               </Link>
+            ) : isGuest ? (
+              <>
+                <Link href="/dashboard" className="app-primary-button flex-1 px-4 py-2.5 text-center text-sm sm:flex-none">
+                  Resume guest mode
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.cookie = `${GUEST_COOKIE_NAME}=; path=/; max-age=0; samesite=lax`;
+                    setIsGuest(false);
+                  }}
+                  className="app-secondary-button w-full px-4 py-2.5 text-center text-sm font-medium sm:w-auto"
+                >
+                  Exit guest mode
+                </button>
+              </>
             ) : (
               <>
-                <Link href="/sign-in" className="px-3 py-2 text-sm font-medium" style={{ color: "var(--text-soft)" }}>
-                  Sign in
-                </Link>
                 <Link href="/onboarding" className="app-primary-button flex-1 px-4 py-2.5 text-center text-sm sm:flex-none">
                   Start studying
                 </Link>
@@ -97,11 +116,30 @@ export default function HomePage() {
             </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link href="/onboarding" className="app-primary-button inline-flex items-center justify-center gap-2 px-6 py-4 text-base">
-                Choose my AP classes
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <GuestModeButton href="/onboarding" className="app-secondary-button px-6 py-4 text-base font-medium" />
+              {isSignedIn ? (
+                <Link href="/dashboard" className="app-primary-button inline-flex items-center justify-center gap-2 px-6 py-4 text-base">
+                  Open my dashboard
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              ) : isGuest ? (
+                <>
+                  <Link href="/dashboard" className="app-primary-button inline-flex items-center justify-center gap-2 px-6 py-4 text-base">
+                    Resume guest mode
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link href="/sign-up" className="app-secondary-button px-6 py-4 text-base font-medium">
+                    Save my progress with an account
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/onboarding" className="app-primary-button inline-flex items-center justify-center gap-2 px-6 py-4 text-base">
+                    Choose my AP classes
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <GuestModeButton href="/onboarding" className="app-secondary-button px-6 py-4 text-base font-medium" />
+                </>
+              )}
             </div>
           </motion.div>
 

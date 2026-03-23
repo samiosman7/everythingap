@@ -1,8 +1,16 @@
+ "use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 import { SignIn } from "@clerk/nextjs";
+import { GUEST_COOKIE_NAME } from "@/lib/auth-constants";
 
 export default function Page() {
+  useEffect(() => {
+    document.cookie = `${GUEST_COOKIE_NAME}=; path=/; max-age=0; samesite=lax`;
+  }, []);
+
   return (
     <div className="min-h-screen" style={{ background: "var(--bg)" }}>
       <div className="app-page py-10">

@@ -14,6 +14,6 @@ export async function getViewerContext() {
     supabase,
     user: clerkAuth.userId ? { id: clerkAuth.userId } : null,
     userId: clerkAuth.userId,
-    isGuest: cookieStore.get(GUEST_COOKIE_NAME)?.value === "1",
+    isGuest: !clerkAuth.userId && cookieStore.get(GUEST_COOKIE_NAME)?.value === "1",
   };
 }
