@@ -82,7 +82,7 @@ export default function DashboardSidebar({
       },
       {
         label: "Setup Guide",
-        href: "/setup-guide",
+        href: "/onboarding?tutorial=1",
         icon: <Sparkles className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
       },
       {

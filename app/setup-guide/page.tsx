@@ -1,5 +1,5 @@
-import SetupGuideClient from "@/components/SetupGuideClient";
+import { redirect } from "next/navigation";
 
 export default function SetupGuidePage() {
-  return <SetupGuideClient />;
+  redirect("/onboarding?tutorial=1");
 }

@@ -20,10 +20,12 @@ import { Course } from "@/types";
 import GuestModeButton from "@/components/GuestModeButton";
 import { groupCoursesByCategory } from "@/lib/course-display";
 import { saveSelectedCourseIds } from "@/lib/course-preferences";
+import { buildTutorialTargets, createTutorialState, saveTutorialState } from "@/lib/tutorial";
 
 type OnboardingClientProps = {
   continueHref?: string;
   allowGuest?: boolean;
+  tutorialMode?: boolean;
 };
 
 const FIRST_SESSION_STEPS = [
@@ -94,11 +96,13 @@ const STUDY_FLOW = [
 export default function OnboardingClient({
   continueHref = "/sign-up",
   allowGuest = true,
+  tutorialMode = false,
 }: OnboardingClientProps) {
   const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [continuing, setContinuing] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -124,8 +128,36 @@ export default function OnboardingClient({
     );
   }
 
-  function handleContinue() {
+  async function handleContinue() {
+    if (continuing) return;
     saveSelectedCourseIds(selectedIds);
+    setContinuing(true);
+
+    if (tutorialMode && selectedIds.length === 0) {
+      saveTutorialState(createTutorialState());
+      setContinuing(false);
+      return;
+    }
+
+    if (tutorialMode && selectedIds.length > 0) {
+      try {
+        const supabase = createClient();
+        const targets = await buildTutorialTargets(supabase, selectedIds);
+        saveTutorialState({ ...createTutorialState(targets ?? undefined), stepIndex: 1 });
+
+        if (targets?.chapterNotesHref) {
+          router.push(targets.chapterNotesHref);
+          return;
+        }
+      } catch {
+        saveTutorialState(createTutorialState());
+      }
+    }
+
+    if (tutorialMode) {
+      saveTutorialState(createTutorialState());
+    }
+
     router.push(continueHref);
   }
 
@@ -152,7 +184,7 @@ export default function OnboardingClient({
                 onClick={handleContinue}
                 className="inline-flex items-center gap-2 rounded-2xl bg-[#6c63ff] px-6 py-3.5 font-body text-sm font-semibold text-white transition-all hover:bg-[#7c73ff]"
               >
-                Save selections and continue
+                {continuing ? "Opening your walkthrough..." : "Save selections and continue"}
                 <ArrowRight className="h-4 w-4" />
               </button>
               {allowGuest && (
