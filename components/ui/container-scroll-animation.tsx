@@ -36,11 +36,11 @@ export const ContainerScroll = ({
 
   return (
     <div
-      className="relative flex h-[38rem] items-center justify-center px-1 py-2 sm:h-[48rem] sm:px-2 md:h-[80rem] md:p-20"
+      className="relative flex h-[28rem] items-center justify-center px-1 py-1 sm:h-[36rem] sm:px-2 md:h-[56rem] md:px-8 md:py-8"
       ref={containerRef}
     >
       <div
-        className="relative w-full py-6 sm:py-10 md:py-40"
+        className="relative w-full py-3 sm:py-6 md:py-16"
         style={{
           perspective: "1000px",
         }}
@@ -93,7 +93,7 @@ export const Card = ({
         borderColor: "var(--line-strong)",
         background: "linear-gradient(180deg, var(--panel), var(--bg-elevated))",
       }}
-      className="mx-auto -mt-6 h-[24rem] w-full max-w-5xl rounded-[24px] border-2 p-1.5 shadow-2xl sm:-mt-8 sm:h-[28rem] sm:rounded-[26px] sm:p-2 md:-mt-12 md:h-[40rem] md:rounded-[30px] md:border-4 md:p-6"
+      className="mx-auto -mt-3 h-[20rem] w-full max-w-5xl rounded-[24px] border-2 p-1.5 shadow-2xl sm:-mt-5 sm:h-[24rem] sm:rounded-[26px] sm:p-2 md:-mt-8 md:h-[32rem] md:rounded-[30px] md:border-4 md:p-4"
     >
       <div
         className="h-full w-full overflow-hidden rounded-[18px] sm:rounded-[20px] md:rounded-2xl md:p-4"

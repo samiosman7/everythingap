@@ -3,11 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, BookOpenText, Compass, Search, Target } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { getCourseHref } from "@/lib/course";
 import { groupCoursesByCategory } from "@/lib/course-display";
 import { readSelectedCourseIds } from "@/lib/course-preferences";
-import ResumeWhereLeftOff from "@/components/ResumeWhereLeftOff";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { getCourseProgress } from "@/lib/study-progress";
 
@@ -29,12 +28,6 @@ type DashboardClientProps = {
   emailLabel: string;
   isGuest: boolean;
 };
-
-const QUICKSTART_STEPS = [
-  "Open the class with the nearest test or homework.",
-  "Use the chapter note long enough to understand the topic, then switch to practice.",
-  "Keep private reminders in Student Space so the course pages stay focused.",
-];
 
 function ProgressBar({ percent, color }: { percent: number; color: string }) {
   return (
@@ -112,76 +105,6 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
 
         <main className="app-page">
           <div className="space-y-6">
-            <motion.div
-              id="resume-section"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <ResumeWhereLeftOff />
-            </motion.div>
-
-            <section className="grid gap-4 xl:grid-cols-[1.15fr,0.85fr]">
-              <div className="app-panel p-6 sm:p-7">
-                <p className="app-kicker">Study flow</p>
-                <h2 className="app-section-title mt-3">The next step should feel obvious.</h2>
-                <div className="mt-5 grid gap-3 md:grid-cols-3">
-                  {[
-                    { icon: Target, title: "Resume fast", desc: "Jump straight back into the page you were using." },
-                    { icon: BookOpenText, title: "Study in order", desc: "Move from notes to practice without hunting for the next tool." },
-                    { icon: Compass, title: "Stay oriented", desc: "Course hubs and unit hubs keep the structure clean." },
-                  ].map(item => {
-                    const Icon = item.icon;
-                    return (
-                      <div key={item.title} className="app-card p-4">
-                        <Icon className="h-5 w-5 theme-accent" />
-                        <h3 className="mt-3 font-display text-lg font-semibold">{item.title}</h3>
-                        <p className="mt-2 text-sm leading-6 app-muted">{item.desc}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="app-panel p-6 sm:p-7">
-                <p className="app-kicker">Next action</p>
-                <h2 className="app-section-title mt-3">
-                  {selectedCourses.length ? "Your classes are ready." : "Start by picking your classes."}
-                </h2>
-                <p className="app-copy mt-3">
-                  {selectedCourses.length
-                    ? "Open one of your classes below, or run the tour if you want a guided walk through the real study flow."
-                    : "Choose at least one AP class so the dashboard and sidebar can point to the right material."}
-                </p>
-
-                <div className="mt-5 space-y-3">
-                  {QUICKSTART_STEPS.map((step, index) => (
-                    <div key={step} className="app-card flex items-start gap-3 p-4">
-                      <div
-                        className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold text-white"
-                        style={{ background: "var(--accent)" }}
-                      >
-                        {index + 1}
-                      </div>
-                      <p className="text-sm leading-6 app-copy">{step}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-3">
-                  {!selectedCourses.length && (
-                    <Link href="/onboarding" className="app-primary-button inline-flex items-center gap-2 px-4 py-3 text-sm">
-                      Pick classes
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  )}
-                  <Link href="/student-space" className="app-secondary-button inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-                    Open student space
-                  </Link>
-                </div>
-              </div>
-            </section>
-
             {selectedCourses.length > 0 && (
               <section id="my-courses">
                 <div className="mb-4">

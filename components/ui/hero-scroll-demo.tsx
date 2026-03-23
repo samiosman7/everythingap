@@ -35,7 +35,7 @@ So the limit is 6.
 
 export function HeroScrollDemo() {
   return (
-    <div className="flex flex-col overflow-hidden pb-[120px] pt-[40px] sm:pb-[180px] sm:pt-[70px] md:pb-[360px] md:pt-[220px]">
+    <div className="flex flex-col overflow-hidden pb-8 pt-2 sm:pb-12 sm:pt-4 md:pb-16 md:pt-8">
       <ContainerScroll
         titleComponent={
           <>

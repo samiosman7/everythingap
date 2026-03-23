@@ -8,7 +8,6 @@ import { ArrowRight, BookOpenText, Layers3, Sparkles, Target } from "lucide-reac
 import GuestModeButton from "@/components/GuestModeButton";
 import { HeroScrollDemo } from "@/components/ui/hero-scroll-demo";
 import { GUEST_COOKIE_NAME } from "@/lib/auth-constants";
-import ResumeWhereLeftOff from "@/components/ResumeWhereLeftOff";
 
 const REASONS = [
   {
@@ -146,11 +145,7 @@ export default function HomePage() {
           <HeroScrollDemo />
         </section>
 
-        <section className="mx-auto mt-8 max-w-[1400px]">
-          <ResumeWhereLeftOff />
-        </section>
-
-        <section className="mx-auto mt-8 grid max-w-[1400px] gap-4 lg:grid-cols-3">
+        <section className="mx-auto mt-4 grid max-w-[1400px] gap-4 lg:grid-cols-3">
           {REASONS.map((item, index) => {
             const Icon = item.icon;
             return (
