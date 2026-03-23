@@ -10,6 +10,7 @@ import {
   Home,
   Layers3,
   LayoutDashboard,
+  Settings,
   Sparkles,
   Search,
 } from "lucide-react";
@@ -33,7 +34,10 @@ type DashboardSidebarProps = {
 function Logo({ compact = false }: { compact?: boolean }) {
   return (
     <Link href="/dashboard" className="relative z-20 flex items-center gap-3 py-1 text-sm text-white">
-      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-2xl bg-[#8b80ff] font-display text-sm font-bold text-white">
+      <div
+        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl font-display text-sm font-bold text-white"
+        style={{ background: "var(--accent)" }}
+      >
         AP
       </div>
       {!compact && <span className="whitespace-pre font-display text-base font-semibold">EverythingAP</span>}
@@ -53,42 +57,47 @@ export default function DashboardSidebar({
       {
         label: "Dashboard",
         href: "/dashboard",
-        icon: <LayoutDashboard className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <LayoutDashboard className="h-5 w-5 flex-shrink-0" />,
       },
       {
         label: "Resume",
         href: "#resume-section",
-        icon: <Compass className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <Compass className="h-5 w-5 flex-shrink-0" />,
       },
       {
         label: "Student Space",
         href: "/student-space",
-        icon: <Brain className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <Brain className="h-5 w-5 flex-shrink-0" />,
+      },
+      {
+        label: "Settings",
+        href: "/settings",
+        icon: <Settings className="h-5 w-5 flex-shrink-0" />,
       },
       {
         label: "My Courses",
         href: "#my-courses",
-        icon: <GraduationCap className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <GraduationCap className="h-5 w-5 flex-shrink-0" />,
       },
       {
         label: "Browse All",
         href: "#browse-courses",
-        icon: <Layers3 className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <Layers3 className="h-5 w-5 flex-shrink-0" />,
       },
       {
         label: "Pick Classes",
         href: "/onboarding",
-        icon: <Search className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <Search className="h-5 w-5 flex-shrink-0" />,
       },
       {
-        label: "Setup Guide",
+        label: "Tour",
         href: "/onboarding?tutorial=1",
-        icon: <Sparkles className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <Sparkles className="h-5 w-5 flex-shrink-0" />,
       },
       {
         label: "Home",
         href: "/",
-        icon: <Home className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+        icon: <Home className="h-5 w-5 flex-shrink-0" />,
       },
     ],
     []
@@ -96,23 +105,28 @@ export default function DashboardSidebar({
 
   return (
     <Sidebar open={open} setOpen={setOpen}>
-      <SidebarBody className="justify-between gap-8 border-r border-white/8 bg-[#0b0b12]">
+      <SidebarBody className="justify-between gap-8">
         <div className="flex h-full flex-1 flex-col justify-between px-4 py-4">
           <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
             {open ? <Logo /> : <Logo compact />}
 
             <div className="mt-8 flex flex-col gap-2">
               {primaryLinks.map(link => (
-                <SidebarLink key={link.label} link={link} />
+                <SidebarLink
+                  key={link.label}
+                  link={link}
+                  className="hover:bg-white/5"
+                />
               ))}
             </div>
 
-            <div className="mt-8 border-t border-white/10 pt-6">
+            <div className="mt-8 border-t pt-6" style={{ borderColor: "var(--line)" }}>
               <div
                 className={cn(
-                  "mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#77738b]",
+                  "mb-3 text-[11px] font-semibold uppercase tracking-[0.22em]",
                   !open && "hidden"
                 )}
+                style={{ color: "var(--text-muted)" }}
               >
                 Selected classes
               </div>
@@ -129,11 +143,14 @@ export default function DashboardSidebar({
                         </span>
                       ),
                     }}
-                    className="py-2"
+                    className="py-2 hover:bg-white/5"
                   />
                 ))}
                 {!selectedCourses.length && open && (
-                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-xs leading-5 text-[#8985a2]">
+                  <div
+                    className="rounded-2xl border border-dashed px-3 py-3 text-xs leading-5"
+                    style={{ borderColor: "var(--line)", color: "var(--text-muted)" }}
+                  >
                     Choose your AP classes in onboarding and they&apos;ll stay pinned here.
                   </div>
                 )}
@@ -141,21 +158,27 @@ export default function DashboardSidebar({
             </div>
           </div>
 
-          <div className="space-y-3 border-t border-white/10 pt-4">
-            <div className="flex items-center gap-3 rounded-2xl bg-white/[0.04] px-3 py-3">
-              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#8b80ff]/20 text-sm font-semibold text-white">
+          <div className="space-y-3 border-t pt-4" style={{ borderColor: "var(--line)" }}>
+            <div
+              className="flex items-center gap-3 rounded-2xl px-3 py-3"
+              style={{ background: "var(--panel-muted)" }}
+            >
+              <div
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+                style={{ background: "var(--accent-soft)" }}
+              >
                 <BookOpenText className="h-4 w-4" />
               </div>
               {open && (
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-white">{emailLabel}</p>
-                  <p className="text-xs text-[#8b87a3]">{isGuest ? "Guest session" : "Signed in"}</p>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>{isGuest ? "Guest session" : "Signed in"}</p>
                 </div>
               )}
             </div>
             <LogoutButton
               isGuest={isGuest}
-              className="w-full rounded-2xl border-white/10 bg-white/5 px-4 py-3 text-left text-[#d5d2e8] hover:bg-white/10"
+              className="app-secondary-button w-full px-4 py-3 text-left"
             />
           </div>
         </div>

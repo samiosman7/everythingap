@@ -34,25 +34,28 @@ export default async function UnitPage({ params }: { params: Promise<{ courseId:
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex flex-wrap items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link href="/dashboard" className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]">
+    <div className="min-h-screen">
+      <nav
+        className="sticky top-0 z-50 flex flex-wrap items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
+        style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
+      >
+        <Link href="/dashboard" className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
           All courses
         </Link>
-        <span className="text-[#2a2a3a]">/</span>
-        <Link href={courseHref} className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]">
+        <span style={{ color: "var(--line-strong)" }}>/</span>
+        <Link href={courseHref} className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
           {course.name}
         </Link>
-        <span className="text-[#2a2a3a]">/</span>
-        <span className="text-sm font-body font-medium text-[#e8e8f0]">{unit.name}</span>
+        <span style={{ color: "var(--line-strong)" }}>/</span>
+        <span className="text-sm font-medium">{unit.name}</span>
       </nav>
 
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-page">
         <div className="grid gap-6 xl:grid-cols-[1.15fr,0.85fr]">
           <UnitOrganizerClient
             courseId={course.id}
             courseHref={courseHref}
-            courseColor={course.color ?? "#6c63ff"}
+            courseColor={course.color ?? "var(--accent)"}
             unitId={String(unit.id)}
             unitName={unit.name}
             unitNumber={unit.unit_number}
@@ -71,7 +74,7 @@ export default async function UnitPage({ params }: { params: Promise<{ courseId:
                 courseId: course.id,
                 unitId: String(unit.id),
                 href: `${courseHref}/unit/${unit.id}`,
-                label: `${course.name} • ${unit.name}`,
+                label: `${course.name} · ${unit.name}`,
               }}
             />
           </div>

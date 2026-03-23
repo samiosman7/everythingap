@@ -21,13 +21,7 @@ type BaseMeta = {
   label: string;
 };
 
-type ConfidenceProps = {
-  value: number;
-  onChange: (value: number) => void;
-  caption: string;
-};
-
-function SectionCard({
+function Shell({
   title,
   subtitle,
   children,
@@ -37,26 +31,22 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-[28px] border border-white/10 bg-[#111118] p-5 sm:p-6">
-      <div className="mb-5">
-        <p className="text-xs font-body font-medium uppercase tracking-[0.22em] text-[#9d96ff]">{title}</p>
-        <p className="mt-2 max-w-2xl text-sm leading-7 text-[#9793ae]">{subtitle}</p>
-      </div>
-      <div className="space-y-5">{children}</div>
+    <section className="app-panel p-5 sm:p-6">
+      <p className="app-kicker">{title}</p>
+      <p className="mt-3 text-sm leading-7 app-copy">{subtitle}</p>
+      <div className="mt-5 space-y-4">{children}</div>
     </section>
   );
 }
 
-function Field({
+function CompactField({
   label,
-  hint,
   value,
   onChange,
   placeholder,
   rows = 4,
 }: {
   label: string;
-  hint?: string;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
@@ -64,22 +54,19 @@ function Field({
 }) {
   return (
     <label className="block">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="text-sm font-semibold text-white">{label}</span>
-        {hint ? <span className="text-xs text-[#6f6b86]">{hint}</span> : null}
-      </div>
+      <span className="mb-2 block text-sm font-semibold">{label}</span>
       <textarea
         rows={rows}
         value={value}
         onChange={event => onChange(event.target.value)}
         placeholder={placeholder}
-        className="min-h-[96px] w-full rounded-2xl border border-[#262637] bg-[#0c0c12] px-4 py-3 text-sm leading-7 text-[#eceaff] outline-none transition-colors placeholder:text-[#5f5a78] focus:border-[#6c63ff]/50"
+        className="app-textarea min-h-[96px]"
       />
     </label>
   );
 }
 
-function TextField({
+function CompactTextField({
   label,
   value,
   onChange,
@@ -92,13 +79,8 @@ function TextField({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-semibold text-white">{label}</span>
-      <input
-        value={value}
-        onChange={event => onChange(event.target.value)}
-        placeholder={placeholder}
-        className="w-full rounded-2xl border border-[#262637] bg-[#0c0c12] px-4 py-3 text-sm text-[#eceaff] outline-none transition-colors placeholder:text-[#5f5a78] focus:border-[#6c63ff]/50"
-      />
+      <span className="mb-2 block text-sm font-semibold">{label}</span>
+      <input value={value} onChange={event => onChange(event.target.value)} placeholder={placeholder} className="app-input" />
     </label>
   );
 }
@@ -116,30 +98,37 @@ function ToggleChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
-        active
-          ? "border-[#8b80ff]/40 bg-[#8b80ff]/14 text-[#d5d0ff]"
-          : "border-white/10 bg-white/[0.03] text-[#8c88a4] hover:border-white/20 hover:text-white"
-      }`}
+      className="app-chip px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors"
+      style={{
+        borderColor: active ? "var(--accent)" : "var(--line)",
+        background: active ? "var(--accent-soft)" : undefined,
+        color: active ? "var(--text)" : undefined,
+      }}
     >
       {label}
     </button>
   );
 }
 
-function ConfidenceSlider({ value, onChange, caption }: ConfidenceProps) {
+function ConfidenceSlider({
+  value,
+  onChange,
+  caption,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+  caption: string;
+}) {
   const label = confidenceLabelText(value >= 75 ? "confident" : value >= 40 ? "kind-of" : "not-ready");
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+    <div className="app-card p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-white">Confidence</p>
-          <p className="text-sm text-[#9d99b6]">{caption}</p>
+          <p className="text-sm font-semibold">Confidence</p>
+          <p className="mt-1 text-sm app-copy">{caption}</p>
         </div>
-        <div className="rounded-full border border-[#2d2947] bg-[#141325] px-3 py-1 text-sm font-semibold text-[#d9d4ff]">
-          {value}% · {label}
-        </div>
+        <div className="app-chip px-3 py-1 text-sm font-semibold">{value}% · {label}</div>
       </div>
       <input
         type="range"
@@ -148,9 +137,10 @@ function ConfidenceSlider({ value, onChange, caption }: ConfidenceProps) {
         step={5}
         value={value}
         onChange={event => onChange(Number(event.target.value))}
-        className="mt-4 h-2 w-full cursor-pointer accent-[#8b80ff]"
+        className="mt-4 h-2 w-full cursor-pointer"
+        style={{ accentColor: "var(--accent)" }}
       />
-      <div className="mt-2 flex justify-between text-[11px] uppercase tracking-[0.16em] text-[#5f5b76]">
+      <div className="mt-2 flex justify-between text-[11px] uppercase tracking-[0.16em] app-muted">
         <span>Not ready</span>
         <span>Very confident</span>
       </div>
@@ -165,25 +155,6 @@ function parseTags(raw: string) {
     .filter(Boolean);
 }
 
-type ChapterDraft = {
-  notes: string;
-  summary: string;
-  teacherEmphasis: string;
-  memoryAid: string;
-  mistakeNote: string;
-  reflection: string;
-  tomorrowReview: string;
-  teachFriend: string;
-  confidenceValue: number;
-  reviewLater: boolean;
-  confused: boolean;
-  likelyOnTest: boolean;
-  understood: boolean;
-  needHelp: boolean;
-  pinned: boolean;
-  tags: string;
-};
-
 export function ChapterWorkspacePanel({
   chapterId,
   meta,
@@ -192,15 +163,10 @@ export function ChapterWorkspacePanel({
   meta: BaseMeta;
 }) {
   const [ready, setReady] = useState(false);
-  const [draft, setDraft] = useState<ChapterDraft>({
+  const [draft, setDraft] = useState({
     notes: "",
-    summary: "",
-    teacherEmphasis: "",
-    memoryAid: "",
-    mistakeNote: "",
     reflection: "",
     tomorrowReview: "",
-    teachFriend: "",
     confidenceValue: 50,
     reviewLater: false,
     confused: false,
@@ -208,25 +174,22 @@ export function ChapterWorkspacePanel({
     understood: false,
     needHelp: false,
     pinned: false,
+    summary: "",
+    memoryAid: "",
+    teachFriend: "",
     tags: "",
   });
 
   useEffect(() => {
     let mounted = true;
-
     async function hydrate() {
       await syncStudyProgressFromAccount();
       const workspace = getChapterWorkspace(chapterId);
       if (!mounted) return;
       setDraft({
         notes: workspace?.notes ?? "",
-        summary: workspace?.summary ?? "",
-        teacherEmphasis: workspace?.teacherEmphasis ?? "",
-        memoryAid: workspace?.memoryAid ?? "",
-        mistakeNote: workspace?.mistakeNote ?? "",
         reflection: workspace?.reflection ?? "",
         tomorrowReview: workspace?.tomorrowReview ?? "",
-        teachFriend: workspace?.teachFriend ?? "",
         confidenceValue: workspace?.confidence?.value ?? 50,
         reviewLater: workspace?.reviewLater ?? false,
         confused: workspace?.confused ?? false,
@@ -234,13 +197,14 @@ export function ChapterWorkspacePanel({
         understood: workspace?.understood ?? false,
         needHelp: workspace?.needHelp ?? false,
         pinned: workspace?.pinned ?? false,
+        summary: workspace?.summary ?? "",
+        memoryAid: workspace?.memoryAid ?? "",
+        teachFriend: workspace?.teachFriend ?? "",
         tags: workspace?.tags?.join(", ") ?? "",
       });
       setReady(true);
     }
-
     void hydrate();
-
     return () => {
       mounted = false;
     };
@@ -248,43 +212,34 @@ export function ChapterWorkspacePanel({
 
   useEffect(() => {
     if (!ready) return;
-
     const timeout = window.setTimeout(() => {
       const next = saveChapterWorkspace(
         chapterId,
-        {
-          ...meta,
-          pinned: draft.pinned,
-          tags: parseTags(draft.tags),
-        },
+        { ...meta, pinned: draft.pinned, tags: parseTags(draft.tags) },
         {
           notes: draft.notes,
-          summary: draft.summary,
-          teacherEmphasis: draft.teacherEmphasis,
-          memoryAid: draft.memoryAid,
-          mistakeNote: draft.mistakeNote,
           reflection: draft.reflection,
           tomorrowReview: draft.tomorrowReview,
-          teachFriend: draft.teachFriend,
           reviewLater: draft.reviewLater,
           confused: draft.confused,
           likelyOnTest: draft.likelyOnTest,
           understood: draft.understood,
           needHelp: draft.needHelp,
           confidenceValue: draft.confidenceValue,
+          summary: draft.summary,
+          memoryAid: draft.memoryAid,
+          teachFriend: draft.teachFriend,
         }
       );
-
       void pushRemoteStudyProgress(next).catch(() => {});
     }, 500);
-
     return () => window.clearTimeout(timeout);
   }, [chapterId, draft, meta, ready]);
 
   return (
-    <SectionCard
-      title="Student workspace"
-      subtitle="Keep your own notes, confidence, reminders, and reflections right next to the chapter instead of scattering them across random tabs."
+    <Shell
+      title="Chapter workspace"
+      subtitle="A cleaner place for your own notes and confidence, without turning the page into a giant form."
     >
       <ConfidenceSlider
         value={draft.confidenceValue}
@@ -293,87 +248,33 @@ export function ChapterWorkspacePanel({
       />
 
       <div className="flex flex-wrap gap-2">
-        <ToggleChip active={draft.reviewLater} onClick={() => setDraft(current => ({ ...current, reviewLater: !current.reviewLater }))} label="Need to review later" />
-        <ToggleChip active={draft.confused} onClick={() => setDraft(current => ({ ...current, confused: !current.confused }))} label="This confused me" />
+        <ToggleChip active={draft.reviewLater} onClick={() => setDraft(current => ({ ...current, reviewLater: !current.reviewLater }))} label="Review later" />
+        <ToggleChip active={draft.confused} onClick={() => setDraft(current => ({ ...current, confused: !current.confused }))} label="Still confusing" />
         <ToggleChip active={draft.likelyOnTest} onClick={() => setDraft(current => ({ ...current, likelyOnTest: !current.likelyOnTest }))} label="Likely on the test" />
         <ToggleChip active={draft.understood} onClick={() => setDraft(current => ({ ...current, understood: !current.understood }))} label="I understand this" />
-        <ToggleChip active={draft.needHelp} onClick={() => setDraft(current => ({ ...current, needHelp: !current.needHelp }))} label="I need help" />
+        <ToggleChip active={draft.needHelp} onClick={() => setDraft(current => ({ ...current, needHelp: !current.needHelp }))} label="Need help" />
         <ToggleChip active={draft.pinned} onClick={() => setDraft(current => ({ ...current, pinned: !current.pinned }))} label="Pin this" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Field
-          label="My notes"
-          value={draft.notes}
-          onChange={value => setDraft(current => ({ ...current, notes: value }))}
-          placeholder="Write your private notes for this chapter here."
-        />
-        <Field
-          label="My summary of this chapter"
-          value={draft.summary}
-          onChange={value => setDraft(current => ({ ...current, summary: value }))}
-          placeholder="What is the big picture in your own words?"
-        />
-        <Field
-          label="Teacher emphasized this"
-          value={draft.teacherEmphasis}
-          onChange={value => setDraft(current => ({ ...current, teacherEmphasis: value }))}
-          placeholder="What would your teacher definitely circle, repeat, or put on a review sheet?"
-        />
-        <Field
-          label="What actually helped me remember this"
-          value={draft.memoryAid}
-          onChange={value => setDraft(current => ({ ...current, memoryAid: value }))}
-          placeholder="Memory tricks, comparisons, examples, or shortcuts that actually worked for you."
-        />
-        <Field
-          label="Mistakes I made on the quiz"
-          value={draft.mistakeNote}
-          onChange={value => setDraft(current => ({ ...current, mistakeNote: value }))}
-          placeholder="What tripped you up, and what will you do differently next time?"
-        />
-        <Field
-          label="What still feels shaky?"
-          value={draft.reflection}
-          onChange={value => setDraft(current => ({ ...current, reflection: value }))}
-          placeholder="Name the concept or step that still feels messy."
-        />
-        <Field
-          label="What should I review tomorrow?"
-          value={draft.tomorrowReview}
-          onChange={value => setDraft(current => ({ ...current, tomorrowReview: value }))}
-          placeholder="Leave your future self a clear next step."
-        />
-        <Field
-          label="What would I teach a friend?"
-          value={draft.teachFriend}
-          onChange={value => setDraft(current => ({ ...current, teachFriend: value }))}
-          placeholder="Explain the part you actually understand well enough to teach."
-        />
+        <CompactField label="Private notes" value={draft.notes} onChange={value => setDraft(current => ({ ...current, notes: value }))} placeholder="What matters here in your own words?" />
+        <CompactField label="What still feels shaky?" value={draft.reflection} onChange={value => setDraft(current => ({ ...current, reflection: value }))} placeholder="Name the concept or step that still feels unstable." />
       </div>
 
-      <TextField
-        label="Custom tags"
-        value={draft.tags}
-        onChange={value => setDraft(current => ({ ...current, tags: value }))}
-        placeholder="Exam soon, practice more, memorize, need teacher help"
-      />
-    </SectionCard>
+      <CompactField label="What should I review next?" value={draft.tomorrowReview} onChange={value => setDraft(current => ({ ...current, tomorrowReview: value }))} placeholder="Leave your future self one clear next step." rows={3} />
+
+      <details className="app-card p-4">
+        <summary className="cursor-pointer text-sm font-semibold">More prompts</summary>
+        <div className="mt-4 grid gap-4 xl:grid-cols-2">
+          <CompactField label="My summary" value={draft.summary} onChange={value => setDraft(current => ({ ...current, summary: value }))} placeholder="Summarize the chapter in a few lines." />
+          <CompactField label="Memory aid" value={draft.memoryAid} onChange={value => setDraft(current => ({ ...current, memoryAid: value }))} placeholder="What actually helped this stick?" />
+          <CompactField label="Teach-a-friend version" value={draft.teachFriend} onChange={value => setDraft(current => ({ ...current, teachFriend: value }))} placeholder="What part could you explain to someone else?" />
+          <CompactTextField label="Custom tags" value={draft.tags} onChange={value => setDraft(current => ({ ...current, tags: value }))} placeholder="exam soon, practice more, memorize" />
+        </div>
+      </details>
+    </Shell>
   );
 }
-
-type UnitDraft = {
-  stickyNote: string;
-  reflection: string;
-  tomorrowReview: string;
-  teachFriend: string;
-  confidenceValue: number;
-  reviewLater: boolean;
-  confused: boolean;
-  likelyOnTest: boolean;
-  pinned: boolean;
-  tags: string;
-};
 
 export function UnitWorkspacePanel({
   unitId,
@@ -383,22 +284,21 @@ export function UnitWorkspacePanel({
   meta: BaseMeta;
 }) {
   const [ready, setReady] = useState(false);
-  const [draft, setDraft] = useState<UnitDraft>({
+  const [draft, setDraft] = useState({
     stickyNote: "",
     reflection: "",
     tomorrowReview: "",
-    teachFriend: "",
     confidenceValue: 50,
     reviewLater: false,
     confused: false,
     likelyOnTest: false,
     pinned: false,
+    teachFriend: "",
     tags: "",
   });
 
   useEffect(() => {
     let mounted = true;
-
     async function hydrate() {
       await syncStudyProgressFromAccount();
       const workspace = getUnitWorkspace(unitId);
@@ -407,19 +307,17 @@ export function UnitWorkspacePanel({
         stickyNote: workspace?.stickyNote ?? "",
         reflection: workspace?.reflection ?? "",
         tomorrowReview: workspace?.tomorrowReview ?? "",
-        teachFriend: workspace?.teachFriend ?? "",
         confidenceValue: workspace?.confidence?.value ?? 50,
         reviewLater: workspace?.reviewLater ?? false,
         confused: workspace?.confused ?? false,
         likelyOnTest: workspace?.likelyOnTest ?? false,
         pinned: workspace?.pinned ?? false,
+        teachFriend: workspace?.teachFriend ?? "",
         tags: workspace?.tags?.join(", ") ?? "",
       });
       setReady(true);
     }
-
     void hydrate();
-
     return () => {
       mounted = false;
     };
@@ -427,15 +325,10 @@ export function UnitWorkspacePanel({
 
   useEffect(() => {
     if (!ready) return;
-
     const timeout = window.setTimeout(() => {
       const next = saveUnitWorkspace(
         unitId,
-        {
-          ...meta,
-          pinned: draft.pinned,
-          tags: parseTags(draft.tags),
-        },
+        { ...meta, pinned: draft.pinned, tags: parseTags(draft.tags) },
         {
           stickyNote: draft.stickyNote,
           reflection: draft.reflection,
@@ -447,17 +340,15 @@ export function UnitWorkspacePanel({
           confidenceValue: draft.confidenceValue,
         }
       );
-
       void pushRemoteStudyProgress(next).catch(() => {});
     }, 500);
-
     return () => window.clearTimeout(timeout);
   }, [draft, meta, ready, unitId]);
 
   return (
-    <SectionCard
-      title="Unit reflection layer"
-      subtitle="Use this space like a sticky-note wall for the whole unit: what feels solid, what needs work, and what you want to revisit before the exam."
+    <Shell
+      title="Unit reflection"
+      subtitle="A compact unit-level note area that feels more like a study scratchpad than a survey."
     >
       <ConfidenceSlider
         value={draft.confidenceValue}
@@ -473,51 +364,22 @@ export function UnitWorkspacePanel({
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Field
-          label="Quick sticky note"
-          value={draft.stickyNote}
-          onChange={value => setDraft(current => ({ ...current, stickyNote: value }))}
-          placeholder="Your one-screen summary of what matters in this unit."
-        />
-        <Field
-          label="End-of-unit reflection"
-          value={draft.reflection}
-          onChange={value => setDraft(current => ({ ...current, reflection: value }))}
-          placeholder="What felt easier than expected, and what still needs work?"
-        />
-        <Field
-          label="What should I review tomorrow?"
-          value={draft.tomorrowReview}
-          onChange={value => setDraft(current => ({ ...current, tomorrowReview: value }))}
-          placeholder="Leave yourself a concrete next move."
-        />
-        <Field
-          label="What would I teach a friend?"
-          value={draft.teachFriend}
-          onChange={value => setDraft(current => ({ ...current, teachFriend: value }))}
-          placeholder="Summarize the part of this unit you understand well enough to explain."
-        />
+        <CompactField label="Unit sticky note" value={draft.stickyNote} onChange={value => setDraft(current => ({ ...current, stickyNote: value }))} placeholder="What matters most in this unit?" />
+        <CompactField label="What still needs work?" value={draft.reflection} onChange={value => setDraft(current => ({ ...current, reflection: value }))} placeholder="What still feels patchy or easy to miss?" />
       </div>
 
-      <TextField
-        label="Custom tags"
-        value={draft.tags}
-        onChange={value => setDraft(current => ({ ...current, tags: value }))}
-        placeholder="Final review, exam soon, practice more"
-      />
-    </SectionCard>
+      <CompactField label="What should I review next?" value={draft.tomorrowReview} onChange={value => setDraft(current => ({ ...current, tomorrowReview: value }))} placeholder="Leave yourself one concrete next move." rows={3} />
+
+      <details className="app-card p-4">
+        <summary className="cursor-pointer text-sm font-semibold">More prompts</summary>
+        <div className="mt-4 grid gap-4 xl:grid-cols-2">
+          <CompactField label="Teach-a-friend version" value={draft.teachFriend} onChange={value => setDraft(current => ({ ...current, teachFriend: value }))} placeholder="What part of this unit could you confidently explain?" />
+          <CompactTextField label="Custom tags" value={draft.tags} onChange={value => setDraft(current => ({ ...current, tags: value }))} placeholder="final review, exam soon, practice more" />
+        </div>
+      </details>
+    </Shell>
   );
 }
-
-type FlashcardDraft = {
-  notes: string;
-  thingsToForget: string;
-  reviewLater: boolean;
-  practiceMore: boolean;
-  memorize: boolean;
-  pinned: boolean;
-  tags: string;
-};
 
 export function FlashcardWorkspacePanel({
   unitId,
@@ -527,7 +389,7 @@ export function FlashcardWorkspacePanel({
   meta: BaseMeta;
 }) {
   const [ready, setReady] = useState(false);
-  const [draft, setDraft] = useState<FlashcardDraft>({
+  const [draft, setDraft] = useState({
     notes: "",
     thingsToForget: "",
     reviewLater: false,
@@ -539,7 +401,6 @@ export function FlashcardWorkspacePanel({
 
   useEffect(() => {
     let mounted = true;
-
     async function hydrate() {
       await syncStudyProgressFromAccount();
       const workspace = getFlashcardWorkspace(unitId);
@@ -555,9 +416,7 @@ export function FlashcardWorkspacePanel({
       });
       setReady(true);
     }
-
     void hydrate();
-
     return () => {
       mounted = false;
     };
@@ -565,15 +424,10 @@ export function FlashcardWorkspacePanel({
 
   useEffect(() => {
     if (!ready) return;
-
     const timeout = window.setTimeout(() => {
       const next = saveFlashcardWorkspace(
         unitId,
-        {
-          ...meta,
-          pinned: draft.pinned,
-          tags: parseTags(draft.tags),
-        },
+        { ...meta, pinned: draft.pinned, tags: parseTags(draft.tags) },
         {
           notes: draft.notes,
           thingsToForget: draft.thingsToForget,
@@ -582,46 +436,29 @@ export function FlashcardWorkspacePanel({
           memorize: draft.memorize,
         }
       );
-
       void pushRemoteStudyProgress(next).catch(() => {});
     }, 500);
-
     return () => window.clearTimeout(timeout);
   }, [draft, meta, ready, unitId]);
 
   return (
-    <SectionCard
-      title="Flashcard study notes"
-      subtitle="Keep your own memory cues, forgettable facts, and review flags here so the deck becomes more personal every time you use it."
+    <Shell
+      title="Flashcard notes"
+      subtitle="Keep just the memory cues and weak spots that actually matter while you review the deck."
     >
       <div className="flex flex-wrap gap-2">
         <ToggleChip active={draft.reviewLater} onClick={() => setDraft(current => ({ ...current, reviewLater: !current.reviewLater }))} label="Review later" />
         <ToggleChip active={draft.practiceMore} onClick={() => setDraft(current => ({ ...current, practiceMore: !current.practiceMore }))} label="Practice more" />
         <ToggleChip active={draft.memorize} onClick={() => setDraft(current => ({ ...current, memorize: !current.memorize }))} label="Memorize" />
-        <ToggleChip active={draft.pinned} onClick={() => setDraft(current => ({ ...current, pinned: !current.pinned }))} label="Pin this unit" />
+        <ToggleChip active={draft.pinned} onClick={() => setDraft(current => ({ ...current, pinned: !current.pinned }))} label="Pin this" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Field
-          label="My flashcard notes"
-          value={draft.notes}
-          onChange={value => setDraft(current => ({ ...current, notes: value }))}
-          placeholder="Patterns you keep noticing, shortcuts, or reminders for yourself."
-        />
-        <Field
-          label="Things I always forget"
-          value={draft.thingsToForget}
-          onChange={value => setDraft(current => ({ ...current, thingsToForget: value }))}
-          placeholder="Specific terms, dates, formulas, or distinctions that keep slipping."
-        />
+        <CompactField label="What I need to remember" value={draft.notes} onChange={value => setDraft(current => ({ ...current, notes: value }))} placeholder="Patterns, reminders, or shortcuts that help these cards stick." />
+        <CompactField label="What I keep forgetting" value={draft.thingsToForget} onChange={value => setDraft(current => ({ ...current, thingsToForget: value }))} placeholder="Dates, formulas, terms, or distinctions that keep slipping away." />
       </div>
 
-      <TextField
-        label="Custom tags"
-        value={draft.tags}
-        onChange={value => setDraft(current => ({ ...current, tags: value }))}
-        placeholder="Weak area, exam soon, revisit after quiz"
-      />
-    </SectionCard>
+      <CompactTextField label="Custom tags" value={draft.tags} onChange={value => setDraft(current => ({ ...current, tags: value }))} placeholder="weak area, exam soon, revisit" />
+    </Shell>
   );
 }

@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import SetupTutorialOverlay from "@/components/SetupTutorialOverlay";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,10 +16,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <body className="noise">
-          {children}
-          <SetupTutorialOverlay />
-          <Analytics />
-          <SpeedInsights />
+          <ThemeProvider>
+            {children}
+            <SetupTutorialOverlay />
+            <Analytics />
+            <SpeedInsights />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

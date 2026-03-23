@@ -15,11 +15,7 @@ export default async function ChapterPage({
   const { supabase, user, isGuest } = await getViewerContext();
   if (!user && !isGuest) redirect("/sign-in");
 
-  const { data: course } = await getCourseByIdentifier(
-    supabase,
-    courseId,
-    "id, slug, name, color"
-  );
+  const { data: course } = await getCourseByIdentifier(supabase, courseId, "id, slug, name, color");
   if (!course) notFound();
 
   const { data: chapter } = await supabase
@@ -50,26 +46,23 @@ export default async function ChapterPage({
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex flex-wrap items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link
-          href={courseHref}
-          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
-        >
+    <div className="min-h-screen theme-bg">
+      <nav
+        className="sticky top-0 z-50 flex flex-wrap items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
+        style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
+      >
+        <Link href={courseHref} className="text-sm app-muted transition-colors hover:text-white">
           {course.name}
         </Link>
-        <span className="text-[#2a2a3a]">/</span>
-        <Link
-          href={`${courseHref}/unit/${unitId}`}
-          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
-        >
+        <span className="app-muted">/</span>
+        <Link href={`${courseHref}/unit/${unitId}`} className="text-sm app-muted transition-colors hover:text-white">
           {unit.name}
         </Link>
-        <span className="text-[#2a2a3a]">/</span>
-        <span className="max-w-[240px] truncate text-sm font-body font-medium text-[#e8e8f0]">{chapter.name}</span>
+        <span className="app-muted">/</span>
+        <span className="max-w-[240px] truncate text-sm font-medium">{chapter.name}</span>
       </nav>
 
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-page">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
@@ -79,20 +72,17 @@ export default async function ChapterPage({
           kind="chapter"
         />
 
-        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+        <div className="app-panel mb-8 p-6 md:p-8">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">
+              <div className="mb-2 text-xs font-medium uppercase tracking-widest app-muted">
                 Unit {unit.unit_number} · Chapter {chapter.chapter_number}
               </div>
               <h1 className="font-display text-2xl font-bold md:text-4xl">{chapter.name}</h1>
             </div>
             {chapter.quiz && (
-              <Link
-                href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}/quiz`}
-                className="flex-shrink-0 rounded-xl border border-[#6c63ff]/30 bg-[#6c63ff]/10 px-4 py-2 text-sm font-body font-medium text-[#9d96ff] transition-all hover:bg-[#6c63ff]/20"
-              >
-                Take Quiz
+              <Link href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}/quiz`} className="app-secondary-button px-4 py-2 text-sm font-medium">
+                Take quiz
               </Link>
             )}
           </div>
@@ -100,15 +90,15 @@ export default async function ChapterPage({
 
         <div className="grid gap-6 xl:grid-cols-[1.35fr,0.65fr]">
           {chapter.notes ? (
-            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
+            <div className="app-panel p-6 md:p-8">
               <div className="max-w-5xl">
                 <NotesRenderer notes={chapter.notes} />
               </div>
             </div>
           ) : (
-            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-              <div className="mb-3 text-3xl">Soon</div>
-              <p>Notes are being generated. Check back soon.</p>
+            <div className="app-panel py-16 text-center">
+              <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+              <p className="app-copy">Notes are being generated. Check back soon.</p>
             </div>
           )}
 
@@ -126,25 +116,19 @@ export default async function ChapterPage({
           </div>
         </div>
 
-        <div className="mt-10 flex items-center justify-between gap-4 border-t border-[#1e1e2e] pt-8">
+        <div className="app-divider mt-10 flex items-center justify-between gap-4 border-t pt-8">
           {prev ? (
-            <Link
-              href={`${courseHref}/unit/${unitId}/chapter/${prev.id}`}
-              className="group flex max-w-[45%] items-center gap-2 rounded-xl border border-[#1e1e2e] bg-[#111118] px-4 py-3 text-sm font-body transition-all hover:border-[#2a2a3a]"
-            >
-              <span className="text-[#8888aa] transition-colors group-hover:text-[#e8e8f0]">Prev</span>
-              <span className="truncate text-[#8888aa] transition-colors group-hover:text-[#e8e8f0]">{prev.name}</span>
+            <Link href={`${courseHref}/unit/${unitId}/chapter/${prev.id}`} className="app-secondary-button group flex max-w-[45%] items-center gap-2 px-4 py-3 text-sm">
+              <span className="app-muted transition-colors group-hover:text-white">Prev</span>
+              <span className="truncate app-muted transition-colors group-hover:text-white">{prev.name}</span>
             </Link>
           ) : (
             <div />
           )}
           {next ? (
-            <Link
-              href={`${courseHref}/unit/${unitId}/chapter/${next.id}`}
-              className="group ml-auto flex max-w-[45%] items-center gap-2 rounded-xl border border-[#1e1e2e] bg-[#111118] px-4 py-3 text-sm font-body transition-all hover:border-[#2a2a3a]"
-            >
-              <span className="truncate text-[#8888aa] transition-colors group-hover:text-[#e8e8f0]">{next.name}</span>
-              <span className="text-[#8888aa] transition-colors group-hover:text-[#e8e8f0]">Next</span>
+            <Link href={`${courseHref}/unit/${unitId}/chapter/${next.id}`} className="app-secondary-button group ml-auto flex max-w-[45%] items-center gap-2 px-4 py-3 text-sm">
+              <span className="truncate app-muted transition-colors group-hover:text-white">{next.name}</span>
+              <span className="app-muted transition-colors group-hover:text-white">Next</span>
             </Link>
           ) : (
             <div />

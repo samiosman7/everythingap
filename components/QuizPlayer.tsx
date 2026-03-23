@@ -85,9 +85,9 @@ export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }:
 
   if (safeQuestions.length === 0) {
     return (
-      <div className="rounded-2xl border border-[#1e1e2e] bg-[#111118] px-6 py-10 text-center">
-        <div className="mb-3 text-3xl">Soon</div>
-        <p className="text-sm font-body text-[#8888aa]">
+      <div className="app-panel px-6 py-10 text-center">
+        <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+        <p className="text-sm app-copy">
           This quiz does not have valid question data yet. Check back after the content finishes generating.
         </p>
       </div>
@@ -145,8 +145,8 @@ export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }:
         <h2 className="mb-2 font-display text-3xl font-bold">
           {score}/{safeQuestions.length}
         </h2>
-        <p className="mb-2 font-body text-[#8888aa]">{pct}% correct</p>
-        <p className="mb-8 text-sm font-body text-[#8888aa]">
+        <p className="mb-2 app-muted">{pct}% correct</p>
+        <p className="mb-8 text-sm app-copy">
           {pct >= 80
             ? "Great work. You have this chapter under control."
             : pct >= 60
@@ -167,9 +167,9 @@ export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }:
               >
                 <span className="mt-0.5">{correct ? "OK" : "X"}</span>
                 <div>
-                  <p className="mb-1 text-[#e8e8f0]">{question.question}</p>
+                  <p className="mb-1">{question.question}</p>
                   {!correct && (
-                    <p className="text-[#8888aa]">Correct: {question.choices[question.answerIndex]}</p>
+                    <p className="app-muted">Correct: {question.choices[question.answerIndex]}</p>
                   )}
                 </div>
               </div>
@@ -191,19 +191,19 @@ export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }:
   return (
     <div className="animate-fade-in">
       <div className="mb-6 flex items-center gap-3">
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#1e1e2e]">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full" style={{ background: "var(--panel-muted)" }}>
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{ width: `${((current + 1) / safeQuestions.length) * 100}%`, background: color }}
           />
         </div>
-        <span className="text-xs font-body font-mono text-[#8888aa]">
+        <span className="text-xs font-body font-mono app-muted">
           {current + 1}/{safeQuestions.length}
         </span>
       </div>
 
-      <div className="mb-4 rounded-2xl border border-[#1e1e2e] bg-[#111118] p-6">
-        <p className="text-base leading-relaxed text-[#e8e8f0]">{q.question}</p>
+      <div className="app-panel mb-4 p-6">
+        <p className="text-base leading-relaxed">{q.question}</p>
       </div>
 
       <div className="mb-6 space-y-2">
@@ -217,12 +217,17 @@ export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }:
               onClick={() => handleSelect(index)}
               className={clsx(
                 "w-full rounded-xl border px-5 py-3.5 text-left text-sm font-body transition-all",
-                !revealed && !isSelected && "border-[#1e1e2e] bg-[#111118] text-[#e8e8f0] hover:border-[#2a2a3a]",
-                !revealed && isSelected && "border-[#6c63ff]/50 bg-[#6c63ff]/10 text-[#e8e8f0]",
+                !revealed && !isSelected && "hover:border-white/20",
+                !revealed && isSelected,
                 revealed && isCorrect && "border-green-500/40 bg-green-500/10 text-green-400",
                 revealed && !isCorrect && isSelected && "border-red-500/40 bg-red-500/10 text-red-400",
-                revealed && !isCorrect && !isSelected && "border-[#1e1e2e] bg-[#111118] text-[#8888aa]"
+                revealed && !isCorrect && !isSelected
               )}
+              style={{
+                borderColor: !revealed && isSelected ? color : "var(--line)",
+                background: !revealed && isSelected ? "color-mix(in srgb, var(--accent-soft) 90%, transparent)" : !revealed ? "var(--panel)" : undefined,
+                color: !revealed ? "var(--text)" : undefined,
+              }}
             >
               <span className="mr-3 font-mono text-xs opacity-60">{["A", "B", "C", "D"][index] ?? "?"}.</span>
               {choice.replace(/^[A-D]\)\s*/, "")}
@@ -232,9 +237,9 @@ export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }:
       </div>
 
       {revealed && q.explanation && (
-        <div className="mb-6 rounded-xl border border-[#1e1e2e] bg-[#111118] p-4 animate-fade-in">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[#8888aa]">Explanation</p>
-          <p className="text-sm leading-relaxed text-[#c0c0d8]">{q.explanation}</p>
+        <div className="app-card mb-6 p-4 animate-fade-in">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wider app-muted">Explanation</p>
+          <p className="text-sm leading-relaxed app-copy">{q.explanation}</p>
         </div>
       )}
 

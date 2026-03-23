@@ -24,9 +24,9 @@ function InsightList({
   items: LearningDashboardItem[];
 }) {
   return (
-    <section className="rounded-[24px] border border-[#1e1e2e] bg-[#111118] p-5">
-      <p className="text-xs font-body font-medium uppercase tracking-[0.22em] text-[#9d96ff]">{title}</p>
-      <p className="mt-2 text-sm leading-7 text-[#928ea9]">{subtitle}</p>
+    <section className="app-panel p-5">
+      <p className="app-kicker">{title}</p>
+      <p className="mt-2 text-sm leading-7 app-copy">{subtitle}</p>
 
       {items.length > 0 ? (
         <div className="mt-4 space-y-3">
@@ -34,15 +34,15 @@ function InsightList({
             <Link
               key={item.id}
               href={item.href}
-              className="block rounded-2xl border border-white/8 bg-black/20 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/[0.04]"
+              className="app-card block px-4 py-3 transition-transform hover:-translate-y-0.5"
             >
-              <p className="text-sm font-semibold text-white">{item.label}</p>
-              <p className="mt-1 text-sm leading-6 text-[#918ca8]">{item.detail}</p>
+              <p className="text-sm font-semibold">{item.label}</p>
+              <p className="mt-1 text-sm leading-6 app-copy">{item.detail}</p>
             </Link>
           ))}
         </div>
       ) : (
-        <div className="mt-4 rounded-2xl border border-dashed border-white/10 bg-black/20 px-4 py-5 text-sm leading-6 text-[#78738f]">
+        <div className="mt-4 rounded-2xl border border-dashed px-4 py-5 text-sm leading-6 app-muted" style={{ borderColor: "var(--line)" }}>
           Nothing here yet. Once students start leaving notes, confidence marks, and reflections, this section fills itself in.
         </div>
       )}

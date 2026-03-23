@@ -31,14 +31,14 @@ type DashboardClientProps = {
 };
 
 const QUICKSTART_STEPS = [
-  "Pick the AP class that has your next deadline.",
-  "Open chapter notes first if you need to relearn the lesson fast.",
-  "Switch to flashcards or quizzes once the concepts start clicking.",
+  "Open the class with the nearest test or homework.",
+  "Use the chapter note long enough to understand the topic, then switch to practice.",
+  "Keep private reminders in Student Space so the course pages stay focused.",
 ];
 
 function ProgressBar({ percent, color }: { percent: number; color: string }) {
   return (
-    <div className="h-2 overflow-hidden rounded-full bg-white/8">
+    <div className="h-2 overflow-hidden rounded-full" style={{ background: "var(--panel-muted)" }}>
       <div className="h-full rounded-full transition-all" style={{ width: `${percent}%`, background: color }} />
     </div>
   );
@@ -56,9 +56,7 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
 
   const filteredCourses = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return normalized
-      ? courses.filter(course => course.name.toLowerCase().includes(normalized))
-      : courses;
+    return normalized ? courses.filter(course => course.name.toLowerCase().includes(normalized)) : courses;
   }, [courses, query]);
 
   const selectedCourses = filteredCourses.filter(course => selectedIds.includes(course.id));
@@ -66,7 +64,7 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
   const groupedCourses = groupCoursesByCategory(remainingCourses);
 
   return (
-    <div className="flex min-h-screen flex-col overflow-hidden bg-[#0d0d14] md:flex-row">
+    <div className="app-shell">
       <DashboardSidebar
         emailLabel={emailLabel}
         isGuest={isGuest}
@@ -78,183 +76,131 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
         }))}
       />
 
-      <div className="relative flex min-w-0 flex-1 flex-col">
-        <div className="orb animate-pulse-glow right-14 top-10 h-24 w-24 bg-[#8b80ff]/12" />
-        <div className="orb animate-drift-x left-10 top-44 h-16 w-16 bg-[#5ed7ff]/8" />
-
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
+      <div className="app-main">
+        <motion.header
+          initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
-          className="border-b border-white/10 bg-[#0f0f17]/90 px-5 py-4 backdrop-blur-md sm:px-8"
+          transition={{ duration: 0.45 }}
+          className="app-header"
         >
-          <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#8f89b5]">Dashboard</p>
-          <h1 className="mt-2 font-display text-2xl font-bold text-white sm:text-3xl">Your AP command center</h1>
-          <p className="mt-2 max-w-3xl font-body text-sm leading-7 text-[#8d8aa5]">
-            Your sidebar keeps the main routes in reach, your selected classes pinned, and the rest of the dashboard
-            focused on where to study next.
-          </p>
-        </motion.div>
+          <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+            <div>
+              <p className="app-kicker">Dashboard</p>
+              <h1 className="app-title mt-2">A cleaner place to start.</h1>
+              <p className="app-copy mt-3 max-w-3xl">
+                Open the right class, pick up where you left off, and get back to studying without digging through extra clutter.
+              </p>
+            </div>
 
-        <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-8 sm:py-8">
-          <div className="space-y-8 sm:space-y-10">
+            <div
+              className="w-full max-w-md rounded-[20px] border px-4 py-3"
+              style={{ borderColor: "var(--line)", background: "var(--input)" }}
+            >
+              <div className="flex items-center gap-2" style={{ color: "var(--text-muted)" }}>
+                <Search className="h-4 w-4 shrink-0" />
+                <input
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
+                  placeholder="Search AP Biology, AP Calculus..."
+                  className="w-full min-w-0 bg-transparent text-sm outline-none"
+                  style={{ color: "var(--text)" }}
+                />
+              </div>
+            </div>
+          </div>
+        </motion.header>
+
+        <main className="app-page">
+          <div className="space-y-6">
             <motion.div
               id="resume-section"
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease: "easeOut" }}
+              transition={{ duration: 0.4 }}
             >
-              <div className="animate-float-slow">
-                <ResumeWhereLeftOff />
-              </div>
+              <ResumeWhereLeftOff />
             </motion.div>
 
-            <section className="grid gap-4 lg:grid-cols-[1.25fr,0.75fr]">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.06, ease: "easeOut" }}
-                className="rounded-[28px] border border-[#1e1e2e] bg-[radial-gradient(circle_at_top_left,_rgba(108,99,255,0.22),_transparent_45%),linear-gradient(180deg,#111118_0%,#0e0e15_100%)] p-5 sm:p-7"
-              >
-                <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">Study system</p>
-                <h2 className="mt-3 font-display text-3xl font-bold text-white sm:text-4xl">
-                  Everything is organized around what students actually do next.
-                </h2>
-                <p className="mt-4 max-w-2xl text-sm font-body leading-7 text-[#b2b0c9]">
-                  Open your class, move through units in order, jump into a chapter, and keep your place. No more
-                  trying to remember whether the quiz was inside the unit page, hidden in a card, or buried three clicks
-                  deep.
-                </p>
-
-                <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <section className="grid gap-4 xl:grid-cols-[1.15fr,0.85fr]">
+              <div className="app-panel p-6 sm:p-7">
+                <p className="app-kicker">Study flow</p>
+                <h2 className="app-section-title mt-3">The next step should feel obvious.</h2>
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
                   {[
-                    { icon: Target, title: "Resume fast", desc: "Jump back to your last study page immediately." },
-                    { icon: BookOpenText, title: "Track progress", desc: "See what chapters and tools you have already opened." },
-                    { icon: Compass, title: "Stay oriented", desc: "Course hubs and unit hubs now have a clearer hierarchy." },
-                  ].map((item, index) => {
+                    { icon: Target, title: "Resume fast", desc: "Jump straight back into the page you were using." },
+                    { icon: BookOpenText, title: "Study in order", desc: "Move from notes to practice without hunting for the next tool." },
+                    { icon: Compass, title: "Stay oriented", desc: "Course hubs and unit hubs keep the structure clean." },
+                  ].map(item => {
                     const Icon = item.icon;
                     return (
-                      <motion.div
-                        key={item.title}
-                        initial={{ opacity: 0, y: 18 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.35 }}
-                        transition={{ duration: 0.55, delay: index * 0.08, ease: "easeOut" }}
-                        className="motion-card rounded-2xl border border-white/10 bg-black/20 p-4"
-                      >
-                        <Icon className="h-5 w-5 text-[#cfcaff]" />
-                        <h3 className="mt-3 font-display text-lg font-semibold text-white">{item.title}</h3>
-                        <p className="mt-2 text-sm leading-6 text-[#9d99b5]">{item.desc}</p>
-                      </motion.div>
+                      <div key={item.title} className="app-card p-4">
+                        <Icon className="h-5 w-5 theme-accent" />
+                        <h3 className="mt-3 font-display text-lg font-semibold">{item.title}</h3>
+                        <p className="mt-2 text-sm leading-6 app-muted">{item.desc}</p>
+                      </div>
                     );
                   })}
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }}
-                className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-5 sm:p-7"
-              >
-                <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">Guided setup</p>
-                <h3 className="mt-3 font-display text-2xl font-bold text-white">Pick up exactly where you need to.</h3>
-                <p className="mt-3 text-sm font-body leading-7 text-[#8d8aa5]">
+              <div className="app-panel p-6 sm:p-7">
+                <p className="app-kicker">Next action</p>
+                <h2 className="app-section-title mt-3">
+                  {selectedCourses.length ? "Your classes are ready." : "Start by picking your classes."}
+                </h2>
+                <p className="app-copy mt-3">
                   {selectedCourses.length
-                    ? "Your setup is ready. Start with one of your selected courses, then move from notes into active practice."
-                    : "Choose your AP classes first so this dashboard can guide you toward the right notes, flashcards, quizzes, and exams."}
+                    ? "Open one of your classes below, or run the tour if you want a guided walk through the real study flow."
+                    : "Choose at least one AP class so the dashboard and sidebar can point to the right material."}
                 </p>
 
                 <div className="mt-5 space-y-3">
                   {QUICKSTART_STEPS.map((step, index) => (
-                    <div key={step} className="flex items-start gap-3 rounded-2xl border border-[#202034] bg-[#0d0d14] p-4">
-                      <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#6c63ff]/12 text-xs font-semibold text-[#c8c4ff]">
+                    <div key={step} className="app-card flex items-start gap-3 p-4">
+                      <div
+                        className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold text-white"
+                        style={{ background: "var(--accent)" }}
+                      >
                         {index + 1}
                       </div>
-                      <p className="text-sm font-body leading-6 text-[#c7c7dd]">{step}</p>
+                      <p className="text-sm leading-6 app-copy">{step}</p>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-5 rounded-2xl border border-dashed border-[#2a2a3a] bg-[#0a0a0f] p-4">
-                  <div className="flex items-center gap-2 text-[#8888aa]">
-                    <Search className="h-4 w-4 shrink-0" />
-                    <input
-                      value={query}
-                      onChange={event => setQuery(event.target.value)}
-                      placeholder="Search AP Biology, AP Calculus..."
-                      className="w-full min-w-0 bg-transparent text-sm font-body text-[#e8e8f0] outline-none placeholder:text-[#494965]"
-                    />
-                  </div>
-                </div>
-                {!selectedCourses.length && (
-                  <Link
-                    href="/onboarding"
-                    className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#6c63ff] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#7c73ff]"
-                  >
-                    Finish setup
-                    <ArrowRight className="h-4 w-4" />
+                <div className="mt-5 flex flex-wrap gap-3">
+                  {!selectedCourses.length && (
+                    <Link href="/onboarding" className="app-primary-button inline-flex items-center gap-2 px-4 py-3 text-sm">
+                      Pick classes
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+                  <Link href="/student-space" className="app-secondary-button inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+                    Open student space
                   </Link>
-                )}
-              </motion.div>
-            </section>
-
-            <motion.section
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.55, ease: "easeOut" }}
-              className="rounded-[28px] border border-[#1e1e2e] bg-[radial-gradient(circle_at_top_left,_rgba(108,99,255,0.14),_transparent_38%),linear-gradient(180deg,#111118_0%,#0d0d14_100%)] p-5 sm:p-7"
-            >
-              <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">
-                Student space
-              </p>
-              <div className="mt-3 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-                <div className="max-w-3xl">
-                  <h2 className="font-display text-2xl font-bold text-white">
-                    Keep the dashboard focused, and keep your own learning layer in one dedicated place.
-                  </h2>
-                  <p className="mt-3 text-sm leading-7 text-[#9793ae]">
-                    Confidence marks, private notes, reminders, reflections, and weak-spot tracking now live in
-                    Student Space so the main dashboard stays clean while your study signals stay easy to revisit.
-                  </p>
                 </div>
-                <Link
-                  href="/student-space"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[#120f24]"
-                >
-                  Open student space
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
               </div>
-            </motion.section>
+            </section>
 
             {selectedCourses.length > 0 && (
               <section id="my-courses">
-                <motion.div
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.65, delay: 0.08, ease: "easeOut" }}
-                  className="mb-5"
-                >
-                  <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">My courses</p>
-                  <h2 className="mt-2 font-display text-2xl font-bold text-white">Your semester at a glance</h2>
-                </motion.div>
+                <div className="mb-4">
+                  <p className="app-kicker">My courses</p>
+                  <h2 className="app-section-title mt-2">Open the class you actually need right now.</h2>
+                </div>
 
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                   {selectedCourses.map((course, index) => {
-                    const progress = ready
-                      ? getCourseProgress(course.id, course.units)
-                      : { percent: 0, completedItems: 0, totalItems: 0 };
+                    const progress = ready ? getCourseProgress(course.id, course.units) : { percent: 0 };
 
                     return (
                       <motion.div
                         key={course.id}
-                        initial={{ opacity: 0, y: 24 }}
+                        initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
-                        transition={{ duration: 0.55, delay: index * 0.06, ease: "easeOut" }}
-                        className="motion-card rounded-[24px] border border-[#1e1e2e] bg-[#111118] p-5"
+                        transition={{ duration: 0.35, delay: index * 0.04 }}
+                        className="app-panel p-5"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-start gap-4">
@@ -265,32 +211,27 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
                               <span aria-hidden="true">{course.emoji}</span>
                             </div>
                             <div>
-                              <h3 className="font-display text-xl font-semibold text-white">{course.name}</h3>
-                              <p className="mt-1 text-sm text-[#8b87a3]">
+                              <h3 className="font-display text-xl font-semibold">{course.name}</h3>
+                              <p className="mt-1 text-sm app-muted">
                                 {course.units.length} units · {course.units.reduce((sum, unit) => sum + unit.chapterCount, 0)} chapters
                               </p>
                             </div>
                           </div>
-                          <span className="rounded-full border border-[#2f2f46] px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] text-[#7f7f9f]">
-                            Selected
-                          </span>
+                          <span className="app-chip px-2.5 py-1 text-[11px] uppercase tracking-[0.18em]">Selected</span>
                         </div>
 
                         <div className="mt-5">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-[#d8d6e7]">Progress</span>
-                            <span className="font-semibold text-white">{progress.percent}%</span>
+                            <span className="app-muted">Progress</span>
+                            <span className="font-semibold">{progress.percent}%</span>
                           </div>
                           <div className="mt-3">
                             <ProgressBar percent={progress.percent} color={course.color} />
                           </div>
                         </div>
 
-                        <div className="mt-5 flex flex-wrap gap-3">
-                          <Link
-                            href={getCourseHref(course)}
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[#120f24]"
-                          >
+                        <div className="mt-5">
+                          <Link href={getCourseHref(course)} className="app-primary-button inline-flex items-center gap-2 px-4 py-3 text-sm">
                             Open course hub
                             <ArrowRight className="h-4 w-4" />
                           </Link>
@@ -306,38 +247,34 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
               {Object.entries(groupedCourses).map(([category, items], groupIndex) => (
                 <motion.div
                   key={category}
-                  initial={{ opacity: 0, y: 22 }}
+                  initial={{ opacity: 0, y: 18 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.6, delay: groupIndex * 0.05, ease: "easeOut" }}
+                  transition={{ duration: 0.4, delay: groupIndex * 0.04 }}
                 >
                   <div className="mb-4">
-                    <p className="text-xs font-body uppercase tracking-[0.24em] text-[#58546d]">{category}</p>
-                    <h2 className="mt-1 font-display text-2xl font-bold text-white">{category}</h2>
+                    <p className="app-kicker">{category}</p>
+                    <h2 className="app-section-title mt-2">{category}</h2>
                   </div>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     {items.map((course, index) => (
                       <motion.div
                         key={course.id}
-                        initial={{ opacity: 0, y: 16 }}
+                        initial={{ opacity: 0, y: 12 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
-                        transition={{ duration: 0.45, delay: index * 0.04, ease: "easeOut" }}
+                        transition={{ duration: 0.3, delay: index * 0.03 }}
                       >
-                        <Link
-                          href={getCourseHref(course)}
-                          className="motion-card group relative block overflow-hidden rounded-[24px] border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:-translate-y-1 hover:border-[#6c63ff]/25"
-                        >
-                          <div className="absolute inset-x-0 top-0 h-1 opacity-70" style={{ background: course.color }} />
+                        <Link href={getCourseHref(course)} className="app-card block p-5 transition-transform hover:-translate-y-1">
                           <div
                             className="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
                             style={{ background: `${course.color}22` }}
                           >
                             <span aria-hidden="true">{course.emoji}</span>
                           </div>
-                          <h3 className="mt-5 font-display text-xl font-semibold text-[#f5f5ff]">{course.name}</h3>
-                          <p className="mt-2 text-sm font-body leading-6 text-[#8888aa]">
-                            Open the course hub for a cleaner unit-by-unit path through notes, quizzes, flashcards, and exams.
+                          <h3 className="mt-4 font-display text-xl font-semibold">{course.name}</h3>
+                          <p className="mt-2 text-sm leading-6 app-copy">
+                            Open the course hub for units, chapter notes, practice, and exams.
                           </p>
                         </Link>
                       </motion.div>
@@ -347,7 +284,7 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
               ))}
             </section>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

@@ -88,10 +88,14 @@ export const DesktopSidebar = ({
     <motion.div
       className={cn(
         "hidden h-screen flex-shrink-0 overflow-hidden md:flex md:flex-col",
-        "border-r border-white/10 bg-[linear-gradient(180deg,#111118_0%,#0b0b11_100%)]",
+        "border-r",
         "w-[300px]",
         className
       )}
+      style={{
+        borderColor: "var(--line)",
+        background: "linear-gradient(180deg, var(--panel) 0%, var(--bg-elevated) 100%)",
+      }}
       animate={{
         width: animate ? (open ? "300px" : "72px") : "300px",
       }}
@@ -114,12 +118,13 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "flex h-14 w-full flex-row items-center justify-between border-b border-white/10 bg-[#111118] px-4 py-4 md:hidden"
+          "flex h-14 w-full flex-row items-center justify-between border-b px-4 py-4 md:hidden"
         )}
+        style={{ borderColor: "var(--line)", background: "var(--panel)" }}
         {...props}
       >
         <div className="flex w-full justify-end">
-          <Menu className="cursor-pointer text-neutral-200" onClick={() => setOpen(!open)} />
+          <Menu className="cursor-pointer" style={{ color: "var(--text)" }} onClick={() => setOpen(!open)} />
         </div>
         <AnimatePresence>
           {open && (
@@ -132,12 +137,14 @@ export const MobileSidebar = ({
                 ease: "easeInOut",
               }}
               className={cn(
-                "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-[#09090f] p-6",
+                "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between p-6",
                 className
               )}
+              style={{ background: "var(--bg)" }}
             >
               <div
-                className="absolute right-6 top-6 z-50 cursor-pointer text-neutral-200"
+                className="absolute right-6 top-6 z-50 cursor-pointer"
+                style={{ color: "var(--text)" }}
                 onClick={() => setOpen(!open)}
               >
                 <X />
@@ -165,9 +172,10 @@ export const SidebarLink = ({
     <Link
       href={link.href}
       className={cn(
-        "group/sidebar flex items-center justify-start gap-3 rounded-2xl px-2 py-3 transition-colors hover:bg-white/6",
+        "group/sidebar flex items-center justify-start gap-3 rounded-2xl px-2 py-3 transition-colors",
         className
       )}
+      style={{ color: "var(--text-soft)" }}
       {...props}
     >
       {link.icon}
@@ -176,7 +184,8 @@ export const SidebarLink = ({
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
-        className="inline-block whitespace-pre !m-0 !p-0 text-sm text-neutral-200 transition duration-150 group-hover/sidebar:translate-x-1"
+        className="inline-block whitespace-pre !m-0 !p-0 text-sm transition duration-150 group-hover/sidebar:translate-x-1"
+        style={{ color: "inherit" }}
       >
         {link.label}
       </motion.span>

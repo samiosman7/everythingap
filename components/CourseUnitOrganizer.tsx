@@ -3,13 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, BookOpen, FileSpreadsheet, Layers3 } from "lucide-react";
-import {
-  getCourseProgress,
-  getLastVisited,
-  getUnitProgress,
-  getUnitWorkspace,
-  syncStudyProgressFromAccount,
-} from "@/lib/study-progress";
+import { getCourseProgress, getLastVisited, getUnitProgress, getUnitWorkspace, syncStudyProgressFromAccount } from "@/lib/study-progress";
 
 type UnitItem = {
   id: string;
@@ -28,7 +22,7 @@ type CourseUnitOrganizerProps = {
 
 function ProgressBar({ percent, color }: { percent: number; color: string }) {
   return (
-    <div className="h-2 overflow-hidden rounded-full bg-white/8">
+    <div className="h-2 overflow-hidden rounded-full" style={{ background: "var(--panel-muted)" }}>
       <div className="h-full rounded-full transition-all" style={{ width: `${percent}%`, background: color }} />
     </div>
   );
@@ -45,14 +39,11 @@ export default function CourseUnitOrganizer({
 
   useEffect(() => {
     let mounted = true;
-
     async function load() {
       await syncStudyProgressFromAccount();
       if (mounted) setReady(true);
     }
-
     void load();
-
     return () => {
       mounted = false;
     };
@@ -63,21 +54,18 @@ export default function CourseUnitOrganizer({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-5 sm:p-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div className="app-panel p-6">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#bdb8ff]">Course progress</p>
-            <h2 className="mt-2 font-display text-2xl font-bold text-white">A cleaner way to move through this class</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-[#aaa6c0]">
-              Work top to bottom by unit, see what you have already opened, and jump back to the last chapter without
-              losing your place.
+            <p className="app-kicker">Course progress</p>
+            <h2 className="app-section-title mt-2">Move through the class without losing your place.</h2>
+            <p className="app-copy mt-3 max-w-2xl">
+              Work unit by unit, see how much of the class you have actually touched, and keep the full mock exam in
+              the same flow instead of hiding it.
             </p>
           </div>
           {lastVisited?.courseId === courseId && (
-            <Link
-              href={lastVisited.href}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-            >
+            <Link href={lastVisited.href} className="app-secondary-button inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               Resume last session
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -85,41 +73,36 @@ export default function CourseUnitOrganizer({
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-[1.2fr,0.8fr]">
-          <div className="rounded-2xl border border-white/8 bg-black/20 p-4">
+          <div className="app-card p-4">
             <div className="flex items-center justify-between gap-3">
-              <span className="text-sm font-medium text-[#f3efff]">Overall completion</span>
-              <span className="text-sm font-semibold text-white">{courseProgress?.percent ?? 0}%</span>
+              <span className="text-sm font-medium">Overall completion</span>
+              <span className="text-sm font-semibold">{courseProgress?.percent ?? 0}%</span>
             </div>
             <div className="mt-3">
               <ProgressBar percent={courseProgress?.percent ?? 0} color={courseColor} />
             </div>
-            <p className="mt-3 text-sm text-[#9f9ab8]">
+            <p className="mt-3 text-sm app-copy">
               {courseProgress?.completedItems ?? 0} of {courseProgress?.totalItems ?? 0} study checkpoints opened.
             </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
-            <div className="rounded-2xl border border-white/8 bg-black/20 p-4">
-              <div className="flex items-center gap-2 text-[#cfcaff]">
-                <Layers3 className="h-4 w-4" />
-                <span className="text-sm font-medium">Units</span>
-              </div>
-              <p className="mt-3 text-2xl font-bold text-white">{units.length}</p>
-            </div>
-            <div className="rounded-2xl border border-white/8 bg-black/20 p-4">
-              <div className="flex items-center gap-2 text-[#cfcaff]">
-                <BookOpen className="h-4 w-4" />
-                <span className="text-sm font-medium">Chapters opened</span>
-              </div>
-              <p className="mt-3 text-2xl font-bold text-white">{courseProgress?.viewedChapterCount ?? 0}</p>
-            </div>
-            <div className="rounded-2xl border border-white/8 bg-black/20 p-4">
-              <div className="flex items-center gap-2 text-[#cfcaff]">
-                <FileSpreadsheet className="h-4 w-4" />
-                <span className="text-sm font-medium">Full exam</span>
-              </div>
-              <p className="mt-3 text-sm font-semibold text-white">{hasFullExam ? "Available" : "Not yet"}</p>
-            </div>
+            {[
+              { icon: Layers3, label: "Units", value: String(units.length) },
+              { icon: BookOpen, label: "Chapters opened", value: String(courseProgress?.viewedChapterCount ?? 0) },
+              { icon: FileSpreadsheet, label: "Full exam", value: hasFullExam ? "Available" : "Soon" },
+            ].map(item => {
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className="app-card p-4">
+                  <div className="flex items-center gap-2 theme-accent">
+                    <Icon className="h-4 w-4" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
+                  <p className="mt-3 text-2xl font-display font-bold">{item.value}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -130,8 +113,8 @@ export default function CourseUnitOrganizer({
           const confidence = ready ? getUnitWorkspace(unit.id)?.confidence?.value ?? null : null;
 
           return (
-            <div key={unit.id} className="rounded-[24px] border border-white/10 bg-[#111118] p-5">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div key={unit.id} className="app-panel p-5">
+              <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                 <div>
                   <div className="flex items-center gap-3">
                     <span
@@ -141,8 +124,8 @@ export default function CourseUnitOrganizer({
                       {unit.unit_number}
                     </span>
                     <div>
-                      <h3 className="font-display text-xl font-semibold text-white">{unit.name}</h3>
-                      <p className="text-sm text-[#8f8ba8]">
+                      <h3 className="font-display text-xl font-semibold">{unit.name}</h3>
+                      <p className="mt-1 text-sm app-copy">
                         {summary.viewedCount} of {unit.chapterCount} chapters opened
                       </p>
                     </div>
@@ -152,39 +135,21 @@ export default function CourseUnitOrganizer({
                     <ProgressBar percent={summary.percent} color={courseColor} />
                   </div>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.16em] text-[#8e89a4]">
-                      Unit heatmap
-                    </span>
-                    <div className="flex h-2 w-28 overflow-hidden rounded-full bg-white/8">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{
-                          width: `${confidence ?? 0}%`,
-                          background:
-                            confidence === null
-                              ? "#2a2a3a"
-                              : confidence >= 75
-                                ? "#34d399"
-                                : confidence >= 40
-                                  ? "#fbbf24"
-                                  : "#fb7185",
-                        }}
-                      />
-                    </div>
-                    <span className="text-xs text-[#9a96b1]">
+                    <span className="app-chip px-2.5 py-1 text-[11px] uppercase tracking-[0.16em]">Confidence</span>
+                    <span className="text-xs app-muted">
                       {confidence === null ? "No confidence rating yet" : `${confidence}% confidence`}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                  <Link href={`${courseHref}/unit/${unit.id}`} className="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[#120f24]">
+                  <Link href={`${courseHref}/unit/${unit.id}`} className="app-primary-button px-4 py-3 text-sm">
                     Open unit hub
                   </Link>
-                  <Link href={`${courseHref}/unit/${unit.id}/flashcards`} className="rounded-2xl border border-white/10 px-4 py-3 text-sm font-medium text-[#ece9fb]">
+                  <Link href={`${courseHref}/unit/${unit.id}/flashcards`} className="app-secondary-button px-4 py-3 text-sm font-semibold">
                     Flashcards
                   </Link>
-                  <Link href={`${courseHref}/unit/${unit.id}/quiz`} className="rounded-2xl border border-white/10 px-4 py-3 text-sm font-medium text-[#ece9fb]">
+                  <Link href={`${courseHref}/unit/${unit.id}/quiz`} className="app-secondary-button px-4 py-3 text-sm font-semibold">
                     Unit exam
                   </Link>
                 </div>

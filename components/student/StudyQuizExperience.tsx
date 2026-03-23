@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import QuizPlayer from "@/components/QuizPlayer";
-import { normalizeQuizQuestions } from "@/components/QuizPlayer";
+import QuizPlayer, { normalizeQuizQuestions } from "@/components/QuizPlayer";
 import {
   getChapterWorkspace,
   getUnitWorkspace,
@@ -31,11 +30,11 @@ type BaseProps = {
 };
 
 const mistakeOptions: Array<{ id: MistakeCategory; label: string }> = [
-  { id: "careless", label: "Careless mistake" },
-  { id: "did-not-know", label: "Did not know concept" },
-  { id: "misread", label: "Misread question" },
-  { id: "formula", label: "Formula or process mistake" },
-  { id: "weak-evidence", label: "Weak explanation or evidence" },
+  { id: "careless", label: "Careless" },
+  { id: "did-not-know", label: "Concept gap" },
+  { id: "misread", label: "Misread" },
+  { id: "formula", label: "Formula/process" },
+  { id: "weak-evidence", label: "Weak explanation" },
 ];
 
 export default function StudyQuizExperience(props: BaseProps) {
@@ -75,7 +74,6 @@ export default function StudyQuizExperience(props: BaseProps) {
     }
 
     void hydrate();
-
     return () => {
       mounted = false;
     };
@@ -152,13 +150,11 @@ export default function StudyQuizExperience(props: BaseProps) {
     tomorrowReview,
   ]);
 
-  const heading = props.kind === "chapter-quiz" ? "Pre-quiz check-in" : props.kind === "unit-exam" ? "Pre-exam check-in" : "Mock-exam check-in";
-
   if (safeQuestions.length === 0) {
     return (
-      <div className="rounded-[24px] border border-white/10 bg-[#111118] p-6 text-center">
-        <div className="mb-3 text-3xl font-display font-bold text-white">Soon</div>
-        <p className="mx-auto max-w-2xl text-sm leading-7 text-[#9793ae]">
+      <div className="app-panel p-6 text-center">
+        <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+        <p className="mx-auto max-w-2xl text-sm leading-7 app-copy">
           This quiz does not have valid question data yet. Check back after the content finishes generating.
         </p>
       </div>
@@ -167,14 +163,17 @@ export default function StudyQuizExperience(props: BaseProps) {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[24px] border border-white/10 bg-[#111118] p-5">
-        <p className="text-xs font-body font-medium uppercase tracking-[0.22em] text-[#9d96ff]">{heading}</p>
-        <p className="mt-2 text-sm leading-7 text-[#9793ae]">
-          Mark how ready you feel before you start, then reflect after you finish so the dashboard can compare confidence against real results.
-        </p>
-        <div className="mt-5 grid gap-4 lg:grid-cols-2">
-          <label className="block rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="text-sm font-semibold text-white">Before you start</span>
+      <section className="app-panel p-5">
+        <div className="grid gap-4 lg:grid-cols-[1fr,280px] lg:items-center">
+          <div>
+            <p className="app-kicker">Before you start</p>
+            <h3 className="mt-2 font-display text-xl font-semibold">Set a confidence check-in, then get straight to the quiz.</h3>
+            <p className="mt-2 text-sm leading-7 app-copy">
+              Reflection should happen after the quiz is done, not before every question interrupts the flow.
+            </p>
+          </div>
+          <div className="app-card p-4">
+            <label className="text-sm font-semibold">Confidence before starting</label>
             <input
               type="range"
               min={0}
@@ -182,23 +181,11 @@ export default function StudyQuizExperience(props: BaseProps) {
               step={5}
               value={confidenceBefore}
               onChange={event => setConfidenceBefore(Number(event.target.value))}
-              className="mt-4 h-2 w-full cursor-pointer accent-[#8b80ff]"
+              className="mt-3 h-2 w-full cursor-pointer"
+              style={{ accentColor: "var(--accent)" }}
             />
-            <p className="mt-2 text-sm text-[#a7a3bd]">{confidenceBefore}% ready</p>
-          </label>
-          <label className="block rounded-2xl border border-white/10 bg-black/20 p-4">
-            <span className="text-sm font-semibold text-white">After you finish</span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              step={5}
-              value={confidenceAfter}
-              onChange={event => setConfidenceAfter(Number(event.target.value))}
-              className="mt-4 h-2 w-full cursor-pointer accent-[#8b80ff]"
-            />
-            <p className="mt-2 text-sm text-[#a7a3bd]">{confidenceAfter}% ready</p>
-          </label>
+            <p className="mt-2 text-sm app-muted">{confidenceBefore}% ready</p>
+          </div>
         </div>
       </section>
 
@@ -220,88 +207,106 @@ export default function StudyQuizExperience(props: BaseProps) {
         }}
       />
 
-      <section className="rounded-[24px] border border-white/10 bg-[#111118] p-5">
-        <p className="text-xs font-body font-medium uppercase tracking-[0.22em] text-[#9d96ff]">Post-quiz reflection</p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {mistakeOptions.map(option => (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() =>
-                setMistakes(current =>
-                  current.includes(option.id) ? current.filter(item => item !== option.id) : [...current, option.id]
-                )
-              }
-              className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
-                mistakes.includes(option.id)
-                  ? "border-[#8b80ff]/40 bg-[#8b80ff]/14 text-[#d5d0ff]"
-                  : "border-white/10 bg-white/[0.03] text-[#8c88a4] hover:border-white/20 hover:text-white"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
+      {completed && (
+        <section className="app-panel p-5">
+          <p className="app-kicker">After the quiz</p>
+          <h3 className="mt-2 font-display text-xl font-semibold">Save the useful reflection, skip the busywork.</h3>
 
-        <div className="mt-5 grid gap-4 xl:grid-cols-2">
-          <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-white">What tripped you up?</span>
-            <textarea
-              rows={4}
-              value={reflection}
-              onChange={event => setReflection(event.target.value)}
-              placeholder="Name the exact thing that made this harder than expected."
-              className="min-h-[96px] w-full rounded-2xl border border-[#262637] bg-[#0c0c12] px-4 py-3 text-sm leading-7 text-[#eceaff] outline-none transition-colors placeholder:text-[#5f5a78] focus:border-[#6c63ff]/50"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-white">What should you review tomorrow?</span>
-            <textarea
-              rows={4}
-              value={tomorrowReview}
-              onChange={event => setTomorrowReview(event.target.value)}
-              placeholder="Leave your future self a concrete next step."
-              className="min-h-[96px] w-full rounded-2xl border border-[#262637] bg-[#0c0c12] px-4 py-3 text-sm leading-7 text-[#eceaff] outline-none transition-colors placeholder:text-[#5f5a78] focus:border-[#6c63ff]/50"
-            />
-          </label>
-        </div>
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <div className="app-card p-4">
+              <label className="text-sm font-semibold">Confidence after finishing</label>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={5}
+                value={confidenceAfter}
+                onChange={event => setConfidenceAfter(Number(event.target.value))}
+                className="mt-3 h-2 w-full cursor-pointer"
+                style={{ accentColor: "var(--accent)" }}
+              />
+              <p className="mt-2 text-sm app-muted">{confidenceAfter}% ready</p>
+            </div>
 
-        {savedMisses.length > 0 && (
-          <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4">
-            <p className="text-sm font-semibold text-white">Saved missed questions</p>
-            <ul className="mt-3 space-y-2 text-sm leading-6 text-[#a7a3bd]">
-              {savedMisses.map(question => (
-                <li key={question}>- {question}</li>
-              ))}
-            </ul>
+            <div className="app-card p-4">
+              <p className="text-sm font-semibold">Flag this for later</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setReviewLater(current => !current)}
+                  className="app-chip px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em]"
+                  style={{ borderColor: reviewLater ? "var(--accent)" : "var(--line)", background: reviewLater ? "var(--accent-soft)" : undefined }}
+                >
+                  Review later
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfused(current => !current)}
+                  className="app-chip px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em]"
+                  style={{ borderColor: confused ? "var(--accent)" : "var(--line)", background: confused ? "var(--accent-soft)" : undefined }}
+                >
+                  Still confusing
+                </button>
+              </div>
+            </div>
           </div>
-        )}
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setReviewLater(current => !current)}
-            className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
-              reviewLater
-                ? "border-[#8b80ff]/40 bg-[#8b80ff]/14 text-[#d5d0ff]"
-                : "border-white/10 bg-white/[0.03] text-[#8c88a4]"
-            }`}
-          >
-            Review later
-          </button>
-          <button
-            type="button"
-            onClick={() => setConfused(current => !current)}
-            className={`rounded-full border px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors ${
-              confused
-                ? "border-[#8b80ff]/40 bg-[#8b80ff]/14 text-[#d5d0ff]"
-                : "border-white/10 bg-white/[0.03] text-[#8c88a4]"
-            }`}
-          >
-            Still confusing
-          </button>
-        </div>
-      </section>
+          <div className="mt-4 grid gap-4 xl:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-sm font-semibold">What tripped you up?</span>
+              <textarea
+                rows={4}
+                value={reflection}
+                onChange={event => setReflection(event.target.value)}
+                placeholder="Name the one or two things that actually made this harder than expected."
+                className="app-textarea min-h-[96px]"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-sm font-semibold">What should you review next?</span>
+              <textarea
+                rows={4}
+                value={tomorrowReview}
+                onChange={event => setTomorrowReview(event.target.value)}
+                placeholder="Leave yourself a concrete next step for the next study session."
+                className="app-textarea min-h-[96px]"
+              />
+            </label>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {mistakeOptions.map(option => (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() =>
+                  setMistakes(current =>
+                    current.includes(option.id) ? current.filter(item => item !== option.id) : [...current, option.id]
+                  )
+                }
+                className="app-chip px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em]"
+                style={{
+                  borderColor: mistakes.includes(option.id) ? "var(--accent)" : "var(--line)",
+                  background: mistakes.includes(option.id) ? "var(--accent-soft)" : undefined,
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          {savedMisses.length > 0 && (
+            <div className="app-card mt-4 p-4">
+              <p className="text-sm font-semibold">Questions you missed</p>
+              <ul className="mt-3 space-y-2 text-sm leading-6 app-copy">
+                {savedMisses.map(question => (
+                  <li key={question}>- {question}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
