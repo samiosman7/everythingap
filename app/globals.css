@@ -6,6 +6,10 @@
 
 :root,
 [data-theme="ember"] {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
   --bg: #171411;
   --bg-elevated: #1e1a16;
   --panel: #221d18;
@@ -80,15 +84,21 @@ body {
   margin: 0;
   min-height: 100%;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
+  min-height: 100dvh;
   background:
     radial-gradient(circle at top right, rgba(255, 255, 255, 0.04), transparent 28%),
     linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg) 100%);
   color: var(--text);
   font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  padding-bottom: var(--safe-bottom);
+  overflow-x: hidden;
 }
 
 a {
@@ -130,6 +140,7 @@ a {
 @layer components {
   .app-shell {
     @apply flex min-h-screen flex-col md:flex-row;
+    min-height: 100dvh;
     background: transparent;
   }
 
@@ -138,7 +149,7 @@ a {
   }
 
   .app-header {
-    @apply border-b px-5 py-5 sm:px-8;
+    @apply border-b px-4 py-4 sm:px-6 md:px-8;
     border-color: var(--line);
     background: color-mix(in srgb, var(--bg-elevated) 86%, transparent);
     backdrop-filter: blur(16px);
@@ -167,7 +178,8 @@ a {
   }
 
   .app-page {
-    @apply w-full px-4 py-6 sm:px-6 lg:px-8;
+    @apply w-full px-4 py-5 sm:px-6 sm:py-6 lg:px-8;
+    padding-bottom: calc(1.5rem + var(--safe-bottom));
   }
 
   .app-panel {
@@ -202,6 +214,7 @@ a {
     border-radius: 18px;
     font-weight: 700;
     transition: transform 180ms ease, background 180ms ease;
+    min-height: 46px;
   }
 
   .app-primary-button:hover {
@@ -215,6 +228,7 @@ a {
     color: var(--text);
     border-radius: 18px;
     transition: background 180ms ease, border-color 180ms ease;
+    min-height: 46px;
   }
 
   .app-secondary-button:hover {
@@ -247,6 +261,7 @@ a {
 
   .app-input {
     @apply px-4 py-3 text-sm;
+    min-height: 46px;
   }
 
   .app-textarea {
@@ -413,4 +428,48 @@ a {
   overflow-y: hidden;
   padding: 0.8rem 0;
   margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  .noise::after {
+    opacity: 0.14;
+  }
+
+  .app-panel {
+    border-radius: 24px;
+  }
+
+  .app-card {
+    border-radius: 20px;
+  }
+
+  .app-title {
+    line-height: 1.02;
+  }
+
+  .app-copy {
+    font-size: 0.92rem;
+    line-height: 1.75;
+  }
+
+  .notes-content {
+    font-size: 0.96rem;
+  }
+
+  .notes-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .notes-content h2 {
+    font-size: 1.25rem;
+    margin-top: 1.7rem;
+  }
+
+  .notes-content h3 {
+    font-size: 1.02rem;
+  }
+
+  .notes-content pre {
+    padding: 0.85rem 0.9rem;
+  }
 }

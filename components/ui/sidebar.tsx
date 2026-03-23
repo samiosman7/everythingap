@@ -118,13 +118,27 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "flex h-14 w-full flex-row items-center justify-between border-b px-4 py-4 md:hidden"
+          "flex w-full flex-row items-center justify-between border-b px-4 py-3 md:hidden"
         )}
-        style={{ borderColor: "var(--line)", background: "var(--panel)" }}
+        style={{
+          borderColor: "var(--line)",
+          background: "var(--panel)",
+          paddingTop: "calc(0.75rem + var(--safe-top))",
+          paddingLeft: "calc(1rem + var(--safe-left))",
+          paddingRight: "calc(1rem + var(--safe-right))",
+        }}
         {...props}
       >
         <div className="flex w-full justify-end">
-          <Menu className="cursor-pointer" style={{ color: "var(--text)" }} onClick={() => setOpen(!open)} />
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl"
+            style={{ color: "var(--text)", background: "var(--panel-muted)" }}
+            aria-label="Open navigation"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
         </div>
         <AnimatePresence>
           {open && (
@@ -137,17 +151,37 @@ export const MobileSidebar = ({
                 ease: "easeInOut",
               }}
               className={cn(
-                "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between p-6",
+                "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between overflow-y-auto",
                 className
               )}
-              style={{ background: "var(--bg)" }}
+              style={{
+                background: "var(--bg)",
+                paddingTop: "calc(1.25rem + var(--safe-top))",
+                paddingBottom: "calc(1.25rem + var(--safe-bottom))",
+                paddingLeft: "calc(1rem + var(--safe-left))",
+                paddingRight: "calc(1rem + var(--safe-right))",
+              }}
             >
               <div
-                className="absolute right-6 top-6 z-50 cursor-pointer"
+                className="absolute z-50"
                 style={{ color: "var(--text)" }}
                 onClick={() => setOpen(!open)}
               >
-                <X />
+                <button
+                  type="button"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl"
+                  style={{
+                    background: "var(--panel-muted)",
+                    marginTop: "var(--safe-top)",
+                    marginRight: "var(--safe-right)",
+                    position: "absolute",
+                    top: "0.5rem",
+                    right: "0.5rem",
+                  }}
+                  aria-label="Close navigation"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
               {children}
             </motion.div>

@@ -101,7 +101,7 @@ export default function FlashcardDeck({ cards, color = "var(--accent)" }: Props)
           style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
         >
           <div
-            className="app-card flex min-h-[280px] w-full flex-col items-center justify-center p-8 text-center"
+            className="app-card flex min-h-[240px] w-full flex-col items-center justify-center p-6 text-center sm:min-h-[280px] sm:p-8"
             style={{ backfaceVisibility: "hidden" }}
           >
             <p className="mb-4 text-xs uppercase tracking-widest app-muted">Question</p>
@@ -110,7 +110,7 @@ export default function FlashcardDeck({ cards, color = "var(--accent)" }: Props)
           </div>
 
           <div
-            className="absolute inset-0 flex min-h-[280px] w-full flex-col items-center justify-center rounded-[22px] border p-8 text-center"
+            className="absolute inset-0 flex min-h-[240px] w-full flex-col items-center justify-center rounded-[22px] border p-6 text-center sm:min-h-[280px] sm:p-8"
             style={{
               backfaceVisibility: "hidden",
               transform: "rotateY(180deg)",
@@ -125,11 +125,11 @@ export default function FlashcardDeck({ cards, color = "var(--accent)" }: Props)
       </div>
 
       {flipped && (
-        <div className="mt-5 flex gap-3 animate-fade-up">
-          <button onClick={handleStudyMore} className="app-secondary-button flex-1 py-3 text-sm font-semibold">
+        <div className="sticky bottom-2 z-10 mt-5 flex gap-3 rounded-2xl border p-2 backdrop-blur-md animate-fade-up sm:static sm:border-0 sm:bg-transparent sm:p-0" style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}>
+          <button onClick={handleStudyMore} className="app-secondary-button flex-1 py-3.5 text-sm font-semibold">
             Study more
           </button>
-          <button onClick={handleKnow} className="app-primary-button flex-1 py-3 text-sm">
+          <button onClick={handleKnow} className="app-primary-button flex-1 py-3.5 text-sm">
             Got it
           </button>
         </div>

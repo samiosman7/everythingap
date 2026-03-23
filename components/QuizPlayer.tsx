@@ -206,7 +206,7 @@ export default function QuizPlayer({ questions, color = "var(--accent)", onCompl
         <p className="text-base leading-relaxed">{q.question}</p>
       </div>
 
-      <div className="mb-6 space-y-2">
+      <div className="mb-6 space-y-3">
         {q.choices.map((choice, index) => {
           const isCorrect = index === q.answerIndex;
           const isSelected = index === selected;
@@ -216,7 +216,7 @@ export default function QuizPlayer({ questions, color = "var(--accent)", onCompl
               key={index}
               onClick={() => handleSelect(index)}
               className={clsx(
-                "w-full rounded-xl border px-5 py-3.5 text-left text-sm font-body transition-all",
+                "w-full rounded-xl border px-4 py-4 text-left text-sm font-body transition-all sm:px-5 sm:py-3.5",
                 !revealed && !isSelected && "hover:border-white/20",
                 !revealed && isSelected,
                 revealed && isCorrect && "border-green-500/40 bg-green-500/10 text-green-400",
@@ -243,12 +243,12 @@ export default function QuizPlayer({ questions, color = "var(--accent)", onCompl
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="sticky bottom-2 z-10 flex gap-3 rounded-2xl border p-2 backdrop-blur-md sm:static sm:border-0 sm:bg-transparent sm:p-0" style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}>
         {!revealed ? (
           <button
             onClick={handleReveal}
             disabled={selected === null}
-            className="flex-1 rounded-xl py-3 text-sm font-semibold text-white transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex-1 rounded-xl py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-40"
             style={{ background: color }}
           >
             Check answer
@@ -256,7 +256,7 @@ export default function QuizPlayer({ questions, color = "var(--accent)", onCompl
         ) : (
           <button
             onClick={handleNext}
-            className="flex-1 rounded-xl py-3 text-sm font-semibold text-white transition-all hover:scale-[1.01]"
+            className="flex-1 rounded-xl py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.01]"
             style={{ background: color }}
           >
             {current < safeQuestions.length - 1 ? "Next question ->" : "See results ->"}
