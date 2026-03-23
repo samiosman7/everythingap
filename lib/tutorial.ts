@@ -222,6 +222,6 @@ export async function buildTutorialTargets(supabase: any, selectedCourseIds: str
     flashcardsHref: `${unitHref}/flashcards`,
     keyConceptsHref: `${unitHref}/key-concepts`,
     unitExamHref: `${unitHref}/quiz`,
-    fullExamHref: course.full_exam ? `${courseHref}/exam` : null,
+    fullExamHref: `${courseHref}/exam`,
   };
 }

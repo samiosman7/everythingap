@@ -36,6 +36,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
   }));
 
   const courseHref = getCourseHref(course);
+  const hasFullExam = Boolean(course.full_exam);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
@@ -77,7 +78,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                   label: "Chapters",
                   value: organizedUnits.reduce((sum, unit) => sum + unit.chapterCount, 0),
                 },
-                { icon: FileSpreadsheet, label: "Full exam", value: course.full_exam ? "Ready" : "Soon" },
+                { icon: FileSpreadsheet, label: "Full exam", value: hasFullExam ? "Ready" : "Soon" },
               ].map(item => {
                 const Icon = item.icon;
                 return (
@@ -90,15 +91,13 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
               })}
             </div>
 
-            {course.full_exam && (
-              <Link
-                href={`${courseHref}/exam`}
-                className="mt-5 block rounded-2xl border px-5 py-4 text-sm font-body transition-all hover:-translate-y-0.5"
-                style={{ background: `${course.color}10`, borderColor: `${course.color}30`, color: "#f0f0ff" }}
-              >
-                Open full AP mock exam
-              </Link>
-            )}
+            <Link
+              href={`${courseHref}/exam`}
+              className="mt-5 block rounded-2xl border px-5 py-4 text-sm font-body transition-all hover:-translate-y-0.5"
+              style={{ background: `${course.color}10`, borderColor: `${course.color}30`, color: "#f0f0ff" }}
+            >
+              {hasFullExam ? "Open full AP mock exam" : "Open full AP mock exam page"}
+            </Link>
           </div>
         </section>
 
@@ -108,7 +107,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
             courseHref={courseHref}
             courseColor={course.color ?? "#6c63ff"}
             units={organizedUnits}
-            hasFullExam={Boolean(course.full_exam)}
+            hasFullExam={hasFullExam}
           />
         </section>
       </main>
