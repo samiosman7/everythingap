@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, BookOpenText, Search, Sparkles, Target } from "lucide-react";
 import { getCourseHref } from "@/lib/course";
 import { groupCoursesByCategory } from "@/lib/course-display";
 import { readSelectedCourseIds } from "@/lib/course-preferences";
@@ -55,6 +55,11 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
   const selectedCourses = filteredCourses.filter(course => selectedIds.includes(course.id));
   const remainingCourses = filteredCourses.filter(course => !selectedIds.includes(course.id));
   const groupedCourses = groupCoursesByCategory(remainingCourses);
+  const totalSelectedChapters = selectedCourses.reduce(
+    (sum, course) => sum + course.units.reduce((unitSum, unit) => unitSum + unit.chapterCount, 0),
+    0
+  );
+  const featuredCourse = selectedCourses[0] ?? null;
 
   return (
     <div className="app-shell">
@@ -105,6 +110,89 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
 
         <main className="app-page">
           <div className="space-y-6">
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.08 }}
+              className="grid gap-4 xl:grid-cols-[1.15fr,0.85fr]"
+            >
+              <div className="app-panel relative overflow-hidden p-6 sm:p-7">
+                <div
+                  className="pointer-events-none absolute -right-8 top-6 h-28 w-28 rounded-full opacity-60 blur-2xl animate-float-slow"
+                  style={{ background: "color-mix(in srgb, var(--accent) 28%, transparent)" }}
+                />
+                <p className="app-kicker">Today</p>
+                <h2 className="app-section-title mt-3">
+                  {selectedCourses.length ? "Everything you need is already in reach." : "Set up your classes and the dashboard gets smarter fast."}
+                </h2>
+                <p className="app-copy mt-3 max-w-2xl">
+                  {selectedCourses.length
+                    ? "Open a course, move through the unit in order, and keep the extra study signals tucked away in Student Space instead of all over the page."
+                    : "Pick the AP classes you actually take, then this page turns into a cleaner launchpad for notes, quizzes, flashcards, and exam prep."}
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-3">
+                  {selectedCourses.length ? (
+                    <>
+                      <Link href={featuredCourse ? getCourseHref(featuredCourse) : "/onboarding"} className="app-primary-button inline-flex items-center gap-2 px-4 py-3 text-sm">
+                        Open {featuredCourse ? featuredCourse.name : "my first class"}
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                      <Link href="/student-space" className="app-secondary-button inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+                        Open student space
+                      </Link>
+                    </>
+                  ) : (
+                    <Link href="/onboarding" className="app-primary-button inline-flex items-center gap-2 px-4 py-3 text-sm">
+                      Pick my classes
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
+                {[
+                  {
+                    icon: Sparkles,
+                    label: "Selected classes",
+                    value: selectedCourses.length || 0,
+                    copy: selectedCourses.length ? "Pinned and ready to open." : "Pick a few to personalize this space.",
+                  },
+                  {
+                    icon: BookOpenText,
+                    label: "Chapters in reach",
+                    value: totalSelectedChapters,
+                    copy: selectedCourses.length ? "Across your saved classes." : "This fills in after setup.",
+                  },
+                  {
+                    icon: Target,
+                    label: "Next move",
+                    value: selectedCourses.length ? "Open a course" : "Choose classes",
+                    copy: selectedCourses.length ? "Start with the class you need today." : "Onboarding sets the whole flow up.",
+                  },
+                ].map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, delay: 0.12 + index * 0.06 }}
+                      className="app-panel p-5"
+                    >
+                      <div className="inline-flex rounded-2xl p-3" style={{ background: "var(--accent-soft)", color: "var(--accent)" }}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.18em] app-muted">{item.label}</p>
+                      <p className="mt-2 font-display text-2xl font-semibold">{item.value}</p>
+                      <p className="mt-2 text-sm leading-6 app-copy">{item.copy}</p>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.section>
+
             {selectedCourses.length > 0 && (
               <section id="my-courses">
                 <div className="mb-4">
@@ -122,7 +210,7 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
                         initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
-                        transition={{ duration: 0.35, delay: index * 0.04 }}
+                        transition={{ duration: 0.4, delay: index * 0.05 }}
                         className="app-panel p-5"
                       >
                         <div className="flex items-start justify-between gap-4">
