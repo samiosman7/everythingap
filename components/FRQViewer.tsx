@@ -42,6 +42,60 @@ type GradeState = {
 
 type FrqToggleKey = "reviewLater" | "likelyOnTest" | "confused";
 
+function normalizeTextValue(value: unknown): string {
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number") return String(value);
+  if (Array.isArray(value)) {
+    return value
+      .map(item => normalizeTextValue(item))
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
+  }
+  if (value && typeof value === "object") {
+    return Object.values(value as Record<string, unknown>)
+      .map(item => normalizeTextValue(item))
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
+  }
+  return "";
+}
+
+function normalizeFrq(raw: Record<string, unknown>): FRQ | null {
+  const question =
+    normalizeTextValue(raw.question) ||
+    normalizeTextValue(raw.prompt) ||
+    normalizeTextValue(raw.text) ||
+    normalizeTextValue(raw.stem) ||
+    normalizeTextValue(raw.frq) ||
+    normalizeTextValue(raw.instructions);
+
+  if (!question) return null;
+
+  const rubric =
+    normalizeTextValue(raw.rubric) ||
+    normalizeTextValue(raw.scoring_guidelines) ||
+    normalizeTextValue(raw.scoringGuidelines) ||
+    normalizeTextValue(raw.guidelines) ||
+    normalizeTextValue(raw.criteria);
+
+  const sampleResponse =
+    normalizeTextValue(raw.sample_response) ||
+    normalizeTextValue(raw.sampleResponse) ||
+    normalizeTextValue(raw.sample_answer) ||
+    normalizeTextValue(raw.sampleAnswer) ||
+    normalizeTextValue(raw.model_response) ||
+    normalizeTextValue(raw.modelResponse) ||
+    normalizeTextValue(raw.response);
+
+  return {
+    question,
+    rubric,
+    sample_response: sampleResponse,
+  };
+}
+
 function emptyGradeState(): GradeState {
   return {
     answer: "",
@@ -70,14 +124,7 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
     ? questions
         .map(item => {
           if (!item || typeof item !== "object") return null;
-          const raw = item as unknown as Record<string, unknown>;
-          const prompt = typeof raw.question === "string" ? raw.question : typeof raw.prompt === "string" ? raw.prompt : "";
-          if (!prompt) return null;
-          return {
-            question: prompt,
-            rubric: typeof raw.rubric === "string" ? raw.rubric : "",
-            sample_response: typeof raw.sample_response === "string" ? raw.sample_response : "",
-          } satisfies FRQ;
+          return normalizeFrq(item as unknown as Record<string, unknown>);
         })
         .filter((item): item is FRQ => item !== null)
     : [];
