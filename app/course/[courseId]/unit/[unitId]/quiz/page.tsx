@@ -37,16 +37,16 @@ export default async function UnitQuizPage({
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link
-          href={`${courseHref}/unit/${unitId}`}
-          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
-        >
+    <div className="min-h-screen">
+      <nav
+        className="sticky top-0 z-50 flex items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
+        style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
+      >
+        <Link href={`${courseHref}/unit/${unitId}`} className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
           Back to {unit.name}
         </Link>
       </nav>
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-page">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
@@ -55,11 +55,11 @@ export default async function UnitQuizPage({
           kind="unit-exam"
         />
 
-        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Unit Exam</div>
+        <div className="app-panel mb-8 p-6 md:p-8">
+          <div className="mb-2 app-kicker">Unit exam</div>
           <h1 className="font-display text-2xl font-bold md:text-4xl">{unit.name}</h1>
           {hasExamContent && (
-            <p className="mt-2 text-sm font-body text-[#8888aa]">
+            <p className="mt-2 text-sm app-copy">
               {multipleChoice.length} MC · {freeResponse.length} FRQ
             </p>
           )}
@@ -68,17 +68,17 @@ export default async function UnitQuizPage({
         {hasExamContent ? (
           <div className="space-y-10">
             {multipleChoice.length > 0 && (
-              <section className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-                <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
+              <section className="app-panel p-6 md:p-8">
+                <h2 className="mb-6 border-b pb-3 font-display text-lg font-bold" style={{ borderColor: "var(--line)" }}>
                   Multiple Choice
                 </h2>
                 <StudyQuizExperience
                   questions={multipleChoice}
-                  color={course.color ?? "#6c63ff"}
+                  color={course.color ?? "var(--accent)"}
                   courseId={course.id}
                   unitId={String(unit.id)}
                   href={`${courseHref}/unit/${unit.id}/quiz`}
-                  label={`${course.name} • ${unit.name} unit exam`}
+                  label={`${course.name} · ${unit.name} unit exam`}
                   courseName={course.name}
                   unitName={unit.name}
                   kind="unit-exam"
@@ -86,8 +86,8 @@ export default async function UnitQuizPage({
               </section>
             )}
             {freeResponse.length > 0 && (
-              <section className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-                <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
+              <section className="app-panel p-6 md:p-8">
+                <h2 className="mb-6 border-b pb-3 font-display text-lg font-bold" style={{ borderColor: "var(--line)" }}>
                   Free Response
                 </h2>
                 <FRQViewer
@@ -96,16 +96,16 @@ export default async function UnitQuizPage({
                     courseId: course.id,
                     unitId: String(unit.id),
                     href: `${courseHref}/unit/${unit.id}/quiz`,
-                    labelPrefix: `${course.name} • ${unit.name} unit exam`,
+                    labelPrefix: `${course.name} · ${unit.name} unit exam`,
                   }}
                 />
               </section>
             )}
           </div>
         ) : (
-          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-            <div className="mb-3 text-3xl">Soon</div>
-            <p>Unit exam is being generated. Check back soon.</p>
+          <div className="app-panel py-16 text-center">
+            <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+            <p className="app-copy">Unit exam is being generated. Check back soon.</p>
           </div>
         )}
       </main>

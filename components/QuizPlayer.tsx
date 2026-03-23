@@ -67,7 +67,7 @@ export function normalizeQuizQuestions(questions: QuizQuestion[] | unknown): Saf
     .filter((item): item is SafeQuestion => item !== null);
 }
 
-export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }: Props) {
+export default function QuizPlayer({ questions, color = "var(--accent)", onComplete }: Props) {
   const safeQuestions = useMemo(() => normalizeQuizQuestions(questions), [questions]);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -165,7 +165,7 @@ export default function QuizPlayer({ questions, color = "#6c63ff", onComplete }:
                   correct ? "border-green-500/20 bg-green-500/10" : "border-red-500/20 bg-red-500/10"
                 )}
               >
-                <span className="mt-0.5">{correct ? "OK" : "X"}</span>
+                <span className="mt-0.5">{correct ? "Correct" : "Missed"}</span>
                 <div>
                   <p className="mb-1">{question.question}</p>
                   {!correct && (

@@ -2,7 +2,6 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import NotesRenderer from "@/components/NotesRenderer";
 import StudySessionTracker from "@/components/StudySessionTracker";
-import { ChapterWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
@@ -46,7 +45,7 @@ export default async function ChapterPage({
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen theme-bg">
+    <div className="min-h-screen">
       <nav
         className="sticky top-0 z-50 flex flex-wrap items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
         style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
@@ -73,7 +72,7 @@ export default async function ChapterPage({
         />
 
         <div className="app-panel mb-8 p-6 md:p-8">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <div className="mb-2 text-xs font-medium uppercase tracking-widest app-muted">
                 Unit {unit.unit_number} · Chapter {chapter.chapter_number}
@@ -88,33 +87,18 @@ export default async function ChapterPage({
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[1.35fr,0.65fr]">
-          {chapter.notes ? (
-            <div className="app-panel p-6 md:p-8">
-              <div className="max-w-5xl">
-                <NotesRenderer notes={chapter.notes} />
-              </div>
+        {chapter.notes ? (
+          <div className="app-panel p-6 md:p-8">
+            <div className="max-w-5xl">
+              <NotesRenderer notes={chapter.notes} />
             </div>
-          ) : (
-            <div className="app-panel py-16 text-center">
-              <div className="mb-3 text-3xl font-display font-bold">Soon</div>
-              <p className="app-copy">Notes are being generated. Check back soon.</p>
-            </div>
-          )}
-
-          <div className="space-y-6">
-            <ChapterWorkspacePanel
-              chapterId={String(chapter.id)}
-              meta={{
-                courseId: course.id,
-                unitId: String(unit.id),
-                chapterId: String(chapter.id),
-                href: `${courseHref}/unit/${unitId}/chapter/${chapter.id}`,
-                label: `${course.name} • ${chapter.name}`,
-              }}
-            />
           </div>
-        </div>
+        ) : (
+          <div className="app-panel py-16 text-center">
+            <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+            <p className="app-copy">Notes are being generated. Check back soon.</p>
+          </div>
+        )}
 
         <div className="app-divider mt-10 flex items-center justify-between gap-4 border-t pt-8">
           {prev ? (

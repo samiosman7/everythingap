@@ -30,10 +30,10 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen">
       {isGuest && (
-        <div className="border-b border-[#6c63ff]/18 bg-[#6c63ff]/10 px-4 py-3 sm:px-6">
-          <p className="font-body text-sm text-[#d9d7ff]">
+        <div className="border-b px-4 py-3 sm:px-6" style={{ borderColor: "var(--line)", background: "var(--accent-soft)" }}>
+          <p className="text-sm" style={{ color: "var(--text)" }}>
             You&apos;re browsing in guest mode. Content is fully available, but synced progress only saves when you use an account.
           </p>
         </div>
@@ -46,9 +46,11 @@ export default async function DashboardPage() {
       />
 
       {!courses.length && (
-        <div className="px-4 py-20 text-center font-body text-[#8888aa] sm:px-6">
-          <div className="mb-4 text-4xl">AP</div>
-          <p>No courses found yet. Populate the database and they&apos;ll appear here.</p>
+        <div className="app-page text-center">
+          <div className="app-panel px-6 py-16">
+            <div className="mb-4 text-4xl">AP</div>
+            <p className="app-copy">No courses found yet. Populate the database and they&apos;ll appear here.</p>
+          </div>
         </div>
       )}
     </div>

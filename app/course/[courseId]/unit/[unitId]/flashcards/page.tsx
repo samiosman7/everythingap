@@ -38,16 +38,16 @@ export default async function FlashcardsPage({
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link
-          href={`${courseHref}/unit/${unitId}`}
-          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
-        >
+    <div className="min-h-screen">
+      <nav
+        className="sticky top-0 z-50 flex items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
+        style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
+      >
+        <Link href={`${courseHref}/unit/${unitId}`} className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
           Back to {unit.name}
         </Link>
       </nav>
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-page">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
@@ -56,21 +56,21 @@ export default async function FlashcardsPage({
           kind="flashcards"
         />
 
-        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 text-center md:p-8">
-          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Flashcards</div>
+        <div className="app-panel mb-8 p-6 text-center md:p-8">
+          <div className="mb-2 app-kicker">Flashcards</div>
           <h1 className="font-display text-2xl font-bold md:text-4xl">{unit.name}</h1>
-          <p className="mt-2 text-sm font-body text-[#8888aa]">{flashcards?.length ?? 0} cards</p>
+          <p className="mt-2 text-sm app-copy">{flashcards?.length ?? 0} cards</p>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1.2fr,0.8fr]">
           {flashcards?.length ? (
-            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-              <FlashcardDeck cards={flashcards} color={course.color ?? "#6c63ff"} />
+            <div className="app-panel p-6 md:p-8">
+              <FlashcardDeck cards={flashcards} color={course.color ?? "var(--accent)"} />
             </div>
           ) : (
-            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-              <div className="mb-3 text-3xl">Soon</div>
-              <p>Flashcards are being generated. Check back soon.</p>
+            <div className="app-panel py-16 text-center">
+              <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+              <p className="app-copy">Flashcards are being generated. Check back soon.</p>
             </div>
           )}
 
@@ -81,7 +81,7 @@ export default async function FlashcardsPage({
                 courseId: course.id,
                 unitId: String(unit.id),
                 href: `${courseHref}/unit/${unit.id}/flashcards`,
-                label: `${course.name} • ${unit.name} flashcards`,
+                label: `${course.name} · ${unit.name} flashcards`,
               }}
             />
           </div>

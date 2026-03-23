@@ -42,16 +42,16 @@ export default async function ChapterQuizPage({
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link
-          href={`${courseHref}/unit/${unitId}/chapter/${chapterId}`}
-          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
-        >
+    <div className="min-h-screen">
+      <nav
+        className="sticky top-0 z-50 flex items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
+        style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
+      >
+        <Link href={`${courseHref}/unit/${unitId}/chapter/${chapterId}`} className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
           Back to notes
         </Link>
       </nav>
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-page">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
@@ -61,20 +61,20 @@ export default async function ChapterQuizPage({
           kind="chapter-quiz"
         />
 
-        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Chapter Quiz</div>
+        <div className="app-panel mb-8 p-6 md:p-8">
+          <div className="mb-2 app-kicker">Chapter quiz</div>
           <h1 className="font-display text-2xl font-bold md:text-4xl">{chapter.name}</h1>
-          <p className="mt-2 text-sm font-body text-[#8888aa]">{quizQuestions.length} questions</p>
+          <p className="mt-2 text-sm app-copy">{quizQuestions.length} questions</p>
         </div>
 
         <StudyQuizExperience
           questions={quizQuestions}
-          color={course.color ?? "#6c63ff"}
+          color={course.color ?? "var(--accent)"}
           courseId={course.id}
           unitId={String(unit.id)}
           chapterId={String(chapter.id)}
           href={`${courseHref}/unit/${unit.id}/chapter/${chapter.id}/quiz`}
-          label={`${course.name} • ${chapter.name} quiz`}
+          label={`${course.name} · ${chapter.name} quiz`}
           courseName={course.name}
           unitName={unit.name}
           chapterName={chapter.name}

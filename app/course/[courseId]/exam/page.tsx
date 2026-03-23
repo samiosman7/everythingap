@@ -26,13 +26,16 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link href={courseHref} className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]">
+    <div className="min-h-screen">
+      <nav
+        className="sticky top-0 z-50 flex items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
+        style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
+      >
+        <Link href={courseHref} className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
           Back to {course.name}
         </Link>
       </nav>
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-page">
         <StudySessionTracker
           courseId={course.id}
           href={`${courseHref}/exam`}
@@ -40,10 +43,8 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
           kind="full-exam"
         />
 
-        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">
-            Full AP Mock Exam
-          </div>
+        <div className="app-panel mb-8 p-6 md:p-8">
+          <div className="mb-2 app-kicker">Full AP mock exam</div>
           <h1 className="font-display text-2xl font-bold md:text-4xl">{course.name}</h1>
           {exam?.exam_info && hasExamContent && (
             <div className="mt-4 flex flex-wrap gap-3">
@@ -52,9 +53,9 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
                 { label: "MC Questions", val: multipleChoice.length },
                 { label: "FRQs", val: freeResponse.length },
               ].map(item => (
-                <div key={item.label} className="rounded-lg border border-[#1e1e2e] bg-[#0c0c12] px-3 py-1.5 text-xs font-body">
-                  <span className="text-[#8888aa]">{item.label}: </span>
-                  <span className="font-medium text-[#e8e8f0]">{item.val}</span>
+                <div key={item.label} className="app-card px-3 py-2 text-xs">
+                  <span className="app-muted">{item.label}: </span>
+                  <span className="font-medium">{item.val}</span>
                 </div>
               ))}
             </div>
@@ -64,41 +65,41 @@ export default async function FullExamPage({ params }: { params: Promise<{ cours
         {hasExamContent ? (
           <div className="space-y-10">
             {multipleChoice.length > 0 && (
-              <section className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-                <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
-                  Section I - Multiple Choice
+              <section className="app-panel p-6 md:p-8">
+                <h2 className="mb-6 border-b pb-3 font-display text-lg font-bold" style={{ borderColor: "var(--line)" }}>
+                  Section I · Multiple Choice
                 </h2>
                 <StudyQuizExperience
                   questions={multipleChoice}
-                  color={course.color ?? "#6c63ff"}
+                  color={course.color ?? "var(--accent)"}
                   courseId={course.id}
                   href={`${courseHref}/exam`}
-                  label={`${course.name} • full AP mock exam`}
+                  label={`${course.name} · full AP mock exam`}
                   courseName={course.name}
                   kind="full-exam"
                 />
               </section>
             )}
             {freeResponse.length > 0 && (
-              <section className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-                <h2 className="mb-6 border-b border-[#1e1e2e] pb-3 font-display text-lg font-bold">
-                  Section II - Free Response
+              <section className="app-panel p-6 md:p-8">
+                <h2 className="mb-6 border-b pb-3 font-display text-lg font-bold" style={{ borderColor: "var(--line)" }}>
+                  Section II · Free Response
                 </h2>
                 <FRQViewer
                   questions={freeResponse}
                   workspaceMeta={{
                     courseId: course.id,
                     href: `${courseHref}/exam`,
-                    labelPrefix: `${course.name} • full AP mock exam`,
+                    labelPrefix: `${course.name} · full AP mock exam`,
                   }}
                 />
               </section>
             )}
           </div>
         ) : (
-          <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-            <div className="mb-3 text-3xl">Soon</div>
-            <p>Full exam is being generated. Check back soon.</p>
+          <div className="app-panel py-16 text-center">
+            <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+            <p className="app-copy">Full exam is being generated. Check back soon.</p>
           </div>
         )}
       </main>

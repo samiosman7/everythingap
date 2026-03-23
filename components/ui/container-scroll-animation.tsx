@@ -90,10 +90,15 @@ export const Card = ({
         scale,
         boxShadow:
           "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
+        borderColor: "var(--line-strong)",
+        background: "linear-gradient(180deg, var(--panel), var(--bg-elevated))",
       }}
-      className="mx-auto -mt-6 h-[24rem] w-full max-w-5xl rounded-[24px] border-2 border-[#383852] bg-[#141420] p-1.5 shadow-2xl sm:-mt-8 sm:h-[28rem] sm:rounded-[26px] sm:p-2 md:-mt-12 md:h-[40rem] md:rounded-[30px] md:border-4 md:p-6"
+      className="mx-auto -mt-6 h-[24rem] w-full max-w-5xl rounded-[24px] border-2 p-1.5 shadow-2xl sm:-mt-8 sm:h-[28rem] sm:rounded-[26px] sm:p-2 md:-mt-12 md:h-[40rem] md:rounded-[30px] md:border-4 md:p-6"
     >
-      <div className="h-full w-full overflow-hidden rounded-[18px] bg-gray-100 dark:bg-zinc-900 sm:rounded-[20px] md:rounded-2xl md:p-4">
+      <div
+        className="h-full w-full overflow-hidden rounded-[18px] sm:rounded-[20px] md:rounded-2xl md:p-4"
+        style={{ background: "var(--bg)" }}
+      >
         {children}
       </div>
     </motion.div>

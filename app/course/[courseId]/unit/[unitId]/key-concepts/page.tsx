@@ -7,13 +7,13 @@ import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  vocabulary: "#6c63ff",
-  formula: "#0891b2",
-  person: "#be185d",
-  event: "#dc2626",
-  process: "#16a34a",
-  theory: "#b45309",
-  law: "#7c3aed",
+  vocabulary: "var(--accent)",
+  formula: "#2e9fb3",
+  person: "#c7647f",
+  event: "#cd6f5a",
+  process: "#6fb087",
+  theory: "#c59a54",
+  law: "#8c77cc",
 };
 
 export default async function KeyConceptsPage({
@@ -44,16 +44,16 @@ export default async function KeyConceptsPage({
   const courseHref = getCourseHref(course);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
-      <nav className="sticky top-0 z-50 flex items-center gap-2 border-b border-[#1e1e2e] bg-[#0a0a0f]/90 px-6 py-4 backdrop-blur-md">
-        <Link
-          href={`${courseHref}/unit/${unitId}`}
-          className="text-sm font-body text-[#8888aa] transition-colors hover:text-[#e8e8f0]"
-        >
+    <div className="min-h-screen">
+      <nav
+        className="sticky top-0 z-50 flex items-center gap-2 border-b px-6 py-4 backdrop-blur-md"
+        style={{ borderColor: "var(--line)", background: "color-mix(in srgb, var(--bg-elevated) 86%, transparent)" }}
+      >
+        <Link href={`${courseHref}/unit/${unitId}`} className="text-sm transition-colors" style={{ color: "var(--text-muted)" }}>
           Back to {unit.name}
         </Link>
       </nav>
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-page">
         <StudySessionTracker
           courseId={course.id}
           unitId={String(unit.id)}
@@ -62,32 +62,32 @@ export default async function KeyConceptsPage({
           kind="key-concepts"
         />
 
-        <div className="mb-8 rounded-[28px] border border-[#1e1e2e] bg-[#111118] p-6 md:p-8">
-          <div className="mb-2 text-xs font-body font-medium uppercase tracking-widest text-[#8888aa]">Key Concepts</div>
+        <div className="app-panel mb-8 p-6 md:p-8">
+          <div className="mb-2 app-kicker">Key concepts</div>
           <h1 className="font-display text-2xl font-bold md:text-4xl">{unit.name}</h1>
-          <p className="mt-2 text-sm font-body text-[#8888aa]">{concepts.length} terms</p>
+          <p className="mt-2 text-sm app-copy">{concepts.length} terms</p>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1.25fr,0.75fr]">
           {concepts.length ? (
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
               {concepts.map((c, i) => (
-                <div key={i} className="rounded-2xl border border-[#1e1e2e] bg-[#111118] p-5 transition-all hover:border-[#2a2a3a]">
+                <div key={i} className="app-card p-5 transition-all hover:-translate-y-0.5">
                   <div className="mb-2 flex items-start justify-between gap-2">
-                    <h3 className="font-display text-sm font-semibold text-[#e8e8f0]">{c.term}</h3>
+                    <h3 className="font-display text-sm font-semibold">{c.term}</h3>
                     <span
-                      className="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-body font-medium"
+                      className="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium"
                       style={{
-                        background: `${CATEGORY_COLORS[c.category] ?? "#6c63ff"}20`,
-                        color: CATEGORY_COLORS[c.category] ?? "#6c63ff",
+                        background: `color-mix(in srgb, ${CATEGORY_COLORS[c.category] ?? "var(--accent)"} 18%, transparent)`,
+                        color: CATEGORY_COLORS[c.category] ?? "var(--accent)",
                       }}
                     >
                       {c.category}
                     </span>
                   </div>
-                  <p className="mb-2 text-xs font-body leading-relaxed text-[#8888aa]">{c.definition}</p>
+                  <p className="mb-2 text-xs leading-relaxed app-copy">{c.definition}</p>
                   {c.example && (
-                    <p className="mt-2 border-t border-[#1e1e2e] pt-2 text-xs font-body italic text-[#6c6c8a]">
+                    <p className="mt-2 border-t pt-2 text-xs italic" style={{ borderColor: "var(--line)", color: "var(--text-muted)" }}>
                       Example: {c.example}
                     </p>
                   )}
@@ -95,9 +95,9 @@ export default async function KeyConceptsPage({
               ))}
             </div>
           ) : (
-            <div className="rounded-[28px] border border-[#1e1e2e] bg-[#111118] py-16 text-center font-body text-[#8888aa]">
-              <div className="mb-3 text-3xl">Soon</div>
-              <p>Key concepts are being generated. Check back soon.</p>
+            <div className="app-panel py-16 text-center">
+              <div className="mb-3 text-3xl font-display font-bold">Soon</div>
+              <p className="app-copy">Key concepts are being generated. Check back soon.</p>
             </div>
           )}
 
@@ -108,7 +108,7 @@ export default async function KeyConceptsPage({
                 courseId: course.id,
                 unitId: String(unit.id),
                 href: `${courseHref}/unit/${unit.id}/key-concepts`,
-                label: `${course.name} • ${unit.name} key concepts`,
+                label: `${course.name} · ${unit.name} key concepts`,
               }}
             />
           </div>
