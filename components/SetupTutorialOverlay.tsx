@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Sparkles, X } from "lucide-react";
 import {
   clearTutorialState,
-  getNextTutorialHref,
   getTutorialSteps,
   readTutorialState,
   saveTutorialState,
@@ -71,10 +70,10 @@ export default function SetupTutorialOverlay() {
       return;
     }
 
+    const nextStep = steps[tutorial.stepIndex + 1];
     const nextState = { ...tutorial, stepIndex: tutorial.stepIndex + 1 };
-    const nextHref = getNextTutorialHref(nextState);
     updateTutorial(nextState);
-    if (nextHref) router.push(nextHref);
+    if (nextStep?.href) router.push(nextStep.href);
   }
 
   return (
@@ -137,7 +136,7 @@ export default function SetupTutorialOverlay() {
                   {tutorial.targets.courseName} · {tutorial.targets.unitName}
                 </span>
               ) : (
-                <span className="app-copy">Choose one class to start the real walkthrough.</span>
+                <span className="app-copy">Choose your classes, then pick one of them for the walkthrough.</span>
               )}
             </div>
           </div>

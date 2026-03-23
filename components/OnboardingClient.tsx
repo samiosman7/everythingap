@@ -25,6 +25,7 @@ export default function OnboardingClient({
   const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [tutorialCourseId, setTutorialCourseId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [continuing, setContinuing] = useState(false);
 
@@ -41,11 +42,23 @@ export default function OnboardingClient({
   }, []);
 
   const groupedCourses = useMemo(() => groupCoursesByCategory(courses), [courses]);
+  const selectedCourses = useMemo(
+    () => courses.filter(course => selectedIds.includes(course.id)),
+    [courses, selectedIds]
+  );
 
   function toggleCourse(courseId: string) {
-    setSelectedIds(current =>
-      current.includes(courseId) ? current.filter(id => id !== courseId) : [...current, courseId]
-    );
+    setSelectedIds(current => {
+      const next = current.includes(courseId) ? current.filter(id => id !== courseId) : [...current, courseId];
+
+      if (next.length === 0) {
+        setTutorialCourseId(null);
+      } else if (!next.includes(tutorialCourseId ?? "")) {
+        setTutorialCourseId(next[0]);
+      }
+
+      return next;
+    });
   }
 
   async function handleContinue() {
@@ -63,7 +76,8 @@ export default function OnboardingClient({
     if (tutorialMode && selectedIds.length > 0) {
       try {
         const supabase = createClient();
-        const targets = await buildTutorialTargets(supabase, selectedIds);
+        const tutorialSeed = tutorialCourseId && selectedIds.includes(tutorialCourseId) ? [tutorialCourseId] : [selectedIds[0]];
+        const targets = await buildTutorialTargets(supabase, tutorialSeed);
         saveTutorialState({ ...createTutorialState(targets ?? undefined), stepIndex: 1 });
 
         if (targets?.chapterNotesHref) {
@@ -143,9 +157,9 @@ export default function OnboardingClient({
                   <Sparkles className="h-3.5 w-3.5" />
                   Tutorial setup
                 </div>
-                <h1 className="app-title mt-4">Pick one class to start the walkthrough.</h1>
+                <h1 className="app-title mt-4">Choose all your classes, then pick one for the walkthrough.</h1>
                 <p className="app-copy mt-3 max-w-3xl">
-                  That&apos;s it. Once you save a class, the tutorial popup will walk you through the actual notes, chapter quiz, flashcards, key concepts, unit exam, reflections, and full AP mock pages inside the real app.
+                  First save everything you&apos;re taking this year. Then choose one of those classes as the tutorial path, and the popup will walk you through the real notes, quizzes, flashcards, key concepts, reflections, and exam pages inside the app.
                 </p>
               </div>
 
@@ -166,7 +180,7 @@ export default function OnboardingClient({
             <div>
               <p className="app-kicker">{tutorialMode ? "Pick your classes" : "Choose your AP classes"}</p>
               <h2 className="app-section-title mt-2">
-                {tutorialMode ? "Select the classes you want the tutorial to use." : "Select everything you're taking this year."}
+                {tutorialMode ? "Select every class you want on your dashboard." : "Select everything you're taking this year."}
               </h2>
             </div>
             <div className="app-chip px-3 py-1.5 text-sm font-semibold">
@@ -243,6 +257,60 @@ export default function OnboardingClient({
             )}
           </div>
         </section>
+
+        {tutorialMode && selectedCourses.length > 0 && (
+          <section className="mt-8 app-panel p-6 sm:p-8">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p className="app-kicker">Tutorial course</p>
+                <h2 className="app-section-title mt-2">Which class should the walkthrough use?</h2>
+                <p className="app-copy mt-3 max-w-3xl">
+                  Your full class list still gets saved. This choice only decides which one the tutorial will open first.
+                </p>
+              </div>
+              <div className="app-chip px-3 py-1.5 text-sm font-semibold">
+                {tutorialCourseId ? "1 course chosen" : "Choose 1"}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {selectedCourses.map(course => {
+                const active = tutorialCourseId === course.id;
+                return (
+                  <button
+                    key={course.id}
+                    type="button"
+                    onClick={() => setTutorialCourseId(course.id)}
+                    className="app-card border p-4 text-left transition-transform hover:-translate-y-0.5"
+                    style={{
+                      borderColor: active ? "var(--accent)" : "var(--line)",
+                      background: active ? "var(--accent-soft)" : "var(--surface)",
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div
+                        className="flex h-11 w-11 items-center justify-center rounded-2xl text-2xl"
+                        style={{ background: `${course.color}20` }}
+                      >
+                        <span aria-hidden="true">{course.emoji}</span>
+                      </div>
+                      {active && (
+                        <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ background: "var(--surface)", color: "var(--accent)" }}>
+                          <Check className="h-3.5 w-3.5" />
+                          Tutorial course
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mt-4 font-display text-lg font-semibold">{course.name}</h3>
+                    <p className="mt-2 text-sm leading-6 app-copy">
+                      Use this course for the walkthrough while still saving all of your selected classes.
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {!tutorialMode && (
           <section className="mt-8 grid gap-4 md:grid-cols-3">
