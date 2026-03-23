@@ -1,4 +1,5 @@
 import type { FRQGradeResult } from "@/types";
+import { GUEST_COOKIE_NAME } from "@/lib/auth-constants";
 
 export const STUDY_PROGRESS_KEY = "everythingap_study_progress_v2";
 
@@ -161,6 +162,11 @@ function canUseStorage() {
   return typeof window !== "undefined";
 }
 
+function isGuestModeActive() {
+  if (!canUseStorage()) return false;
+  return document.cookie.split("; ").some(cookie => cookie === `${GUEST_COOKIE_NAME}=1`);
+}
+
 function normalizeState(parsed: StudyProgressState | null | undefined): StudyProgressState {
   return {
     lastVisited: parsed?.lastVisited ?? null,
@@ -176,6 +182,7 @@ function normalizeState(parsed: StudyProgressState | null | undefined): StudyPro
 
 export function readStudyProgress(): StudyProgressState {
   if (!canUseStorage()) return DEFAULT_STATE;
+  if (isGuestModeActive()) return DEFAULT_STATE;
 
   try {
     const raw = window.localStorage.getItem(STUDY_PROGRESS_KEY);
@@ -188,6 +195,10 @@ export function readStudyProgress(): StudyProgressState {
 
 export function saveStudyProgress(state: StudyProgressState) {
   if (!canUseStorage()) return;
+  if (isGuestModeActive()) {
+    window.localStorage.removeItem(STUDY_PROGRESS_KEY);
+    return;
+  }
   window.localStorage.setItem(STUDY_PROGRESS_KEY, JSON.stringify(state));
 }
 
@@ -776,6 +787,7 @@ export function getConfidenceGapItems(limit = 5) {
 }
 
 export async function fetchRemoteStudyProgress() {
+  if (isGuestModeActive()) return DEFAULT_STATE;
   const response = await fetch("/api/study-progress", {
     method: "GET",
     credentials: "include",
@@ -791,6 +803,7 @@ export async function fetchRemoteStudyProgress() {
 }
 
 export async function pushRemoteStudyProgress(progress: StudyProgressState) {
+  if (isGuestModeActive()) return;
   const response = await fetch("/api/study-progress", {
     method: "POST",
     headers: {
@@ -806,6 +819,13 @@ export async function pushRemoteStudyProgress(progress: StudyProgressState) {
 }
 
 export async function syncStudyProgressFromAccount() {
+  if (isGuestModeActive()) {
+    if (canUseStorage()) {
+      window.localStorage.removeItem(STUDY_PROGRESS_KEY);
+    }
+    return DEFAULT_STATE;
+  }
+
   const local = readStudyProgress();
 
   try {

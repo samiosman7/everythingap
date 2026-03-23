@@ -1,5 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowRight, NotebookPen } from "lucide-react";
 import NotesRenderer from "@/components/NotesRenderer";
 import StudySessionTracker from "@/components/StudySessionTracker";
 import { getViewerContext } from "@/lib/viewer";
@@ -79,11 +80,26 @@ export default async function ChapterPage({
               </div>
               <h1 className="font-display text-2xl font-bold md:text-4xl">{chapter.name}</h1>
             </div>
-            {chapter.quiz && (
-              <Link href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}/quiz`} className="app-secondary-button px-4 py-2 text-sm font-medium">
-                Take quiz
+            <div className="flex flex-wrap gap-3">
+              {chapter.quiz && (
+                <Link href={`${courseHref}/unit/${unitId}/chapter/${chapter.id}/quiz`} className="app-secondary-button px-4 py-2 text-sm font-medium">
+                  Take quiz
+                </Link>
+              )}
+              <Link
+                href={`/student-space?focus=chapter&courseId=${encodeURIComponent(course.id)}&unitId=${encodeURIComponent(
+                  String(unit.id)
+                )}&chapterId=${encodeURIComponent(String(chapter.id))}&courseName=${encodeURIComponent(course.name)}&unitName=${encodeURIComponent(
+                  unit.name
+                )}&chapterName=${encodeURIComponent(chapter.name)}&href=${encodeURIComponent(
+                  `${courseHref}/unit/${unitId}/chapter/${chapter.id}`
+                )}`}
+                className="app-primary-button inline-flex items-center gap-2 px-4 py-2 text-sm"
+              >
+                <NotebookPen className="h-4 w-4" />
+                Chapter reflection
               </Link>
-            )}
+            </div>
           </div>
         </div>
 
@@ -117,6 +133,22 @@ export default async function ChapterPage({
           ) : (
             <div />
           )}
+        </div>
+
+        <div className="mt-8 flex justify-end">
+          <Link
+            href={`/student-space?focus=chapter&courseId=${encodeURIComponent(course.id)}&unitId=${encodeURIComponent(
+              String(unit.id)
+            )}&chapterId=${encodeURIComponent(String(chapter.id))}&courseName=${encodeURIComponent(course.name)}&unitName=${encodeURIComponent(
+              unit.name
+            )}&chapterName=${encodeURIComponent(chapter.name)}&href=${encodeURIComponent(
+              `${courseHref}/unit/${unitId}/chapter/${chapter.id}`
+            )}`}
+            className="app-secondary-button inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold"
+          >
+            Leave a chapter reflection
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </main>
     </div>

@@ -6,6 +6,7 @@ import { ArrowRight, Bookmark, Brain, NotebookPen, Target } from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import ResumeWhereLeftOff from "@/components/ResumeWhereLeftOff";
 import StudyDashboardWidgets from "@/components/student/StudyDashboardWidgets";
+import { ChapterWorkspacePanel, UnitWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 import { readSelectedCourseIds } from "@/lib/course-preferences";
 import { getCourseHref } from "@/lib/course";
 
@@ -22,6 +23,16 @@ type StudentSpaceClientProps = {
   courses: StudentSpaceCourse[];
   emailLabel: string;
   isGuest: boolean;
+  focus?: "chapter" | "unit" | null;
+  focusMeta?: {
+    courseId?: string;
+    unitId?: string;
+    chapterId?: string;
+    courseName?: string;
+    unitName?: string;
+    chapterName?: string;
+    href?: string;
+  };
 };
 
 const LAYER_FEATURES = [
@@ -47,7 +58,7 @@ const LAYER_FEATURES = [
   },
 ];
 
-export default function StudentSpaceClient({ courses, emailLabel, isGuest }: StudentSpaceClientProps) {
+export default function StudentSpaceClient({ courses, emailLabel, isGuest, focus = null, focusMeta }: StudentSpaceClientProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -58,6 +69,13 @@ export default function StudentSpaceClient({ courses, emailLabel, isGuest }: Stu
     () => courses.filter(course => selectedIds.includes(course.id)),
     [courses, selectedIds]
   );
+  const focusHref = focusMeta?.href || "/student-space";
+  const focusTitle =
+    focus === "chapter"
+      ? `${focusMeta?.courseName || "Course"} · ${focusMeta?.chapterName || "Chapter"}`
+      : focus === "unit"
+        ? `${focusMeta?.courseName || "Course"} · ${focusMeta?.unitName || "Unit"}`
+        : null;
 
   return (
     <div className="app-shell">
@@ -83,6 +101,61 @@ export default function StudentSpaceClient({ courses, emailLabel, isGuest }: Stu
 
         <main className="app-page">
           <div className="space-y-6">
+            {focus === "chapter" && focusMeta?.chapterId && focusMeta?.courseId && (
+              <section className="space-y-4">
+                <div className="app-panel p-6">
+                  <p className="app-kicker">Chapter reflection</p>
+                  <h2 className="app-section-title mt-3">{focusTitle}</h2>
+                  <p className="app-copy mt-3">
+                    This is the clean place to save what still feels shaky after the notes and chapter quiz, without dumping a giant reflection form into the lesson page itself.
+                  </p>
+                  <div className="mt-5">
+                    <Link href={focusHref} className="app-secondary-button inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+                      Back to chapter
+                    </Link>
+                  </div>
+                </div>
+
+                <ChapterWorkspacePanel
+                  chapterId={focusMeta.chapterId}
+                  meta={{
+                    courseId: focusMeta.courseId,
+                    unitId: focusMeta.unitId,
+                    chapterId: focusMeta.chapterId,
+                    href: focusHref,
+                    label: focusTitle || "Chapter reflection",
+                  }}
+                />
+              </section>
+            )}
+
+            {focus === "unit" && focusMeta?.unitId && focusMeta?.courseId && (
+              <section className="space-y-4">
+                <div className="app-panel p-6">
+                  <p className="app-kicker">Unit reflection</p>
+                  <h2 className="app-section-title mt-3">{focusTitle}</h2>
+                  <p className="app-copy mt-3">
+                    Use this after the unit exam or a full review pass. It keeps unit-level confidence and reminders in one calm spot instead of wedging them next to the unit organizer.
+                  </p>
+                  <div className="mt-5">
+                    <Link href={focusHref} className="app-secondary-button inline-flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+                      Back to unit
+                    </Link>
+                  </div>
+                </div>
+
+                <UnitWorkspacePanel
+                  unitId={focusMeta.unitId}
+                  meta={{
+                    courseId: focusMeta.courseId,
+                    unitId: focusMeta.unitId,
+                    href: focusHref,
+                    label: focusTitle || "Unit reflection",
+                  }}
+                />
+              </section>
+            )}
+
             <section className="grid gap-4 xl:grid-cols-[1.1fr,0.9fr]">
               <div className="app-panel p-6 sm:p-7">
                 <p className="app-kicker">What this page is for</p>

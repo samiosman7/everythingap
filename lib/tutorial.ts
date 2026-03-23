@@ -8,9 +8,11 @@ export type TutorialTargets = {
   unitHref: string;
   chapterNotesHref: string;
   chapterQuizHref: string;
+  chapterReflectionHref: string;
   flashcardsHref: string;
   keyConceptsHref: string;
   unitExamHref: string;
+  unitReflectionHref: string;
   fullExamHref?: string | null;
 };
 
@@ -89,6 +91,14 @@ export function getTutorialSteps(targets?: TutorialTargets): TutorialStep[] {
       title: "Now test that chapter immediately",
       description:
         "Chapter quizzes are the quick comprehension check. They tell you whether the notes actually clicked before you keep moving.",
+      ctaLabel: "Next: chapter reflection",
+    },
+    {
+      id: "chapter-reflection",
+      href: targets.chapterReflectionHref,
+      title: "This is your chapter reflection stop",
+      description:
+        "Leave one clean chapter reflection here instead of stuffing the notes page with extra forms. This is where your confidence, reminders, and weak spots live.",
       ctaLabel: "Next: flashcards",
     },
     {
@@ -113,6 +123,14 @@ export function getTutorialSteps(targets?: TutorialTargets): TutorialStep[] {
       title: "Unit exams are where practice starts feeling real",
       description:
         "This is the bigger checkpoint: multiple choice plus FRQs when they exist, all organized around one unit instead of the whole course.",
+      ctaLabel: "Next: unit reflection",
+    },
+    {
+      id: "unit-reflection",
+      href: targets.unitReflectionHref,
+      title: "This is your unit reflection space",
+      description:
+        "Unit reflection now lives in its own place too. Use it for one useful unit-level reminder or confidence check after the bigger practice set.",
       ctaLabel: targets.fullExamHref ? "Next: full AP mock" : "Finish tutorial",
     },
   ];
@@ -219,9 +237,17 @@ export async function buildTutorialTargets(supabase: any, selectedCourseIds: str
     unitHref,
     chapterNotesHref: `${unitHref}/chapter/${chapter.id}`,
     chapterQuizHref: `${unitHref}/chapter/${chapter.id}/quiz`,
+    chapterReflectionHref: `/student-space?focus=chapter&courseId=${encodeURIComponent(course.id)}&unitId=${encodeURIComponent(
+      String(unit.id)
+    )}&chapterId=${encodeURIComponent(String(chapter.id))}&courseName=${encodeURIComponent(course.name)}&unitName=${encodeURIComponent(
+      unit.name
+    )}&chapterName=${encodeURIComponent(chapter.name)}&href=${encodeURIComponent(`${unitHref}/chapter/${chapter.id}`)}`,
     flashcardsHref: `${unitHref}/flashcards`,
     keyConceptsHref: `${unitHref}/key-concepts`,
     unitExamHref: `${unitHref}/quiz`,
+    unitReflectionHref: `/student-space?focus=unit&courseId=${encodeURIComponent(course.id)}&unitId=${encodeURIComponent(
+      String(unit.id)
+    )}&courseName=${encodeURIComponent(course.name)}&unitName=${encodeURIComponent(unit.name)}&href=${encodeURIComponent(unitHref)}`,
     fullExamHref: `${courseHref}/exam`,
   };
 }

@@ -1,9 +1,9 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { ArrowRight, NotebookPen } from "lucide-react";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 import UnitOrganizerClient from "@/components/UnitOrganizerClient";
-import { UnitWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 
 export default async function UnitPage({ params }: { params: Promise<{ courseId: string; unitId: string }> }) {
   const { courseId, unitId } = await params;
@@ -67,17 +67,25 @@ export default async function UnitPage({ params }: { params: Promise<{ courseId:
             }))}
           />
 
-          <div className="space-y-6">
-            <UnitWorkspacePanel
-              unitId={String(unit.id)}
-              meta={{
-                courseId: course.id,
-                unitId: String(unit.id),
-                href: `${courseHref}/unit/${unit.id}`,
-                label: `${course.name} · ${unit.name}`,
-              }}
-            />
-          </div>
+          <section className="app-panel p-6">
+            <p className="app-kicker">Unit reflection</p>
+            <h2 className="app-section-title mt-3">Keep the notes page for studying.</h2>
+            <p className="app-copy mt-3">
+              Your unit-level confidence, review reminders, and reflections now live in Student Space so this page can stay focused on chapters and tools.
+            </p>
+            <Link
+              href={`/student-space?focus=unit&courseId=${encodeURIComponent(course.id)}&unitId=${encodeURIComponent(
+                String(unit.id)
+              )}&courseName=${encodeURIComponent(course.name)}&unitName=${encodeURIComponent(unit.name)}&href=${encodeURIComponent(
+                `${courseHref}/unit/${unit.id}`
+              )}`}
+              className="app-primary-button mt-5 inline-flex items-center gap-2 px-4 py-3 text-sm"
+            >
+              <NotebookPen className="h-4 w-4" />
+              Open unit reflection
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </section>
         </div>
       </main>
     </div>
