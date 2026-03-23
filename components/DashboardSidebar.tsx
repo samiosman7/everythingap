@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   BookOpenText,
+  Brain,
   Compass,
   GraduationCap,
   Home,
@@ -58,6 +59,11 @@ export default function DashboardSidebar({
         label: "Resume",
         href: "#resume-section",
         icon: <Compass className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
+      },
+      {
+        label: "Student Space",
+        href: "/student-space",
+        icon: <Brain className="h-5 w-5 flex-shrink-0 text-neutral-200" />,
       },
       {
         label: "My Courses",

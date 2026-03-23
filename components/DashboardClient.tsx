@@ -10,7 +10,6 @@ import { readSelectedCourseIds } from "@/lib/course-preferences";
 import ResumeWhereLeftOff from "@/components/ResumeWhereLeftOff";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { getCourseProgress } from "@/lib/study-progress";
-import StudyDashboardWidgets from "@/components/student/StudyDashboardWidgets";
 
 type DashboardCourse = {
   id: string;
@@ -200,27 +199,35 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
               </motion.div>
             </section>
 
-            <section id="student-layer" className="space-y-4">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.55, ease: "easeOut" }}
-              >
-                <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">
-                  Student-owned learning layer
-                </p>
-                <h2 className="mt-2 font-display text-2xl font-bold text-white">
-                  Your notes, confidence, reminders, and reflections now live inside the app too.
-                </h2>
-                <p className="mt-3 max-w-3xl text-sm leading-7 text-[#9793ae]">
-                  Mark what feels strong, save what keeps slipping, compare confidence against quiz results, and leave
-                  your future self better review notes than a random pile of screenshots.
-                </p>
-              </motion.div>
-
-              <StudyDashboardWidgets />
-            </section>
+            <motion.section
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
+              className="rounded-[28px] border border-[#1e1e2e] bg-[radial-gradient(circle_at_top_left,_rgba(108,99,255,0.14),_transparent_38%),linear-gradient(180deg,#111118_0%,#0d0d14_100%)] p-5 sm:p-7"
+            >
+              <p className="text-xs font-body font-medium uppercase tracking-[0.24em] text-[#9d96ff]">
+                Student space
+              </p>
+              <div className="mt-3 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-3xl">
+                  <h2 className="font-display text-2xl font-bold text-white">
+                    Keep the dashboard focused, and keep your own learning layer in one dedicated place.
+                  </h2>
+                  <p className="mt-3 text-sm leading-7 text-[#9793ae]">
+                    Confidence marks, private notes, reminders, reflections, and weak-spot tracking now live in
+                    Student Space so the main dashboard stays clean while your study signals stay easy to revisit.
+                  </p>
+                </div>
+                <Link
+                  href="/student-space"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[#120f24]"
+                >
+                  Open student space
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </motion.section>
 
             {selectedCourses.length > 0 && (
               <section id="my-courses">
