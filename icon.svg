@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="EverythingAP logo mark">
+  <defs>
+    <linearGradient id="bg" x1="12" y1="8" x2="116" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#171411" />
+      <stop offset="1" stop-color="#241c15" />
+    </linearGradient>
+    <linearGradient id="accent" x1="28" y1="24" x2="98" y2="102" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0b27a" />
+      <stop offset="1" stop-color="#c86f38" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bg)" />
+  <rect x="8" y="8" width="112" height="112" rx="30" fill="none" stroke="#3a2d22" stroke-width="2" />
+
+  <g filter="url(#shadow)">
+    <path
+      d="M37 88V40h18.7c8.5 0 13.7 5 13.7 12.5 0 5.8-3.2 10-8.6 11.6l11.6 23.9H58.8L49.7 66.2h-2.3V88H37Zm10.4-30.1h6.4c3.6 0 5.7-2 5.7-5.2 0-3.3-2.1-5.2-5.7-5.2h-6.4v10.4Z"
+      fill="#fffaf2"
+    />
+    <path
+      d="M76.5 88V40h13.9c14.7 0 23.6 9 23.6 24 0 15-8.9 24-23.6 24H76.5Zm10.6-9.2h2.6c8.5 0 13.5-5.4 13.5-14.8 0-9.3-5-14.8-13.5-14.8h-2.6v29.6Z"
+      fill="url(#accent)"
+    />
+  </g>
+
+  <path
+    d="M25 99c18-8.6 35.7-12.9 53.1-12.9 10.8 0 18.6 1 24.9 2.5"
+    fill="none"
+    stroke="#f0b27a"
+    stroke-linecap="round"
+    stroke-width="3"
+    opacity="0.55"
+  />
+</svg>
