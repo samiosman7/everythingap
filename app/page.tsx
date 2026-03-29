@@ -95,7 +95,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, ease: "easeOut" }}
-            className="mb-6 max-w-4xl"
+            className="mb-6 mx-auto flex max-w-5xl flex-col items-center text-center"
           >
             <div
               className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em]"
@@ -104,7 +104,10 @@ export default function HomePage() {
               <Sparkles className="h-4 w-4" />
               Study in one clean system
             </div>
-            <h1 className="mt-5 font-display text-4xl font-extrabold leading-[0.95] sm:text-5xl md:text-7xl">
+            <h1
+              className="mt-5 max-w-[12ch] text-4xl font-bold leading-[0.94] sm:text-5xl md:text-7xl"
+              style={{ fontFamily: "'Sora', sans-serif", letterSpacing: "-0.04em" }}
+            >
               One place for your AP notes,
               <span className="mt-2 block" style={{ color: "var(--accent)" }}>
                 quizzes, flashcards, exams, and progress.
@@ -114,7 +117,7 @@ export default function HomePage() {
               The point is simple: open your class, know where you are, and keep moving. No scattered tabs. No hunting for the next step. No ugly dashboard energy.
             </p>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               {isSignedIn ? (
                 <Link href="/dashboard" className="app-primary-button inline-flex items-center justify-center gap-2 px-6 py-4 text-base">
                   Open my dashboard
