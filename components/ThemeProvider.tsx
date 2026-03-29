@@ -2,13 +2,18 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export type ThemeId = "ember" | "harbor" | "grove";
+export type ThemeId = "midnight" | "ember" | "harbor" | "grove" | "nocturne" | "graphite";
 
 export const APP_THEMES: Array<{
   id: ThemeId;
   name: string;
   description: string;
 }> = [
+  {
+    id: "midnight",
+    name: "Midnight",
+    description: "Deep ink-black surfaces with cool steel text and amber highlights.",
+  },
   {
     id: "ember",
     name: "Ember",
@@ -24,6 +29,16 @@ export const APP_THEMES: Array<{
     name: "Grove",
     description: "Deep green with moss and linen accents.",
   },
+  {
+    id: "nocturne",
+    name: "Nocturne",
+    description: "Dark plum-black with rose-gold accents and softer contrast.",
+  },
+  {
+    id: "graphite",
+    name: "Graphite",
+    description: "Neutral graphite with crisp silver text and electric blue highlights.",
+  },
 ];
 
 const STORAGE_KEY = "everythingap_theme";
@@ -36,7 +51,7 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeId>("ember");
+  const [theme, setThemeState] = useState<ThemeId>("midnight");
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY) as ThemeId | null;
@@ -46,7 +61,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    document.documentElement.dataset.theme = "ember";
+    document.documentElement.dataset.theme = "midnight";
   }, []);
 
   function setTheme(nextTheme: ThemeId) {

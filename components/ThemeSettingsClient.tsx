@@ -4,6 +4,15 @@ import { Check, Palette } from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { APP_THEMES, useTheme } from "@/components/ThemeProvider";
 
+const THEME_SWATCHES: Record<string, { bg: string; panel: string; accent: string }> = {
+  midnight: { bg: "#10141a", panel: "#151a21", accent: "#d28a57" },
+  ember: { bg: "#1e1a16", panel: "#221d18", accent: "#d77f4c" },
+  harbor: { bg: "#16202a", panel: "#1b2733", accent: "#5db2bd" },
+  grove: { bg: "#1a211b", panel: "#202922", accent: "#9ebf6b" },
+  nocturne: { bg: "#17131a", panel: "#1d1821", accent: "#cf8d72" },
+  graphite: { bg: "#15191d", panel: "#1b2025", accent: "#6da7d9" },
+};
+
 type SettingsCourse = {
   id: string;
   name: string;
@@ -83,9 +92,9 @@ export default function ThemeSettingsClient({
                       )}
                     </div>
                     <div className="mt-5 flex gap-2">
-                      <div className="h-10 flex-1 rounded-2xl" style={{ background: "var(--bg-elevated)" }} />
-                      <div className="h-10 flex-1 rounded-2xl" style={{ background: "var(--panel)" }} />
-                      <div className="h-10 w-14 rounded-2xl" style={{ background: "var(--accent)" }} />
+                      <div className="h-10 flex-1 rounded-2xl" style={{ background: THEME_SWATCHES[option.id].bg }} />
+                      <div className="h-10 flex-1 rounded-2xl" style={{ background: THEME_SWATCHES[option.id].panel }} />
+                      <div className="h-10 w-14 rounded-2xl" style={{ background: THEME_SWATCHES[option.id].accent }} />
                     </div>
                   </button>
                 );

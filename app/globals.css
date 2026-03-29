@@ -5,6 +5,32 @@
 @tailwind utilities;
 
 :root,
+[data-theme="midnight"] {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --bg: #0a0c10;
+  --bg-elevated: #10141a;
+  --panel: #151a21;
+  --panel-strong: #1b222b;
+  --panel-muted: rgba(255, 255, 255, 0.03);
+  --line: #27303a;
+  --line-strong: #384453;
+  --text: #f3f5f8;
+  --text-soft: #c4ced8;
+  --text-muted: #8593a2;
+  --accent: #d28a57;
+  --accent-soft: rgba(210, 138, 87, 0.14);
+  --accent-strong: #b66f40;
+  --success: #70c29c;
+  --warning: #d7b46d;
+  --danger: #d9887d;
+  --chip: rgba(255, 255, 255, 0.04);
+  --input: #0e1217;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+}
+
 [data-theme="ember"] {
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
@@ -75,6 +101,50 @@
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.26);
 }
 
+[data-theme="nocturne"] {
+  --bg: #100d12;
+  --bg-elevated: #17131a;
+  --panel: #1d1821;
+  --panel-strong: #251e2a;
+  --panel-muted: rgba(255, 255, 255, 0.03);
+  --line: #3a313f;
+  --line-strong: #54485b;
+  --text: #f5eef6;
+  --text-soft: #d3c3d3;
+  --text-muted: #9f8da1;
+  --accent: #cf8d72;
+  --accent-soft: rgba(207, 141, 114, 0.14);
+  --accent-strong: #b76f57;
+  --success: #7bc1a1;
+  --warning: #d7b471;
+  --danger: #d98282;
+  --chip: rgba(255, 255, 255, 0.04);
+  --input: #120f15;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="graphite"] {
+  --bg: #0f1113;
+  --bg-elevated: #15191d;
+  --panel: #1b2025;
+  --panel-strong: #222930;
+  --panel-muted: rgba(255, 255, 255, 0.03);
+  --line: #313841;
+  --line-strong: #485260;
+  --text: #f1f4f7;
+  --text-soft: #c9d1d9;
+  --text-muted: #8a96a4;
+  --accent: #6da7d9;
+  --accent-soft: rgba(109, 167, 217, 0.14);
+  --accent-strong: #4d86b6;
+  --success: #77c3a3;
+  --warning: #d7bd72;
+  --danger: #d98679;
+  --chip: rgba(255, 255, 255, 0.04);
+  --input: #11151a;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -91,7 +161,8 @@ body {
 body {
   min-height: 100dvh;
   background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.04), transparent 28%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 24%),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.03), transparent 26%),
     linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg) 100%);
   color: var(--text);
   font-family: 'Manrope', sans-serif;
