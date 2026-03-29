@@ -99,6 +99,10 @@ export const DesktopSidebar = ({
       animate={{
         width: animate ? (open ? "300px" : "72px") : "300px",
       }}
+      transition={{
+        duration: 0.16,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
       {...props}
@@ -147,8 +151,8 @@ export const MobileSidebar = ({
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "-100%", opacity: 0 }}
               transition={{
-                duration: 0.3,
-                ease: "easeInOut",
+                duration: 0.18,
+                ease: [0.22, 1, 0.36, 1],
               }}
               className={cn(
                 "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between overflow-y-auto",
@@ -217,6 +221,10 @@ export const SidebarLink = ({
         animate={{
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1,
+        }}
+        transition={{
+          duration: 0.12,
+          ease: "easeOut",
         }}
         className="inline-block whitespace-pre !m-0 !p-0 text-sm transition duration-150 group-hover/sidebar:translate-x-1"
         style={{ color: "inherit" }}
