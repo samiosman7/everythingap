@@ -323,7 +323,7 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
       {safeQuestions.map((frq, index) => {
         const state = getState(index);
         const latestHistory = state.history.slice(0, 3);
-        const gradingAvailable = Boolean(frq.rubric.trim() && frq.sample_response.trim());
+        const gradingAvailable = Boolean(frq.rubric.trim());
 
         return (
           <section key={index} className="app-panel overflow-hidden">
@@ -336,19 +336,93 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
 
             <div className="space-y-5 p-5">
               <div className="grid gap-4 lg:grid-cols-[1fr,280px]">
-                <label className="block">
-                  <span className="mb-2 block text-sm font-semibold">Your response</span>
-                  <textarea
-                    value={state.answer}
-                    onChange={event => updateState(index, { answer: event.target.value, error: null })}
-                    placeholder="Write your FRQ response here. It autosaves, so you can come back later."
-                    className="app-textarea min-h-[220px]"
-                  />
-                </label>
+                <div className="space-y-4">
+                  <div className="app-card p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] app-muted">Step 1</p>
+                    <h3 className="mt-2 font-display text-lg font-semibold">Draft your response</h3>
+                    <textarea
+                      value={state.answer}
+                      onChange={event => updateState(index, { answer: event.target.value, error: null })}
+                      placeholder="Write your FRQ response here. It autosaves, so you can come back later."
+                      className="app-textarea mt-4 min-h-[240px]"
+                    />
+                  </div>
+
+                  {state.workspaceOpen && (
+                    <div className="app-card grid gap-4 p-4 xl:grid-cols-2">
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold">Private notes</span>
+                        <textarea
+                          rows={4}
+                          value={state.notes}
+                          onChange={event => updateState(index, { notes: event.target.value })}
+                          placeholder="Outline evidence, structure ideas, or reminders for this FRQ."
+                          className="app-textarea min-h-[110px]"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold">Rubric point to fix</span>
+                        <textarea
+                          rows={4}
+                          value={state.missedRubric}
+                          onChange={event => updateState(index, { missedRubric: event.target.value })}
+                          placeholder="Name the exact point or evidence move you still need."
+                          className="app-textarea min-h-[110px]"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold">Next draft plan</span>
+                        <textarea
+                          rows={4}
+                          value={state.improveNext}
+                          onChange={event => updateState(index, { improveNext: event.target.value })}
+                          placeholder="What would make the next draft stronger?"
+                          className="app-textarea min-h-[110px]"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-sm font-semibold">What still feels shaky?</span>
+                        <textarea
+                          rows={4}
+                          value={state.reflection}
+                          onChange={event => updateState(index, { reflection: event.target.value })}
+                          placeholder="What part still needs help?"
+                          className="app-textarea min-h-[110px]"
+                        />
+                      </label>
+
+                      <div className="xl:col-span-2 flex flex-wrap gap-2">
+                        {([
+                          { key: "reviewLater", label: "Review later" },
+                          { key: "likelyOnTest", label: "Likely on the test" },
+                          { key: "confused", label: "Still confusing" },
+                        ] as Array<{ key: FrqToggleKey; label: string }>).map(item => {
+                          const isActive = state[item.key];
+                          return (
+                            <button
+                              key={item.key}
+                              type="button"
+                              onClick={() => updateState(index, { [item.key]: !isActive } as Partial<GradeState>)}
+                              className="app-chip px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em]"
+                              style={{
+                                borderColor: isActive ? "var(--accent)" : "var(--line)",
+                                background: isActive ? "var(--accent-soft)" : undefined,
+                                color: isActive ? "var(--text)" : undefined,
+                              }}
+                            >
+                              {item.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <div className="space-y-4">
                   <div className="app-card p-4">
-                    <p className="text-sm font-semibold">Confidence before writing</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] app-muted">Step 2</p>
+                    <p className="mt-2 text-sm font-semibold">Check your confidence</p>
                     <input
                       type="range"
                       min={0}
@@ -363,7 +437,8 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
                   </div>
 
                   <div className="app-card p-4">
-                    <p className="text-sm font-semibold">Actions</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] app-muted">Step 3</p>
+                    <p className="mt-2 text-sm font-semibold">Grade or review the rubric</p>
                     <div className="mt-3 flex flex-col gap-3">
                       <button
                         onClick={() => gradeResponse(index, frq)}
@@ -397,81 +472,11 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
                 </div>
               </div>
 
-              {state.workspaceOpen && (
-                <div className="app-card grid gap-4 p-4 xl:grid-cols-2">
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-semibold">Private notes</span>
-                    <textarea
-                      rows={4}
-                      value={state.notes}
-                      onChange={event => updateState(index, { notes: event.target.value })}
-                      placeholder="Outline evidence, structure ideas, or reminders for this FRQ."
-                      className="app-textarea min-h-[110px]"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-semibold">What rubric point am I missing?</span>
-                    <textarea
-                      rows={4}
-                      value={state.missedRubric}
-                      onChange={event => updateState(index, { missedRubric: event.target.value })}
-                      placeholder="Name the exact point or evidence move you still need."
-                      className="app-textarea min-h-[110px]"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-semibold">What should I improve next?</span>
-                    <textarea
-                      rows={4}
-                      value={state.improveNext}
-                      onChange={event => updateState(index, { improveNext: event.target.value })}
-                      placeholder="What would make the next draft stronger?"
-                      className="app-textarea min-h-[110px]"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-sm font-semibold">What still feels shaky?</span>
-                    <textarea
-                      rows={4}
-                      value={state.reflection}
-                      onChange={event => updateState(index, { reflection: event.target.value })}
-                      placeholder="What part still needs help?"
-                      className="app-textarea min-h-[110px]"
-                    />
-                  </label>
-
-                  <div className="xl:col-span-2 flex flex-wrap gap-2">
-                    {([
-                      { key: "reviewLater", label: "Review later" },
-                      { key: "likelyOnTest", label: "Likely on the test" },
-                      { key: "confused", label: "Still confusing" },
-                    ] as Array<{ key: FrqToggleKey; label: string }>).map(item => {
-                      const isActive = state[item.key];
-                      return (
-                        <button
-                          key={item.key}
-                          type="button"
-                          onClick={() => updateState(index, { [item.key]: !isActive } as Partial<GradeState>)}
-                          className="app-chip px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em]"
-                          style={{
-                            borderColor: isActive ? "var(--accent)" : "var(--line)",
-                            background: isActive ? "var(--accent-soft)" : undefined,
-                            color: isActive ? "var(--text)" : undefined,
-                          }}
-                        >
-                          {item.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
               {state.error && <p className="text-sm" style={{ color: "var(--danger)" }}>{state.error}</p>}
               {state.notice && !state.error && <p className="text-sm" style={{ color: "var(--success)" }}>{state.notice}</p>}
               {!gradingAvailable && (
                 <p className="text-sm app-copy">
-                  You can still draft this FRQ, but AI scoring is disabled until rubric and sample-response data are available.
+                  You can still draft this FRQ, but AI scoring is disabled until a scoring rubric is available.
                 </p>
               )}
 
@@ -479,7 +484,7 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
                 <div className="app-card space-y-4 p-4">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                      <p className="app-kicker">AI score estimate</p>
+                      <p className="app-kicker">Feedback</p>
                       <h3 className="mt-2 font-display text-2xl font-bold">
                         {state.result.score}/{state.result.max_score}
                       </h3>
@@ -552,7 +557,7 @@ export default function FRQViewer({ questions, workspaceMeta }: Props) {
               {state.rubricOpen && (
                 <div className="app-card grid gap-4 p-4 xl:grid-cols-2">
                   <div>
-                    <p className="app-kicker">Scoring rubric</p>
+                    <p className="app-kicker">Rubric</p>
                     <p className="mt-3 whitespace-pre-line text-sm leading-7 app-copy">{frq.rubric || "No rubric available yet."}</p>
                   </div>
                   <div>

@@ -25,14 +25,16 @@ function ItemList({
   title,
   emptyLabel,
   items,
+  accent,
 }: {
   title: string;
   emptyLabel: string;
   items: LearningDashboardItem[];
+  accent?: string;
 }) {
   return (
     <section className="app-card p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] app-muted">{title}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: accent ?? "var(--text-muted)" }}>{title}</p>
       {items.length > 0 ? (
         <div className="mt-3 space-y-3">
           {items.map(item => (
@@ -115,45 +117,57 @@ export default function StudyDashboardWidgets({
   return (
     <div className="space-y-5">
       {grouped.map(({ course, notes, reflections, weakAreas, reminders, mastered }) => (
-        <section key={course.id} className="app-panel p-5 sm:p-6">
+        <section
+          key={course.id}
+          className="app-panel p-5 sm:p-6"
+          style={{
+            background: `linear-gradient(180deg, color-mix(in srgb, ${course.color} 10%, var(--panel)) 0%, var(--bg-elevated) 100%)`,
+          }}
+        >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl text-2xl" style={{ background: `${course.color}22` }}>
                 <span aria-hidden="true">{course.emoji}</span>
               </div>
               <div>
-                <p className="app-kicker">Student space by class</p>
-                <h3 className="font-display text-2xl font-semibold">{course.name} student space</h3>
+                <p className="app-kicker">By class</p>
+                <h3 className="font-display text-2xl font-semibold">{course.name} notebook</h3>
               </div>
             </div>
+            <span className="app-chip px-3 py-1 text-[11px] uppercase tracking-[0.18em]">Private workspace</span>
           </div>
 
           <div className="mt-5 grid gap-4 xl:grid-cols-2">
             <ItemList
-              title={`${course.name} student notes`}
+              title="Notes"
               emptyLabel="No private notes saved for this class yet."
               items={notes}
+              accent={course.color}
             />
             <ItemList
-              title={`${course.name} reflections`}
+              title="Reflections"
               emptyLabel="No chapter, unit, or FRQ reflections saved for this class yet."
               items={reflections}
+              accent={course.color}
             />
             <ItemList
-              title={`${course.name} weak areas`}
+              title="Weak areas"
               emptyLabel="No weak areas marked for this class yet."
               items={weakAreas}
+              accent={course.color}
             />
             <ItemList
-              title={`${course.name} reminders`}
+              title="Reminders"
               emptyLabel="No review-later or likely-on-the-test reminders saved for this class yet."
               items={reminders}
+              accent={course.color}
             />
             <div className="xl:col-span-2">
               <ItemList
-                title={`${course.name} mastered`}
+                title="Mastered"
                 emptyLabel="Nothing in this class has been marked as mastered yet."
                 items={mastered}
+                accent={course.color}
               />
             </div>
           </div>

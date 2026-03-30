@@ -64,8 +64,7 @@ export default function UnitOrganizerClient({
             <p className="app-kicker">Unit {unitNumber}</p>
             <h1 className="app-section-title mt-2">{unitName}</h1>
             <p className="app-copy mt-3 max-w-2xl">
-              Notes, chapter quizzes, flashcards, key concepts, and the unit exam all live here so you can move
-              through the unit without bouncing around the app.
+              This is the full study lane for the unit: notes first, chapter checks after, then flashcards, key concepts, and the unit exam when you want the wrap-up.
             </p>
           </div>
 
@@ -116,7 +115,13 @@ export default function UnitOrganizerClient({
             const isViewed = ready ? hasViewedChapter(courseId, unitId, chapter.id) : false;
 
             return (
-              <div key={chapter.id} className="app-panel p-5">
+              <div
+                key={chapter.id}
+                className="app-panel p-5"
+                style={{
+                  background: `linear-gradient(180deg, color-mix(in srgb, ${courseColor} 7%, var(--panel)) 0%, var(--bg-elevated) 100%)`,
+                }}
+              >
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                   <div className="flex items-start gap-4">
                     <div
@@ -131,6 +136,10 @@ export default function UnitOrganizerClient({
                       <p className="mt-2 text-sm leading-6 app-copy">
                         Read the notes first, then use the quiz to see whether the chapter actually stuck.
                       </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <span className="app-chip px-2.5 py-1 text-[11px] uppercase tracking-[0.16em]">Step 1 · notes</span>
+                        {chapter.hasQuiz && <span className="app-chip px-2.5 py-1 text-[11px] uppercase tracking-[0.16em]">Step 2 · quiz</span>}
+                      </div>
                     </div>
                   </div>
 

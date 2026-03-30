@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   BookOpenText,
   Brain,
@@ -35,12 +36,22 @@ function Logo({ compact = false }: { compact?: boolean }) {
   return (
     <Link href="/dashboard" className="relative z-20 flex items-center gap-3 py-1 text-sm text-white">
       <div
-        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl font-display text-sm font-bold text-white"
-        style={{ background: "var(--accent)" }}
+        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[18px] font-display text-sm font-bold text-white shadow-sm"
+        style={{
+          background:
+            "linear-gradient(145deg, color-mix(in srgb, var(--accent) 88%, white 12%), color-mix(in srgb, var(--accent) 68%, black 32%))",
+        }}
       >
-        AP
+        EA
       </div>
-      {!compact && <span className="whitespace-pre font-display text-base font-semibold">EverythingAP</span>}
+      {!compact && (
+        <div className="min-w-0">
+          <span className="block whitespace-pre font-display text-base font-semibold tracking-tight">EverythingAP</span>
+          <span className="block text-[11px] uppercase tracking-[0.22em]" style={{ color: "var(--text-muted)" }}>
+            Study OS
+          </span>
+        </div>
+      )}
     </Link>
   );
 }
@@ -51,6 +62,7 @@ export default function DashboardSidebar({
   selectedCourses,
 }: DashboardSidebarProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   const primaryLinks = useMemo(
     () => [
@@ -116,6 +128,7 @@ export default function DashboardSidebar({
                   key={link.label}
                   link={link}
                   className="hover:bg-white/5"
+                  isActive={link.href.startsWith("/") && (pathname === link.href || pathname.startsWith(`${link.href}/`))}
                 />
               ))}
             </div>
@@ -144,6 +157,7 @@ export default function DashboardSidebar({
                       ),
                     }}
                     className="py-2 hover:bg-white/5"
+                    isActive={pathname === course.href || pathname.startsWith(`${course.href}/`)}
                   />
                 ))}
                 {!selectedCourses.length && open && (

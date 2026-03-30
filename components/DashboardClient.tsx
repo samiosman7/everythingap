@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, BookOpenText, Search, Sparkles, Target } from "lucide-react";
+import { ArrowRight, BookOpenText, Compass, Search, Sparkles } from "lucide-react";
 import { getCourseHref } from "@/lib/course";
 import { groupCoursesByCategory } from "@/lib/course-display";
 import { readSelectedCourseIds } from "@/lib/course-preferences";
@@ -121,14 +121,14 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
                   className="pointer-events-none absolute -right-8 top-6 h-28 w-28 rounded-full opacity-60 blur-2xl animate-float-slow"
                   style={{ background: "color-mix(in srgb, var(--accent) 28%, transparent)" }}
                 />
-                <p className="app-kicker">Today</p>
+                <p className="app-kicker">Launchpad</p>
                 <h2 className="app-section-title mt-3">
-                  {selectedCourses.length ? "Everything you need is already in reach." : "Set up your classes and the dashboard gets smarter fast."}
+                  {selectedCourses.length ? "Open the right class and get moving." : "Set up your classes and turn this into a real launchpad."}
                 </h2>
                 <p className="app-copy mt-3 max-w-2xl">
                   {selectedCourses.length
-                    ? "Open a course, move through the unit in order, and keep the extra study signals tucked away in Student Space instead of all over the page."
-                    : "Pick the AP classes you actually take, then this page turns into a cleaner launchpad for notes, quizzes, flashcards, and exam prep."}
+                    ? "This page is for opening the class you need today, jumping back into the right unit, and getting out of the dashboard fast."
+                    : "Pick the AP classes you actually take, then this turns into a clean starting point for notes, quizzes, flashcards, and exam prep."}
                 </p>
 
                 <div className="mt-5 flex flex-wrap gap-3">
@@ -154,22 +154,22 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
               <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
                 {[
                   {
-                    icon: Sparkles,
-                    label: "Selected classes",
+                    icon: Compass,
+                    label: "Pinned courses",
                     value: selectedCourses.length || 0,
-                    copy: selectedCourses.length ? "Pinned and ready to open." : "Pick a few to personalize this space.",
+                    copy: selectedCourses.length ? "The classes you care about live here first." : "Pick a few and they stay pinned here.",
                   },
                   {
                     icon: BookOpenText,
-                    label: "Chapters in reach",
+                    label: "Study checkpoints",
                     value: totalSelectedChapters,
                     copy: selectedCourses.length ? "Across your saved classes." : "This fills in after setup.",
                   },
                   {
-                    icon: Target,
-                    label: "Next move",
-                    value: selectedCourses.length ? "Open a course" : "Choose classes",
-                    copy: selectedCourses.length ? "Start with the class you need today." : "Onboarding sets the whole flow up.",
+                    icon: Sparkles,
+                    label: "Purpose",
+                    value: selectedCourses.length ? "Launchpad" : "Setup",
+                    copy: selectedCourses.length ? "Open something fast and keep going." : "Onboarding sets the whole flow up.",
                   },
                 ].map((item, index) => {
                   const Icon = item.icon;
@@ -197,7 +197,7 @@ export default function DashboardClient({ courses, emailLabel, isGuest }: Dashbo
               <section id="my-courses">
                 <div className="mb-4">
                   <p className="app-kicker">My courses</p>
-                  <h2 className="app-section-title mt-2">Open the class you actually need right now.</h2>
+                  <h2 className="app-section-title mt-2">Open the class you need, not another widget.</h2>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">

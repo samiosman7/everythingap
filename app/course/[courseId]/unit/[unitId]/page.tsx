@@ -68,11 +68,22 @@ export default async function UnitPage({ params }: { params: Promise<{ courseId:
           />
 
           <section className="app-panel p-6">
-            <p className="app-kicker">Unit reflection</p>
-            <h2 className="app-section-title mt-3">Keep the notes page for studying.</h2>
+            <p className="app-kicker">Unit notebook</p>
+            <h2 className="app-section-title mt-3">Keep reflection nearby, not in the way.</h2>
             <p className="app-copy mt-3">
-              Your unit-level confidence, review reminders, and reflections now live in Student Space so this page can stay focused on chapters and tools.
+              This page should stay focused on chapters and tools. Your private notes, confidence, and review reminders live one click away in Student Space.
             </p>
+            <div className="mt-5 space-y-3">
+              {[
+                "Use notes for the actual content.",
+                "Use chapter quizzes to check what stuck.",
+                "Use unit reflection after a full pass, not before.",
+              ].map(item => (
+                <div key={item} className="app-card px-4 py-3 text-sm app-copy">
+                  {item}
+                </div>
+              ))}
+            </div>
             <Link
               href={`/student-space?focus=unit&courseId=${encodeURIComponent(course.id)}&unitId=${encodeURIComponent(
                 String(unit.id)

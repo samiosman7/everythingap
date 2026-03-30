@@ -1,6 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { Compass, FileSpreadsheet, Layers3 } from "lucide-react";
+import { ArrowRight, Compass, FileSpreadsheet, Layers3 } from "lucide-react";
 import { getViewerContext } from "@/lib/viewer";
 import { getCourseByIdentifier, getCourseHref } from "@/lib/course";
 import CourseUnitOrganizer from "@/components/CourseUnitOrganizer";
@@ -53,8 +53,17 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
       </nav>
 
       <main className="app-page">
-        <section className="grid gap-5 xl:grid-cols-[1.05fr,0.95fr]">
-          <div className="app-panel p-7">
+        <section className="grid gap-5 xl:grid-cols-[1.12fr,0.88fr]">
+          <div
+            className="app-panel relative overflow-hidden p-7"
+            style={{
+              background: `linear-gradient(180deg, color-mix(in srgb, ${course.color} 10%, var(--panel)) 0%, var(--bg-elevated) 100%)`,
+            }}
+          >
+            <div
+              className="pointer-events-none absolute right-0 top-0 h-36 w-36 rounded-full blur-3xl"
+              style={{ background: `${course.color}33` }}
+            />
             <div className="flex items-start gap-5">
               <div
                 className="flex h-16 w-16 items-center justify-center rounded-2xl text-3xl"
@@ -66,8 +75,13 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                 <p className="app-kicker">Course hub</p>
                 <h1 className="mt-2 font-display text-3xl font-bold md:text-4xl">{course.name}</h1>
                 <p className="mt-3 max-w-2xl text-sm leading-7 app-copy">
-                  Open a unit, move through the chapters, and use the full mock exam when you want the capstone practice.
+                  This is the front door for the whole class: unit roadmap, chapter flow, and the full mock exam when you want the capstone run.
                 </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <span className="app-chip px-3 py-1.5 text-[11px] uppercase tracking-[0.18em]">Unit roadmap</span>
+                  <span className="app-chip px-3 py-1.5 text-[11px] uppercase tracking-[0.18em]">Chapter notes</span>
+                  <span className="app-chip px-3 py-1.5 text-[11px] uppercase tracking-[0.18em]">Exam prep</span>
+                </div>
               </div>
             </div>
           </div>
@@ -93,6 +107,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
             <div className="mt-5 flex flex-wrap gap-3">
               <Link href={`${courseHref}/exam`} className="app-primary-button inline-flex items-center gap-2 px-5 py-4 text-sm">
                 {hasFullExam ? "Open full AP mock exam" : "Open full AP mock exam page"}
+                <ArrowRight className="h-4 w-4" />
               </Link>
               <Link href="#course-units" className="app-secondary-button inline-flex items-center gap-2 px-5 py-4 text-sm font-semibold">
                 Jump to units

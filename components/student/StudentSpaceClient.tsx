@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Bookmark, Brain, NotebookPen, Target } from "lucide-react";
+import { ArrowRight, BookMarked, Brain, NotebookPen, Target } from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
-import ResumeWhereLeftOff from "@/components/ResumeWhereLeftOff";
 import StudyDashboardWidgets from "@/components/student/StudyDashboardWidgets";
 import { ChapterWorkspacePanel, UnitWorkspacePanel } from "@/components/student/StudyWorkspacePanels";
 import { readSelectedCourseIds } from "@/lib/course-preferences";
@@ -52,7 +51,7 @@ const LAYER_FEATURES = [
     description: "Keep what tripped you up, what to review next, and where confidence does not match scores.",
   },
   {
-    icon: Bookmark,
+    icon: BookMarked,
     title: "Review signals",
     description: "Pull together confusing topics, review-later flags, likely-on-the-test saves, and mastered areas.",
   },
@@ -93,9 +92,9 @@ export default function StudentSpaceClient({ courses, emailLabel, isGuest, focus
       <div className="app-main">
         <header className="app-header">
           <p className="app-kicker">Student space</p>
-          <h1 className="app-title mt-2">Your private learning layer.</h1>
+          <h1 className="app-title mt-2">Your private study notebook.</h1>
           <p className="app-copy mt-3 max-w-3xl">
-            Keep your notes, confidence signals, reminders, and weak spots here so the course pages can stay focused on studying.
+            This is where your own thinking lives: notes, confidence, reminders, and reflections organized by class instead of scattered across the app.
           </p>
         </header>
 
@@ -158,8 +157,8 @@ export default function StudentSpaceClient({ courses, emailLabel, isGuest, focus
 
             <section className="grid gap-4 xl:grid-cols-[1.1fr,0.9fr]">
               <div className="app-panel p-6 sm:p-7">
-                <p className="app-kicker">What this page is for</p>
-                <h2 className="app-section-title mt-3">Keep the signals, not the noise.</h2>
+                <p className="app-kicker">Notebook system</p>
+                <h2 className="app-section-title mt-3">Keep the signals, lose the dashboard clutter.</h2>
                 <div className="mt-5 grid gap-3 md:grid-cols-2">
                   {LAYER_FEATURES.map(item => {
                     const Icon = item.icon;
@@ -175,15 +174,13 @@ export default function StudentSpaceClient({ courses, emailLabel, isGuest, focus
               </div>
 
               <div className="space-y-4">
-                <ResumeWhereLeftOff />
-
                 <div className="app-panel p-6">
-                  <p className="app-kicker">Best use of this space</p>
+                  <p className="app-kicker">How to use it</p>
                   <div className="mt-4 space-y-3">
                     {[
                       "Leave one useful reminder after each quiz instead of filling out a giant form.",
-                      "Use confidence marks honestly so the dashboard can spot weak areas earlier.",
-                      "Treat this page like your own study control room, not another lesson page.",
+                      "Use class sections like folders: AP Gov stays separate from AP Bio.",
+                      "Save only what helps your next study session move faster.",
                     ].map((tip, index) => (
                       <div key={tip} className="app-card flex items-start gap-3 p-4">
                         <div

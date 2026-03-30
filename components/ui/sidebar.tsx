@@ -199,10 +199,12 @@ export const MobileSidebar = ({
 export const SidebarLink = ({
   link,
   className,
+  isActive = false,
   ...props
 }: {
   link: Links;
   className?: string;
+  isActive?: boolean;
   props?: LinkProps;
 }) => {
   const { open, animate } = useSidebar();
@@ -213,7 +215,11 @@ export const SidebarLink = ({
         "group/sidebar flex items-center justify-start gap-3 rounded-2xl px-2 py-3 transition-colors",
         className
       )}
-      style={{ color: "var(--text-soft)" }}
+      style={{
+        color: isActive ? "var(--text)" : "var(--text-soft)",
+        background: isActive ? "color-mix(in srgb, var(--accent-soft) 82%, transparent)" : undefined,
+        border: isActive ? "1px solid color-mix(in srgb, var(--accent) 36%, transparent)" : undefined,
+      }}
       {...props}
     >
       {link.icon}

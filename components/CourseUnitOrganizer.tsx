@@ -113,7 +113,13 @@ export default function CourseUnitOrganizer({
           const confidence = ready ? getUnitWorkspace(unit.id)?.confidence?.value ?? null : null;
 
           return (
-            <div key={unit.id} className="app-panel p-5">
+            <div
+              key={unit.id}
+              className="app-panel p-5"
+              style={{
+                background: `linear-gradient(180deg, color-mix(in srgb, ${courseColor} 8%, var(--panel)) 0%, var(--bg-elevated) 100%)`,
+              }}
+            >
               <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                 <div>
                   <div className="flex items-center gap-3">
@@ -139,6 +145,10 @@ export default function CourseUnitOrganizer({
                     <span className="text-xs app-muted">
                       {confidence === null ? "No confidence rating yet" : `${confidence}% confidence`}
                     </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <span className="app-chip px-2.5 py-1 text-[11px] uppercase tracking-[0.16em]">{unit.chapterCount} chapters</span>
+                    <span className="app-chip px-2.5 py-1 text-[11px] uppercase tracking-[0.16em]">Notes → quiz → review</span>
                   </div>
                 </div>
 
