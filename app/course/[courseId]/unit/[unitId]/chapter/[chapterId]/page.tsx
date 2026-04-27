@@ -105,7 +105,7 @@ export default async function ChapterPage({
 
         {chapter.notes ? (
           <div className="app-panel p-6 md:p-8">
-            <div className="max-w-5xl">
+            <div className="mx-auto w-full max-w-6xl">
               <NotesRenderer notes={chapter.notes} />
             </div>
           </div>
