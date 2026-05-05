@@ -58,6 +58,7 @@ export default function Page() {
               path="/sign-up"
               routing="path"
               signInUrl="/sign-in"
+              fallbackRedirectUrl="/onboarding?tutorial=1"
               forceRedirectUrl="/onboarding?tutorial=1"
               appearance={{
                 elements: {

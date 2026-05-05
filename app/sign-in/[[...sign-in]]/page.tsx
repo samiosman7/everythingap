@@ -58,6 +58,7 @@ export default function Page() {
               path="/sign-in"
               routing="path"
               signUpUrl="/sign-up"
+              fallbackRedirectUrl="/dashboard"
               forceRedirectUrl="/dashboard"
               appearance={{
                 elements: {

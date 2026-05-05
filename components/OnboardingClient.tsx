@@ -28,6 +28,7 @@ export default function OnboardingClient({
   const [tutorialCourseId, setTutorialCourseId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [continuing, setContinuing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -48,6 +49,7 @@ export default function OnboardingClient({
   );
 
   function toggleCourse(courseId: string) {
+    setError(null);
     setSelectedIds(current => {
       const next = current.includes(courseId) ? current.filter(id => id !== courseId) : [...current, courseId];
 
@@ -63,34 +65,43 @@ export default function OnboardingClient({
 
   async function handleContinue() {
     if (continuing) return;
+    setError(null);
+
+    if (selectedIds.length === 0) {
+      setError(tutorialMode ? "Pick at least one AP class before starting the tutorial." : "Pick at least one AP class before continuing.");
+      return;
+    }
+
+    if (tutorialMode && (!tutorialCourseId || !selectedIds.includes(tutorialCourseId))) {
+      setError("Choose which one of your selected classes the tutorial should use first.");
+      return;
+    }
 
     saveSelectedCourseIds(selectedIds);
     setContinuing(true);
-
-    if (tutorialMode && selectedIds.length === 0) {
-      saveTutorialState(createTutorialState());
-      setContinuing(false);
-      return;
-    }
 
     if (tutorialMode && selectedIds.length > 0) {
       try {
         const supabase = createClient();
         const tutorialSeed = tutorialCourseId && selectedIds.includes(tutorialCourseId) ? [tutorialCourseId] : [selectedIds[0]];
         const targets = await buildTutorialTargets(supabase, tutorialSeed);
-        saveTutorialState({ ...createTutorialState(targets ?? undefined), stepIndex: 1 });
+        if (!targets) {
+          setError("That class does not have a clean tutorial path yet. Try another selected class.");
+          setContinuing(false);
+          return;
+        }
 
-        if (targets?.chapterNotesHref) {
+        saveTutorialState({ ...createTutorialState(targets), stepIndex: 1 });
+
+        if (targets.chapterNotesHref) {
           router.push(targets.chapterNotesHref);
           return;
         }
       } catch {
-        saveTutorialState(createTutorialState());
+        setError("The tutorial could not load the right pages for that class yet. Try again in a second.");
+        setContinuing(false);
+        return;
       }
-    }
-
-    if (tutorialMode) {
-      saveTutorialState(createTutorialState());
     }
 
     router.push(continueHref);
@@ -237,6 +248,13 @@ export default function OnboardingClient({
           )}
 
           <div className="mt-8 flex flex-col gap-3 border-t pt-6 sm:flex-row" style={{ borderColor: "var(--line)" }}>
+            {error && (
+              <div className="sm:basis-full">
+                <div className="rounded-2xl border px-4 py-3 text-sm" style={{ borderColor: "var(--danger)", color: "var(--danger)", background: "color-mix(in srgb, var(--danger) 10%, transparent)" }}>
+                  {error}
+                </div>
+              </div>
+            )}
             <button
               type="button"
               onClick={handleContinue}
@@ -280,7 +298,10 @@ export default function OnboardingClient({
                   <button
                     key={course.id}
                     type="button"
-                    onClick={() => setTutorialCourseId(course.id)}
+                    onClick={() => {
+                      setError(null);
+                      setTutorialCourseId(course.id);
+                    }}
                     className="app-card border p-4 text-left transition-transform hover:-translate-y-0.5"
                     style={{
                       borderColor: active ? "var(--accent)" : "var(--line)",

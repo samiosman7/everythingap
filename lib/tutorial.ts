@@ -248,6 +248,6 @@ export async function buildTutorialTargets(supabase: any, selectedCourseIds: str
     unitReflectionHref: `/student-space?focus=unit&courseId=${encodeURIComponent(course.id)}&unitId=${encodeURIComponent(
       String(unit.id)
     )}&courseName=${encodeURIComponent(course.name)}&unitName=${encodeURIComponent(unit.name)}&href=${encodeURIComponent(unitHref)}`,
-    fullExamHref: `${courseHref}/exam`,
+    fullExamHref: course.full_exam ? `${courseHref}/exam` : null,
   };
 }

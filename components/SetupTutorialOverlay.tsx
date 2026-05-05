@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Sparkles, X } from "lucide-react";
 import {
@@ -16,14 +16,52 @@ function normalizePath(path: string) {
   return path.replace(/\/+$/, "") || "/";
 }
 
+function matchesTutorialHref(
+  pathname: string,
+  searchParams: URLSearchParams,
+  href: string
+) {
+  const [targetPath, targetQuery = ""] = href.split("?");
+  if (normalizePath(targetPath) !== normalizePath(pathname)) return false;
+
+  if (!targetQuery) return true;
+
+  const targetParams = new URLSearchParams(targetQuery);
+  for (const [key, value] of targetParams.entries()) {
+    if (searchParams.get(key) !== value) return false;
+  }
+
+  return true;
+}
+
 export default function SetupTutorialOverlay() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [tutorial, setTutorial] = useState<TutorialState | null>(null);
 
   useEffect(() => {
-    setTutorial(readTutorialState());
-  }, [pathname]);
+    const nextTutorial = readTutorialState();
+    if (!nextTutorial?.active) {
+      setTutorial(nextTutorial);
+      return;
+    }
+
+    const nextSteps = getTutorialSteps(nextTutorial.targets);
+    const currentSearch = new URLSearchParams(searchParams.toString());
+    const matchedStepIndex = nextSteps.findIndex(step =>
+      matchesTutorialHref(pathname, currentSearch, step.href)
+    );
+
+    if (matchedStepIndex > 0 && matchedStepIndex !== nextTutorial.stepIndex) {
+      const synced = { ...nextTutorial, stepIndex: matchedStepIndex };
+      saveTutorialState(synced);
+      setTutorial(synced);
+      return;
+    }
+
+    setTutorial(nextTutorial);
+  }, [pathname, searchParams]);
 
   const steps = useMemo(() => getTutorialSteps(tutorial?.targets), [tutorial]);
   const activeStep = tutorial ? steps[tutorial.stepIndex] : null;
@@ -31,7 +69,11 @@ export default function SetupTutorialOverlay() {
 
   if (!isVisible || !activeStep) return null;
 
-  const onExpectedPage = normalizePath(pathname) === normalizePath(activeStep.href.split("?")[0]);
+  const onExpectedPage = matchesTutorialHref(
+    pathname,
+    new URLSearchParams(searchParams.toString()),
+    activeStep.href
+  );
   const isLastStep = tutorial!.stepIndex >= steps.length - 1;
   const isSelectionStep = activeStep.id === "pick-course" && !tutorial?.targets;
 

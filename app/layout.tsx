@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -25,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body className="noise">
           <ThemeProvider>
             {children}
-            <SetupTutorialOverlay />
+            <Suspense fallback={null}>
+              <SetupTutorialOverlay />
+            </Suspense>
             <Analytics />
             <SpeedInsights />
           </ThemeProvider>

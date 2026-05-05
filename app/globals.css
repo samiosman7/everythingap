@@ -14,6 +14,7 @@
   --bg-elevated: #15191d;
   --panel: #1b2025;
   --panel-strong: #222930;
+  --surface: #1b2025;
   --panel-muted: rgba(255, 255, 255, 0.03);
   --line: #313841;
   --line-strong: #485260;
@@ -40,6 +41,7 @@
   --bg-elevated: #0f141a;
   --panel: #141a21;
   --panel-strong: #1a222b;
+  --surface: #1a222b;
   --panel-muted: rgba(255, 255, 255, 0.03);
   --line: #26313d;
   --line-strong: #364555;
@@ -66,6 +68,7 @@
   --bg-elevated: #1e1a16;
   --panel: #221d18;
   --panel-strong: #2a231d;
+  --surface: #2a231d;
   --panel-muted: rgba(255, 255, 255, 0.03);
   --line: #3d342d;
   --line-strong: #56483c;
@@ -88,6 +91,7 @@
   --bg-elevated: #16202a;
   --panel: #1b2733;
   --panel-strong: #22313e;
+  --surface: #22313e;
   --panel-muted: rgba(255, 255, 255, 0.03);
   --line: #314250;
   --line-strong: #496171;
@@ -110,6 +114,7 @@
   --bg-elevated: #1a211b;
   --panel: #202922;
   --panel-strong: #273328;
+  --surface: #273328;
   --panel-muted: rgba(255, 255, 255, 0.03);
   --line: #39453b;
   --line-strong: #536357;
@@ -132,6 +137,7 @@
   --bg-elevated: #17131a;
   --panel: #1d1821;
   --panel-strong: #251e2a;
+  --surface: #251e2a;
   --panel-muted: rgba(255, 255, 255, 0.03);
   --line: #3a313f;
   --line-strong: #54485b;
